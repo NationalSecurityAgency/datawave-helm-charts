@@ -1,0 +1,105 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: ConfigMap
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-ingest-config-configmap"
+
+##########################
+# Configuration Map Data #
+##########################
+
+data: 
+  ingest-config.xml:
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?><?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+    
+    <!-- Used by ingest job to precreate tables and get split information. -->
+      <property>
+        <name>ingest.data.types</name>
+        <value>{{ .Values.ingest.config.bulkDataTypes }},{{ .Values.ingest.config.liveDataTypes }}</value>
+        <description>The list of datatypes to be processed by the system.</description>
+      </property>
+      
+      <property>
+        <name>ingest.tables.timestamp_to_day</name>
+        <value>datawave.shardIndex,datawave.shardReverseIndex,datawave.edge</value>
+      </property>
+      
+      <property>
+        <name>event.multi.threaded</name>
+        <value>false</value>
+      </property>
+      
+      <property>
+        <name>ingest.uid.include.time.component</name>
+        <value>false</value>
+      </property>
+      
+      <property>
+        <name>event.discard.interval</name>
+        <value>0</value>
+      </property>
+      
+      <property>
+    <name>snowflake.zookeepers</name>
+    <value></value>
+    <description>List of zookeepers for caching snowflake timestamps if enabled</description>
+      </property>
+      
+      <property>
+    <name>snowflake.zookeeper.enabled</name>
+    <value>false</value>
+      </property>
+      
+      <property>
+     <name>shard.table.index.bloom.enable</name>
+     <value>false</value>
+      </property>
+      
+      <property>
+    <name>ingest.fatal.errors</name>
+    <value>EVENT_DATE_MISSING,ERROR_METRIC,UPSTREAM_ERROR</value>
+    </property>
+      
+      <property>
+    <name>ingest.value.dedup.by.timestamp</name>
+    <value>datawave.edge</value>
+    <description>
+       These parameters determine how and if deduping will be done
+    
+       dedup by timestamp uses the timestamp the to ms to remove duplicate
+       counts.  This is mainly done for the edgetable.  If A:B is seen more than 
+       once with the exact same time stamp it is deemed a dup. 
+    </description>
+      </property>
+      
+      <property>
+    <name>ingest.value.dedup.aggregation</name>
+    <value>datawave.shard,datawave.shardIndex,datawave.shardReverseIndex,datawave.metadata,datawave.dateIndex</value>
+    <description>
+       These parameters determine how and if deduping will be done
+  
+       dedup.aggregation bypasses the timestamp dedup, because the objets being counted 
+       can be uniqued via other methods
+    </description>
+      </property>
+      
+      <property>
+    <name>ingest.ignorable.error.helpers</name>
+    <value></value>
+      </property>
+      
+      <property>
+    <name>partitioner.default.delegate</name>
+    <value>datawave.ingest.mapreduce.partition.MultiTableRRRangePartitioner</value>
+      </property>
+    </configuration>
+      

@@ -1,0 +1,31 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: ConfigMap
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-data-types-configmap"
+
+##########################
+# Configuration Map Data #
+##########################
+
+data: 
+{{ range .Values.ingest.config.types}}
+  {{ .name }}-ingest-config.xml: 
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?><?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+    {{ range $prop,$val := .properties }}
+      <property>
+        <name>{{ $prop }}</name>
+        <value>{{ $val }}</value>
+      </property>  
+    {{ end }}
+    </configuration>
+{{ end }}

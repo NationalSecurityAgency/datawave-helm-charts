@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "hadoop.fullname" . }}-hdfs-nn
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
+  labels:
+    app: {{ include "hadoop.name" . }}
+    chart: {{ include "hadoop.chart" . }}
+    release: {{ .Release.Name }}
+    component: hdfs-nn
+spec:
+  serviceName: {{ include "hadoop.fullname" . }}-hdfs-nn
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "hadoop.name" . }}
+      release: {{ .Release.Name }}
+      component: hdfs-nn
+  template:
+    metadata:
+      labels:
+        app: {{ include "hadoop.name" . }}
+        release: {{ .Release.Name }}
+        component: hdfs-nn
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: init-zookeeper
+        securityContext:
+          runAsUser: 1000
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup zookeeper; do echo waiting for zookeeper; sleep 2; done"]
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.hadoop.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ include "hadoop.name" . }}
+                release: {{ .Release.Name | quote }}
+                component: hdfs-nn
+        {{- else if eq .Values.hadoop.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app:  {{ include "hadoop.name" . }}
+                  release: {{ .Release.Name | quote }}
+                  component: hdfs-nn
+        {{- end }}
+      terminationGracePeriodSeconds: 0
+      {{- with .Values.hadoop.hdfs.nameNode.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hadoop.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+      - name: hdfs-nn
+        image: "{{ .Values.hadoop.image.repository }}:{{ .Values.hadoop.image.tag }}"
+        imagePullPolicy: {{ .Values.hadoop.image.pullPolicy | quote }}
+        command:
+        - "/bin/sh"
+        - "/tmp/hadoop-config/bootstrap.sh"
+        - "-d"
+        resources:
+          {{ toYaml .Values.hadoop.hdfs.nameNode.resources | nindent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9870
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9870
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+        {{- if .Values.hadoop.persistence.nameNode.enabled }}
+        - name: dfs
+          mountPath: /usr/local/hadoop/data/
+        {{- end }}
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ include "hadoop.fullname" . }}
+  {{- if .Values.hadoop.persistence.nameNode.enabled }}
+  {{- with .Values.hadoop.persistence.nameNode.definitions }}
+  volumeClaimTemplates:
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- end }}

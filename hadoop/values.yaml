@@ -1,0 +1,116 @@
+hadoop: 
+  # The base hadoop image to use for all components.
+  # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+  image:
+    repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
+    tag: 3.3.6
+    pullPolicy: IfNotPresent
+    pullSecrets:
+    - dockerconfigjson-ghcr
+  
+  # The version of the hadoop libraries being used in the image.
+  hadoopVersion: 3.3.6-2
+  
+  # Select antiAffinity as either hard or soft, default is soft
+  antiAffinity: "soft"
+  config:
+    postInstallCommands:
+      - chmod -R 777 /usr/lib/zookeeper
+      - hadoop fs -mkdir -p /accumulo
+      - hadoop fs -chown accumulo /accumulo
+      - hadoop fs -chmod 700 /accumulo
+      - hadoop fs -ls /
+  hdfs:
+    nameNode:
+      tolerations: []
+      pdbMinAvailable: 1
+  
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m"
+  
+    dataNode:
+      tolerations: []
+      replicas: 2
+  
+      pdbMinAvailable: 1
+  
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "1000m"
+  
+    webhdfs:
+      enabled: false
+  
+  yarn:
+    resourceManager:
+      tolerations: []
+      pdbMinAvailable: 1
+  
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "10m"
+        limits:
+          memory: "2048Mi"
+          cpu: "2000m"
+  
+    nodeManager:
+      tolerations: []
+      pdbMinAvailable: 1
+  
+      # The number of YARN NodeManager instances.
+      replicas: 2
+  
+      # Create statefulsets in parallel (K8S 1.7+)
+      parallelCreate: false
+  
+      # CPU and memory resources allocated to each node manager pod.
+      # This should be tuned to fit your workload.
+      resources:
+        requests:
+          memory: "2048Mi"
+          cpu: "1000m"
+        limits:
+          memory: "4096Mi"
+          cpu: "1000m"
+  cmds:
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+  
+  persistence:
+    nameNode:
+      enabled: false
+      definitions:
+      - metadata:
+          name: dfs
+        spec:
+          accessModes: ReadWriteOnce
+          storageClassName: managed-csi-driver
+          resources:
+            requests:
+              storage: 50Gi
+          selector:
+  
+    dataNode:
+      enabled: false
+      definitions:
+      - metadata:
+          name: dfs
+        spec:
+          accessModes: ReadWriteOnce
+          storageClassName: managed-csi-driver
+          resources:
+            requests:
+              storage: 200Gi
+          selector:

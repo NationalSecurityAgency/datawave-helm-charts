@@ -1,0 +1,131 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: ConfigMap
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-flag-maker-configmap"
+
+##########################
+# Configuration Map Data #
+##########################
+
+data: 
+  flag-maker-bulk.xml:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!--
+       Example FlagMaker configuration for "bulk" ingest, i.e., for outputting rfiles during the IngestJob reduce phase,
+       for bulk import into DataWave's Accumulo tables
+    -->
+    <flagMakerConfig>
+        <flagCfg>
+            <dataName>wikipedia</dataName>
+            <folder>wikipedia-bulk</folder>
+            <ingestPool>bulk</ingestPool>
+            <distributionArgs>none</distributionArgs>
+            <extraIngestArgs>-data.name.override=wikipedia</extraIngestArgs>
+            <inputFormat>datawave.ingest.wikipedia.WikipediaEventInputFormat</inputFormat>
+            <lifo>false</lifo>
+        </flagCfg>
+        <flagCfg>
+            <dataName>mycsv</dataName>
+            <folder>mycsv-bulk</folder>
+            <ingestPool>bulk</ingestPool>
+            <distributionArgs>none</distributionArgs>
+            <extraIngestArgs>-data.name.override=mycsv</extraIngestArgs>
+            <inputFormat>datawave.ingest.csv.mr.input.CSVFileInputFormat</inputFormat>
+            <lifo>false</lifo>
+        </flagCfg>
+        <flagCfg>
+            <dataName>myjson</dataName>
+            <distributionArgs>none</distributionArgs>
+            <folder>myjson-bulk</folder>
+            <ingestPool>bulk</ingestPool>
+            <extraIngestArgs>-data.name.override=myjson</extraIngestArgs>
+            <inputFormat>datawave.ingest.json.mr.input.JsonInputFormat</inputFormat>
+            <lifo>false</lifo>
+        </flagCfg>
+        <defaultCfg>
+            <!-- currently only require a few of the params for the default config -->
+            <maxFlags>4</maxFlags>
+            <reducers>10</reducers>
+            <script>bin/ingest/bulk-ingest.sh</script>
+            <fileListMarker>***FILE_LIST***</fileListMarker>
+            <collectMetrics>false</collectMetrics>
+        </defaultCfg>
+        <sleepMilliSecs>5000</sleepMilliSecs>
+        <timeoutMilliSecs>480000</timeoutMilliSecs>
+        <baseHDFSDir>/data</baseHDFSDir>
+        <distributorType>simple</distributorType>
+        <!-- No dot "." files, and no files ending with punctuation, etc -->
+        <filePattern>[0-9a-zA-Z]*[0-9a-zA-Z]</filePattern>
+        <hdfs>hdfs://hdfs-nn:9000</hdfs>
+        <socketPort>20001</socketPort>
+        <datawaveHome>/opt/datawave-ingest/current</datawaveHome>
+        <flagFileDirectory>/srv/data/datawave/flags</flagFileDirectory>
+        <setFlagFileTimestamp>true</setFlagFileTimestamp>
+        <useFolderTimestamp>false</useFolderTimestamp>
+    </flagMakerConfig>
+
+  flag-maker-live.xml: 
+  
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <!--
+       Example FlagMaker configuration for "live" ingest, i.e., for writing batch mutations directly into DataWave's
+       Accumulo tables during the IngestJob map phase
+    -->
+    <flagMakerConfig>
+       <flagCfg>
+            <dataName>wikipedia</dataName>
+            <distributionArgs>none</distributionArgs>
+            <extraIngestArgs></extraIngestArgs>
+            <folder>wikipedia</folder>
+            <extraIngestArgs>-data.name.override=wikipedia</extraIngestArgs>
+            <inputFormat>datawave.ingest.wikipedia.WikipediaEventInputFormat</inputFormat>
+            <ingestPool>live</ingestPool>
+            <lifo>false</lifo>
+       </flagCfg>
+       <flagCfg>
+            <dataName>mycsv</dataName>
+            <distributionArgs>none</distributionArgs>
+            <folder>mycsv</folder>
+            <ingestPool>live</ingestPool>
+            <extraIngestArgs>-data.name.override=mycsv</extraIngestArgs>
+            <inputFormat>datawave.ingest.csv.mr.input.CSVFileInputFormat</inputFormat>
+            <lifo>false</lifo>
+       </flagCfg>
+       <flagCfg>
+            <dataName>myjson</dataName>
+            <distributionArgs>none</distributionArgs>
+            <folder>myjson</folder>
+            <ingestPool>live</ingestPool>
+            <extraIngestArgs>-data.name.override=myjson</extraIngestArgs>
+            <inputFormat>datawave.ingest.json.mr.input.JsonInputFormat</inputFormat>
+            <lifo>false</lifo>
+       </flagCfg>
+       <defaultCfg>
+            <reducers>10</reducers>
+            <maxFlags>4</maxFlags>
+            <script>bin/ingest/live-ingest.sh</script>
+            <fileListMarker>***FILE_LIST***</fileListMarker>
+            <collectMetrics>false</collectMetrics>
+       </defaultCfg>
+       <timeoutMilliSecs>10000</timeoutMilliSecs>
+       <baseHDFSDir>/data</baseHDFSDir>
+       <distributorType>simple</distributorType>
+       <!-- No dot "." files, and no files ending with punctuation, etc -->
+       <filePattern>[0-9a-zA-Z]*[0-9a-zA-Z]</filePattern>
+       <hdfs>hdfs://hdfs-nn:9000</hdfs>
+       <socketPort>20000</socketPort>
+       <datawaveHome>/opt/datawave-ingest/current</datawaveHome>
+       <flagFileDirectory>/srv/data/datawave/flags</flagFileDirectory>
+       <setFlagFileTimestamp>false</setFlagFileTimestamp>
+       <useFolderTimestamp>false</useFolderTimestamp>
+    </flagMakerConfig>
+  
