@@ -1,0 +1,201 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: external-config-map
+data:
+  application-k8s.yml: |-
+    hazelcast:
+      client:
+        k8s:
+          service-dns-name: dwv-web-cache.default.svc.cluster.local
+  application.yml: |-
+    datawave:
+      authorization:
+        uri: "https://dwv-web-authorization:8443/authorization/v1/authorize"
+    logging:
+      level:
+        root: DEBUG
+    management:
+      endpoint.health.show-details: when-authorized
+      endpoints.web.base-path: /mgmt
+      endpoints.web.exposure.include: "*"
+    server:
+      non-secure-port: 8080
+      outbound-ssl:
+        key-store: ${server.ssl.key-store}
+        key-store-password: ${server.ssl.key-store-password}
+        key-store-type: ${server.ssl.key-store-type}
+        trust-store: ${server.ssl.trust-store}
+        trust-store-password: ${server.ssl.trust-store-password}
+        trust-store-type: ${server.ssl.trust-store-type}
+      port: 8443
+      servlet.context-path: /${spring.application.name}
+      ssl:
+        client-auth: WANT
+        key-store: 'file:///data/certs/keystore.p12'
+        key-store-password: 'changeme'
+        key-store-type: 'PKCS12'
+        trust-store: 'file:///data/certs/truststore.jks'
+        trust-store-type: 'JKS'
+        trust-store-password: 'ChangeIt'
+    spring:
+      cloud:
+        consul:
+          enabled: false
+      rabbitmq:
+        discovery:
+          enabled: false
+          failFast: true
+        host: 'dwv-web-messaging'
+      security:
+        datawave:
+          enforce-allowed-callers: false
+          issuers-required: true
+          jwt.ttl: 86400
+          manager-role: Administator,JBossAdministrator
+        user.password: passwordNotUsed
+  audit.yml: |-
+    audit:
+      auditors:
+        accumulo:
+          enabled: false
+        file:
+          enabled: false
+          maxFileAgeSeconds: 60
+          maxLengthFileMB: 1
+          pathUri: s3a://signus-audits/
+        log:
+          enabled: false
+    logging:
+      level:
+        datawave.microservice.audit: DEBUG
+    spring:
+      cloud:
+        stream:
+          bindings:
+            accumuloAuditSink:
+              destination: audit
+              group: accumulo
+            auditSource:
+              destination: audit
+            logAuditSink:
+              destination: audit
+              group: log
+          rabbit:
+            bindings:
+              accumuloAuditSink:
+                consumer:
+                  autoBindDlq: true
+              auditSource:
+                producer:
+                  repbulishToDlq: true
+              logAuditSink:
+                consumer:
+                  autoBindDlq: true
+  authorization.yml: |-
+    mock:
+      authorization.uri: 'https://localhost:3000'
+      mock.specification: ''
+      normalize.subject: false
+    logging:
+      level:
+        datawave.microservice.authorization: DEBUG
+    mock:
+      users:
+        global-roles-to-auths:
+          Administrator: DW_ADMIN
+          AuthorizedUser: AUTH_USER
+          JBossAdministrator: JBOSS_ADMIN
+          barRole: BAR
+          fooRole: FOO
+          privateRole: PRIVATE
+          PublicRole: PUBLIC
+        per-user-roles-to-auths:
+          '[cn=test a. user, ou=example developers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us>]':
+            Administrator: DW_ADMIN
+            AuthorizedUser: DW_USER
+            JBossAdministrator: JBOSS_ADMIN
+            PRivateRole: PRIVATE
+            PublicRole: PUBLIC
+          '[cn=testserver.example.com, ou=servers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us]':
+            AuthorizedServer: DW_SERV
+            PublicRole: PUBLIC
+            PrivateRole: PRIVATE
+        server-DN-regex: '.*server.*'
+    server:
+      ssl:
+        client-auth: NEED
+    spring:
+      security:
+        datawave:
+          use-trusted-subject-headers: true
+          oauth:
+            refreshTokenTtl: 86400
+            authCodeTtl: 86400
+            idTokenTtl: 86400
+  cache-k8s.yml: |-
+    hazelcast:
+      server:
+        k8s:
+          service-dns-name: dwv-web-cache.default.svc.cluster.local
+  cache.yml: "hazelcast:\n  network:\n    join:\n      multicast:\n        enabled:
+    false\n      kubernetes:\n        enabled: true\n  server:\n    initialMergeDelaySeconds:
+    50\n    xml-config: |\n      <hazelcast \n          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n
+    \         xsi:schemaLocation=\"http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.9.xsd\"\n
+    \         xmlns=\"http://www.hazelcast.com/schema/config\">\n        <map name=\"datawaveUsers\">\n
+    \         <backup-count>1</backup-count>\n          <eviction-policy>LFU</eviction-policy>\n
+    \         <max-size policy=\"USED_HEAP_SIZE\">50</max-size>\n          <time-to-live-seconds>86400</time-to-live-seconds>\n
+    \       </map>\n      </hazelcast>\nlogging:\n  level:\n    root: TRACE\nserver:\n
+    \ port: 8080\n  ssl:\n    enabled: false\nspring:\n  cloud:\n    consul:\n      enabled:
+    false\n  security:\n    datawave:\n      jwt:\n        enabled: false"
+  dictionary.yml: |-
+    datawave:
+      dictionary:
+        accumulo-properties:
+          instance-name: "dev"
+          password: "root"
+          username: "root"
+          zookeepers: "zookeeper:2181"
+        edge:
+          metadata-table-name: ${metadata.tabl.name:datawave.metadata}
+          num-threads: 8
+        data:
+          model-name: DATAWAVE
+          metadata-table-name: ${metadata.table.name:datawave.metadata}
+          model-table-name: ${metadata.table.name:datawave.metadata}
+          normalizer-map:
+            "[datawave.data.type.GeoLatType]": "Latitude"
+            "[datawave.data.type.GeoLonType]": "Longitude"
+            "[datawave.data.type.GeometryType]": "Geometry (WKT)"
+            "[datawave.data.type.GeoType]": "Combined latitude, longitude"
+            "[datawave.data.type.IpAddressType]": "IP address"
+            "[datawave.data.type.MacAddressType]": "MAC address"
+            "[datawave.data.type.LcNoDiacriticsType]": "Text"
+            "[datawave.data.type.LcType]": "Text"
+            "[datawave.data.type.NoOpType]": "Unnormalized Text"
+            "[datawave.data.type.NumberType]": "Number"
+            "[datawave.data.type.PointType]": "Point Geometry (WKT)"
+            "[datawave.data.type.TrimLeadingZerosType]": "Text"
+          num-threads: 8
+      metadata:
+        all-metadata-auths:
+          - PUBLIC
+        type-substitutions:
+          "[datawave.data.type.DataType]": "datawave.data.type.RawDataType"
+    server:
+      cdnUri: /dictionary/
+    spring:
+      security:
+        datawave:
+          use-trusted-subject-headers: true
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+hazelcast:
+  network:
+    join:
+      multicast:
+        enabled: false
+      kubernetes:
+        enabled: true
+  server:
+    initialMergeDelaySeconds: 50
+    xml-config: |
+      <hazelcast 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.9.xsd"
+          xmlns="http://www.hazelcast.com/schema/config">
+        <map name="datawaveUsers">
+          <backup-count>1</backup-count>
+          <eviction-policy>LFU</eviction-policy>
+          <max-size policy="USED_HEAP_SIZE">50</max-size>
+          <time-to-live-seconds>86400</time-to-live-seconds>
+        </map>
+      </hazelcast>
+logging:
+  level:
+    root: TRACE
+server:
+  port: 8080
+  ssl:
+    enabled: false
+spring:
+  cloud:
+    consul:
+      enabled: false
+  security:
+    datawave:
+      jwt:
+        enabled: false
