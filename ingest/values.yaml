@@ -1,0 +1,86 @@
+ingest:
+  hadoopConfigMap: dwv-dwv-hadoop
+  nameOverride: ""
+  fullnameOverride: ""
+  labels: {}
+  image:
+    repository: ghcr.io/nationalsecurityagency/datawave-datawave/ingest-kubernetes
+    tag: 6.1.0-SNAPSHOT  
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - dockerconfigjson-ghcr 
+  deployment:
+    replicaCount: 1
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    datawaveVersion: 5.4.0-SNAPSHOT 
+  config:
+    lockFileDir: /var/run/datawave
+    hadoopHome: /usr/local/hadoop
+    mapredHome: /usr/local/hadoop-mapreduce
+    accumuloUser: root
+    accumuloDir: /opt/accumulo
+    hdfsNamenode: hdfs://hdfs-nn:9000
+    jobTracker: yarn-rm:8032
+    zookeeper: zookeeper:2181
+    instanceName: dev
+    hadoopConfDif: /usr/local/hadoop/conf
+    bulkDataTypes: shardStats
+    liveDataTypes: wikipedia,mycsv,myjson
+    types:
+      - name: myjson
+        properties: 
+          "file.input.format": datawave.ingest.json.mr.input.JsonInputFormat
+          "data.name": myjson
+          "myjson.output.name": tvmaze
+          "myjson.ingest.helper.class": datawave.ingest.json.config.helper.JsonIngestHelper
+          "myjson.reader.class": datawave.ingest.json.mr.input.JsonRecordReader
+          "myjson.handler.classes": "datawave.ingest.json.mr.handler.ContentJsonColumnBasedHandler,datawave.ingest.mapreduce.handler.facet.FacetHandler"
+          "myjson.data.category.uuid.fields": ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB
+          "myjson.data.separator": ","
+          "myjson.data.header": ID,NAME,PREMIERED,RUNTIME,STATUS,SUMMARY,OFFICIALSITE,LANGUAGE,GENRES,WEIGHT,URL,TYPE
+          "myjson.data.process.extra.fields": true
+          "myjson.data.json.flattener.mode": GROUPED_AND_NORMAL
+          "myjson.data.category.marking.default": PRIVATE|(BAR&amp;FOO)
+          "myjson.SUMMARY.data.field.marking": PUBLIC
+          "myjson.data.category.date.formats": yyyy-MM-dd,yyyy-MM-dd'T'HH:mm:ss'Z',yyyy-MM-dd HH:mm:ss
+          "myjson.data.category.index": NAME,ID,ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME,EMBEDDED_CAST_PERSON_ID,GENRES,NETWORK_NAME,OFFICIALSITE,TYPE,STATUS,RUNTIME,URL
+          "myjson.data.category.index.reverse": NAME,NETWORK_NAME,OFFICIALSITE,URL
+          "myjson.data.category.token.fieldname.designator": _TOKEN
+          "myjson.data.category.index.tokenize.whitelist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
+          "myjson.data.category.index.only": SUMMARY_TOKEN,NETWORK_NAME_TOKEN,NAME_TOKEN,EMBEDDED_CAST_CHARACTER_NAME_TOKEN,EMBEDDED_CAST_PERSON_NAME_TOKEN
+          "myjson.data.default.normalization.failure.policy": FAIL
+          "myjson.data.default.type.class": datawave.data.type.LcNoDiacriticsType
+          "myjson.PREMIERED.data.field.type.class": datawave.data.type.DateType
+          "myjson.WEIGHT.data.field.type.class": datawave.data.type.NumberType
+          "myjson.RUNTIME.data.field.type.class": datawave.data.type.NumberType
+          "myjson.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"  
+      - name: mycsv
+        properties: 
+          "file.input.format": datawave.ingest.csv.mr.input.CSVFileInputFormat
+          "data.name": mycsv
+          "mycsv.output.name": csv
+          "mycsv.ingest.helper.class": datawave.ingest.json.config.helper.JsonIngestHelper
+          "mycsv.reader.class": datawave.ingest.json.mr.input.JsonRecordReader
+          "mycsv.handler.classes": "datawave.ingest.json.mr.handler.ContentJsonColumnBasedHandler,datawave.ingest.mapreduce.handler.facet.FacetHandler"
+          "mycsv.data.category.uuid.fields": ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB
+          "mycsv.data.separator": ","
+          "mycsv.data.header": ID,NAME,PREMIERED,RUNTIME,STATUS,SUMMARY,OFFICIALSITE,LANGUAGE,GENRES,WEIGHT,URL,TYPE
+          "mycsv.data.process.extra.fields": true
+          "mycsv.data.json.flattener.mode": GROUPED_AND_NORMAL"
+          "mycsv.data.category.marking.default": PRIVATE|(BAR&amp;FOO)
+          "mycsv.SUMMARY.data.field.marking": PUBLIC
+          "mycsv.data.category.date.formats": yyyy-MM-dd,yyyy-MM-dd'T'HH:mm:ss'Z',yyyy-MM-dd HH:mm:ss
+          "mycsv.data.category.index": NAME,ID,ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME,EMBEDDED_CAST_PERSON_ID,GENRES,NETWORK_NAME,OFFICIALSITE,TYPE,STATUS,RUNTIME,URL
+          "mycsv.data.category.index.reverse": NAME,NETWORK_NAME,OFFICIALSITE,URL
+          "mycsv.data.category.token.fieldname.designator": _TOKEN
+          "mycsv.data.category.index.tokenize.whitelist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
+          "mycsv.data.category.index.only": SUMMARY_TOKEN,NETWORK_NAME_TOKEN,NAME_TOKEN,EMBEDDED_CAST_CHARACTER_NAME_TOKEN,EMBEDDED_CAST_PERSON_NAME_TOKEN
+          "mycsv.data.default.normalization.failure.policy": FAIL
+          "mycsv.data.default.type.class": datawave.data.type.LcNoDiacriticsType
+          "mycsv.PREMIERED.data.field.type.class": datawave.data.type.DateType
+          "mycsv.WEIGHT.data.field.type.class": datawave.data.type.NumberType
+          "mycsv.RUNTIME.data.field.type.class": datawave.data.type.NumberType
+          "mycsv.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"    

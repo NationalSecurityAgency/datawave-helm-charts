@@ -1,0 +1,4 @@
+hazelcast:
+  client:
+    k8s:
+      service-dns-name: {{ .Chart.Name }}-{{ .Values.web.cacheService.meta.name }}.{{ .Release.Namespace }}.svc.cluster.local

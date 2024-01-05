@@ -1,0 +1,8 @@
+{{- if not .Values.web.externalConfigMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Chart.Name }}-{{ .Values.web.configurationMap.meta.name }}"
+data:
+  {{ (tpl (.Files.Glob "configMapFiles/*").AsConfig . ) | nindent 4 }}
+{{- end }}
