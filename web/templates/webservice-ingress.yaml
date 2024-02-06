@@ -12,8 +12,9 @@ kind: Ingress
 metadata:
   name: "{{ .Chart.Name }}-web-ingress"
   annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-
+    {{- with .Values.web.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 
 ####################################
 # Ingress Controller Specification #
@@ -29,12 +30,12 @@ spec:
   #########################################
   # Ingress Controller Rule Configuration #
   #########################################
-  ingressClassName: nginx
+  ingressClassName: "{{ .Values.web.ingress.services.ingressClassName }}"
   rules:
     - host: "{{ .Values.web.ingress.webservice.domain }}"
       http:
         paths:
-          - path: /
+          - path: /DataWave
             pathType: Prefix
             backend:
               service:

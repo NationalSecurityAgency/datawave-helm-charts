@@ -1,11 +1,12 @@
 ingest:
+  accumuloConfigMap: accumulo-config
   hadoopConfigMap: dwv-dwv-hadoop
   nameOverride: ""
   fullnameOverride: ""
   labels: {}
   image:
-    repository: ghcr.io/nationalsecurityagency/datawave-datawave/ingest-kubernetes
-    tag: 6.1.0-SNAPSHOT  
+    repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
+    tag: 6.6.0-SNAPSHOT  
     pullPolicy: IfNotPresent
     pullSecrets:
       - dockerconfigjson-ghcr 
