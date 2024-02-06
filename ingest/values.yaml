@@ -6,7 +6,7 @@ ingest:
   labels: {}
   image:
     repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-    tag: 6.6.0-PASSWORD
+    tag: 6.6.0-SNAPSHOT
     pullPolicy: IfNotPresent
     pullSecrets:
       - dockerconfigjson-ghcr 
