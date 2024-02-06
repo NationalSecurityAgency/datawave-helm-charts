@@ -135,8 +135,14 @@ spec:
       ###########################################
 
       volumes:
-        
+        - name: logs
+          emptyDir:
+            sizeLimit: 5G
         - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
           secret:
+            {{ if not .Values.web.certificates.externalSecret.enabled }}
             secretName: "{{ .Chart.Name }}-{{ .Values.web.certificatesSecret.meta.name }}"
+            {{ else }}
+            secretName: {{ .Values.web.certificates.exernalSecret.name }}
+            {{ end }}
             optional: false

@@ -57,6 +57,8 @@ spec:
           {{- toYaml .Values.ingest.deployment.resources | nindent 10 }}
         command: ["/bin/bash", "/cmds/run.sh"]
         volumeMounts:
+        - name: accumulo-config
+          mountPath: /opt/accumulo/conf
         - name: flag-maker-live
           mountPath: /opt/datawave-ingest/current/config/flag-maker-live.xml
           subPath: flag-maker-live.xml
@@ -111,6 +113,9 @@ spec:
       - name: hadoop-config
         configMap:
           name: {{ .Values.ingest.hadoopConfigMap }}
+      - name: accumulo-config
+        configMap:
+          name: {{ .Values.ingest.accumuloConfigMap }}
       - name: cmds
         secret:
           secretName: {{ include "datawave.fullname" . }}-cmds

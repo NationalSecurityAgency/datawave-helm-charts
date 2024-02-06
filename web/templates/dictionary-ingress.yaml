@@ -29,7 +29,7 @@ spec:
   #########################################
   # Ingress Controller Rule Configuration #
   #########################################
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.web.ingress.services.ingressClassName }}
   rules:
     - host: "{{ .Values.web.ingress.dictionary.domain }}"
       http:
