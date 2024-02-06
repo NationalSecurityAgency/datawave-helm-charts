@@ -241,7 +241,7 @@ web:
     image:
       name: datawave/webservice-kubernetes
       pullPolicy: Always
-      tag: 6.6.0-SNAPSHOT
+      tag: 6.6.0-PASSWORD
     livenessProbe:
       delaySeconds: 60
       periodSeconds: 5
@@ -299,7 +299,9 @@ web:
   ####################################
   
   ingress:
-    enabled: false
+    enabled: true
+    tls:
+      enabled: true
     annotations: []
     domains:
       datawave: "datawave.gov"
@@ -307,6 +309,7 @@ web:
       name: ingress
     services:
       domain: "example-ui.datawave.org"
+      ingressClassName: nginx
     webservice:
       domain: "web.datawave.org"
     dictionary:
