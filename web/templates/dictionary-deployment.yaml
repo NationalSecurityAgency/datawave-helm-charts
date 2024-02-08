@@ -82,7 +82,7 @@ spec:
         - name: "{{ .Chart.Name }}-{{ .Values.web.dictionaryDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active=default,mock,k8s,remoteauth"
+            - "--spring.profiles.active=default,k8s,remoteauth"
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"

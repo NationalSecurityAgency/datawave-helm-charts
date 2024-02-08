@@ -104,6 +104,21 @@ spec:
           ports:
             - containerPort: 8443
           resources: {}
+          env:
+            - name: ACCUMULLO_PASSWORD
+              value: {{ .Values.web.accumulo.password }} 
+            - name: KEYSTORE
+              value: {{ .Values.web.volumes.certificates.destination }}/keystore.p12
+            - name: KEYSTORE_TYPE
+              value: PKCS12
+            - name: KEYSTORE_PASSWORD
+              value: {{ .Values.web.certificates.keystorePassword }} 
+            - name: TRUSTSTORE
+              value: {{ .Values.web.volumes.certificates.destination }}/truststore.jks
+            - name: TRUSTSTORE_TYPE
+              value: JKS
+            - name: TRUSTSTORE_PASSWORD
+              value: {{ .Values.web.certificates.truststorePassword }} 
           volumeMounts:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
               mountPath: "{{ .Values.web.volumes.certificates.destination }}"

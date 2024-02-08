@@ -93,10 +93,6 @@ data:
                 consumer:
                   autoBindDlq: true
   authorization.yml: |-
-    mock:
-      authorization.uri: 'https://localhost:3000'
-      mock.specification: ''
-      normalize.subject: false
     logging:
       level:
         datawave.microservice.authorization: DEBUG

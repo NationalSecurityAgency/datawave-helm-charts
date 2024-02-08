@@ -1,7 +1,3 @@
-mock:
-  authorization.uri: '{{ .Values.web.external.service.auth.url }}'
-  mock.specification: '{{ .Values.web.external.service.auth.specification }}'
-  normalize.subject: false
 logging:
   level:
     datawave.microservice.authorization: DEBUG
