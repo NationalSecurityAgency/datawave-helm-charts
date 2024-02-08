@@ -93,9 +93,9 @@ data:
                 consumer:
                   autoBindDlq: true
   authorization.yml: |-
-    mock:
+    greybox:
       authorization.uri: 'https://localhost:3000'
-      mock.specification: ''
+      casport.specification: ''
       normalize.subject: false
     logging:
       level:
