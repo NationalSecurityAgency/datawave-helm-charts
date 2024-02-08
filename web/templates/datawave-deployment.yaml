@@ -106,19 +106,19 @@ spec:
           resources: {}
           env:
             - name: ACCUMULLO_PASSWORD
-              value: root
+              value: {{ .Values.web.accumulo.password }} 
             - name: KEYSTORE
-              value: /data/certs/keystore.p12
+              value: {{ .Values.web.volumes.certificates.destination }}/keystore.p12
             - name: KEYSTORE_TYPE
               value: PKCS12
             - name: KEYSTORE_PASSWORD
-              value: changeme
+              value: {{ .Values.web.certificates.keystorePassword }} 
             - name: TRUSTSTORE
-              value: /data/certs/keystore.p12
+              value: {{ .Values.web.volumes.certificates.destination }}/truststore.jks
             - name: TRUSTSTORE_TYPE
               value: JKS
             - name: TRUSTSTORE_PASSWORD
-              value: changeme
+              value: {{ .Values.web.certificates.truststorePassword }} 
           volumeMounts:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
               mountPath: "{{ .Values.web.volumes.certificates.destination }}"
