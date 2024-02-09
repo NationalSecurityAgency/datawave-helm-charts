@@ -39,10 +39,11 @@ web:
   #######################################
   
   auditDeployment:
+    profiles: default,k8s
     image:
-      name: datawave-audit-service
+      name: datawave/audit-service
       pullPolicy: IfNotPresent
-      tag: latest
+      tag: 4.0.0-SNAPSHOT
     livenessProbe:
       delaySeconds: 60
       periodSeconds: 5
@@ -74,6 +75,51 @@ web:
     ports:
       http: 8080
       https: 8443
+
+
+  
+  
+  #######################################
+  # Default Values for Metrics Deployment #
+  #######################################
+  
+  metricsDeployment:
+    profiles: default,k8s
+    image:
+      name: datawave/query-metric-service
+      pullPolicy: IfNotPresent
+      tag: 4.0.0-SNAPSHOT
+    livenessProbe:
+      delaySeconds: 60
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: audit/mgmt/health
+    meta:
+      name: query-metrics
+    readinessProbe:
+      delaySeconds: 60
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: audit/mgmt/health
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  ####################################
+  # Default Values for Audit Service #
+  ####################################
+  
+  metricsService:
+    meta:
+      name: query-metrics
+    ports:
+      http: 8080
+      https: 8443
       
   ###############################################
   # Default Values for Authorization Deployment #
@@ -82,7 +128,7 @@ web:
   authorizationDeployment:
     profiles: "default,mock,k8s"
     image:
-      name: datawave-authorization-service
+      name: datawave/authorization-service
       pullPolicy: IfNotPresent
       tag: latest
     livenessProbe:
@@ -168,7 +214,7 @@ web:
   
   cacheDeployment:
     image:
-      name: datawave-hazelcast-service
+      name: datawave/hazelcast-service
       pullPolicy: IfNotPresent
       tag: latest
     livenessProbe:
@@ -212,9 +258,9 @@ web:
   
   configurationDeployment:
     image:
-      name: datawave-config-service
+      name: datawave/config-service
       pullPolicy: IfNotPresent
-      tag: latest
+      tag: 4.0.0-SNAPSHOT
     meta:
       name: configuration
     replication:
@@ -250,10 +296,58 @@ web:
       name: configuration
     ports:
       default: 8888
+
+  ############################################
+  # Default Values for executor Deployment #
+  ############################################
+  
+  executorDeployment:
+    image:
+      name: datawave/query-executor-service
+      pullPolicy: IfNotPresent
+      tag: 1.0.0-SNAPSHOT
+    livenessProbe:
+      delaySeconds: 20
+      periodSeconds: 5
+      failureThreshold: 60
+      port: 8080
+      scheme: HTTP
+      uri: executor/mgmt/health
+    meta:
+      name: executor
+    readinessProbe:
+      delaySeconds: 24
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: executor/mgmt/health
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  ############################################
+  # Default Values for executor Service #
+  ############################################
+  
+  executorService:
+    meta:
+      name: executor
+    ports:
+      http: 8080
+      https: 8443
+      executor: 5006
+
+
+  ############################################
+  # Default Values for dictionary Deployment #
+  ############################################
   
   dictionaryDeployment:
     image:
-      name: datawave-dictionary-service
+      name: datawave/dictionary-service
       pullPolicy: IfNotPresent
       tag: latest
     livenessProbe:
@@ -290,30 +384,134 @@ web:
     ports:
       http: 8080
       https: 8443
+
+  ############################################
+  # Default Values for accumulo Deployment #
+  ############################################
+  
+  accumuloDeployment:
+    image:
+      name: datawave/accumulo-service
+      pullPolicy: IfNotPresent
+      tag: 4.0.0-SNAPSHOT
+    livenessProbe:
+      delaySeconds: 20
+      periodSeconds: 5
+      failureThreshold: 60
+      port: 8080
+      scheme: HTTP
+      uri: accumulo/mgmt/health
+    meta:
+      name: accumulo
+    readinessProbe:
+      delaySeconds: 24
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: accumulo/mgmt/health
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  ############################################
+  # Default Values for accumulo Service #
+  ############################################
+  
+  accumuloService:
+    meta:
+      name: accumulo
+    ports:
+      http: 8080
+      https: 8443
+
+
+
+  ############################################
+  # Default Values for Kafka Deployment #
+  ############################################
+  
+  kafkaDeployment:
+    image:
+      name: bitnami/kafka
+      pullPolicy: IfNotPresent
+      tag: 3.2.3
+    meta:
+      name: kafka
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  ############################################
+  # Default Values for Kafka Service #
+  ############################################
+  
+  kafkaService:
+    meta:
+      name: kafka
+    ports:
+      client: 9092
+      controller: 9093
+      external: 9094
+
+  ############################################
+  # Default Values for Kafdrop Deployment #
+  ############################################
+  
+  kafdropDeployment:
+    image:
+      name: obsidiandynamics/kafdrop
+      pullPolicy: IfNotPresent
+      tag: latest
+    meta:
+      name: kafdrop
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  ############################################
+  # Default Values for KafDrop Service #
+  ############################################
+  
+  kafdropService:
+    meta:
+      name: kafdrop
+    ports:
+      kafdrop: 9000
   
   ##########################################
   # Default Values for DataWave Deployment #
   ##########################################
   
-  datawaveDeployment:
+  queryDeployment:
+    profiles: default,k8s,remoteauth,query,mrquery
     image:
-      name: datawave/webservice-kubernetes
-      pullPolicy: Always
-      tag: 6.13.0-SNAPSHOT
+      name: datawave/query-service
+      pullPolicy: IfNotPresent
+      tag: 1.0.0-SNAPSHOT
     livenessProbe:
-      delaySeconds: 60
+      delaySeconds: 20
       periodSeconds: 5
+      failureThreshold: 60
       port: 8080
       scheme: HTTP
-      uri: DataWave/Common/Health/health
+      uri: query/mgmt/health
     readinessProbe:
-      delaySeconds: 60
+      delaySeconds: 24
       periodSeconds: 5
       port: 8080
       scheme: HTTP
-      uri: DataWave/Common/Health/health
+      uri: query/mgmt/health
     meta:
-      name: datawave
+      name: query
     replication:
       maxSurge: 2
       maxUnavailable: 1
@@ -328,9 +526,142 @@ web:
   # Default Values for DataWave Service #
   #######################################
   
-  datawaveService:
+  queryService:
     meta:
-      name: web-datawave
+      name: query
+    ports:
+      https: 8443
+      http: 8080
+
+
+
+  ##########################################
+  # Default Values for DataWave Deployment #
+  ##########################################
+  
+  mrQueryDeployment:
+    profiles: default,k8s,remoteauth,query,mrquery
+    image:
+      name: datawave/mapreduce-query-service
+      pullPolicy: IfNotPresent
+      tag: 1.0.0-SNAPSHOT
+    livenessProbe:
+      delaySeconds: 20
+      periodSeconds: 5
+      failureThreshold: 60
+      port: 8080
+      scheme: HTTP
+      uri: query/mgmt/health
+    readinessProbe:
+      delaySeconds: 24
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: query/mgmt/health
+    meta:
+      name: mr-query
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  #######################################
+  # Default Values for DataWave Service #
+  #######################################
+  
+  mrQueryService:
+    meta:
+      name: mr-query-service
+    ports:
+      https: 8443
+      http: 8080
+
+
+
+  ###############################################
+  # Default Values for Query Storage Deployment #
+  ###############################################
+  
+  queryStorageDeployment:
+    image:
+      name: datawave/query-storage-service
+      pullPolicy: IfNotPresent
+      tag: 1.0.0-SNAPSHOT
+    livenessProbe:
+      delaySeconds: 20
+      periodSeconds: 5
+      failureThreshold: 60
+      port: 8080
+      scheme: HTTP
+      uri: query-storage/mgmt/health
+    readinessProbe:
+      delaySeconds: 24
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: query-storage/mgmt/health
+    meta:
+      name: query-storage
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  #######################################
+  # Default Values for DataWave Service #
+  #######################################
+  
+  queryStorageService:
+    meta:
+      name: query-storage
+    ports:
+      https: 8443
+      http: 8080
+
+
+
+  ###############################################
+  # Default Values for Query Storage Deployment #
+  ###############################################
+  
+  modificationDeployment:
+    image:
+      name: datawave/modification-service
+      pullPolicy: IfNotPresent
+      tag: 1.0.0-SNAPSHOT
+    livenessProbe:
+      delaySeconds: 20
+      periodSeconds: 5
+      failureThreshold: 60
+      port: 8080
+      scheme: HTTP
+      uri: modification/mgmt/health
+    readinessProbe:
+      delaySeconds: 24
+      periodSeconds: 5
+      port: 8080
+      scheme: HTTP
+      uri: modification/mgmt/health
+    meta:
+      name: modification
+    replication:
+      maxSurge: 2
+      maxUnavailable: 1
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+  
+  #######################################
+  # Default Values for DataWave Service #
+  #######################################
+  
+  modificationService:
+    meta:
+      name: modification
     ports:
       https: 8443
       http: 8080
@@ -340,7 +671,7 @@ web:
   # Default Values for Docker Registry #
   ######################################
   dockerRegistry:
-    url: ghcr.io/nationalsecurityagency
+    url: ""
   
   ##################################
   # External Service Configuration #
@@ -388,11 +719,13 @@ web:
       name: busybox
       tag: 1.28
   
+  tolerations: []
+  
   ###########################################
   # Default Values for Messaging Deployment #
   ###########################################
-  tolerations: []
-  messagingDeployment:
+  
+  rabbitmqDeployment:
     image:
       name: rabbitmq
       pullPolicy: IfNotPresent
@@ -423,7 +756,7 @@ web:
   # Default Values for RabbitMQ Map #
   ###################################
   
-  messagingMap:
+  rabbitmqMap:
     meta:
       name: messaging-map
   
@@ -431,13 +764,50 @@ web:
   # Default Values for Messaging Service #
   ########################################
   
-  messagingService:
+  rabbitmqService:
     meta:
       name: messaging
     ports:
       amqp: 5672
       mgmt: 15672
+
+  mysqlDeployment:
+    image:
+      name: mysql
+      pullPolicy: IfNotPresent
+      tag: 8.0.32
+    meta:
+      name: mysql
+    replication:
+      maxSurge: 1
+      maxUnavailable: 0
+      replicaCount: 1
+      revisionHistoryLimit: 10
+    restartPolicy: Always
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 120
+      timeoutSeconds: 20
+      periodSeconds: 30
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      timeoutSeconds: 20
+      periodSeconds: 30
+      failureThreshold: 3
+      successThreshold: 1
   
+  ########################################
+  # Default Values for MySql Service #
+  ########################################
+  
+  mysqlService:
+    meta:
+      name: mysql
+    ports:
+      mysql: 3306
   #############################################################
   # Default Values for Role-Based Access Configuration (RBAC) #
   #############################################################
@@ -462,7 +832,7 @@ web:
         until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; 
         do echo 'Waiting for Configuration...'; sleep 2; done
       messaging: |
-        until nslookup {{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}; 
+        until nslookup {{ .Chart.Name }}-{{ .Values.web.rabbitmqService.meta.name }}; 
         do echo 'Waiting for Messaging...'; sleep 2; done
   
   ##############################

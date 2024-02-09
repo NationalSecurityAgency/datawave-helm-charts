@@ -93,8 +93,8 @@ spec:
             - name: KEYSTORE_PASSWORD
               value: "{{ .Values.web.secrets.keystore.password }}"
             - name: MESSAGING_SERVER_HOSTNAME
-              value: "{{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.configurationDeployment.image.name }}:{{ .Values.web.configurationDeployment.image.tag }}"
+              value: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqService.meta.name }}"
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.configurationDeployment.image.name }}:{{ .Values.web.configurationDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.web.configurationDeployment.image.pullPolicy }}"
           ports:
             - containerPort: 8888
@@ -115,7 +115,7 @@ spec:
 
         - name: "{{ .Chart.Name }}-init-messaging"
           image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.rabbitmqService.meta.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
 
       ###########################################
       # Volumes Associated with this Deployment #

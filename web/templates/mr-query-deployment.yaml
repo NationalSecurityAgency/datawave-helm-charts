@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.dictionaryDeployment.meta.name }}"
+  name: "{{ .Chart.Name }}-{{ .Values.web.mrQueryDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.dictionaryDeployment.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.mrQueryDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.dictionaryDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.dictionaryDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.web.mrQueryDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.mrQueryDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.dictionaryDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.dictionaryDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.web.mrQueryDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.mrQueryDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.dictionaryDeployment.meta.name }}"
+      application: "{{ .Chart.Name }}-{{ .Values.web.mrQueryDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.dictionaryDeployment.meta.name }}"
+        application: "{{ .Chart.Name }}-{{ .Values.web.mrQueryDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -71,7 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.web.dictionaryDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.web.mrQueryDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -79,32 +79,34 @@ spec:
 
       containers:
 
-        - name: "{{ .Chart.Name }}-{{ .Values.web.dictionaryDeployment.meta.name }}"
+        - name: "{{ .Chart.Name }}-{{ .Values.web.mrQueryDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active=default,k8s,remoteauth"
+            - "--spring.profiles.active={{ .Values.web.mrQueryDeployment.profiles }}"
           env:
-            - name: CONFIG_SERVER_URL
-              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
             - name: ZOOKEEPER_HOST
               value: "{{ .Values.web.zookeeper.quorum }}"
-          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.dictionaryDeployment.image.name }}:{{ .Values.web.dictionaryDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.dictionaryDeployment.image.pullPolicy }}"
+            - name: HADOOP_HOST
+              value: hdfs-nn
+            - name: HADOOP_CONF_DIR
+              value: /etc/hadoop/conf
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.mrQueryDeployment.image.name }}:{{ .Values.web.mrQueryDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.mrQueryDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.dictionaryDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.dictionaryDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.dictionaryDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.dictionaryDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.dictionaryDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.web.mrQueryDeployment.livenessProbe.uri }}"
+              port: {{ .Values.web.mrQueryDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.web.mrQueryDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.mrQueryDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.mrQueryDeployment.livenessProbe.periodSeconds }}
             failureThreshold: {{ .Values.web.auditDeployment.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.dictionaryDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.dictionaryDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.dictionaryDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.dictionaryDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.dictionaryDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.web.mrQueryDeployment.readinessProbe.uri }}"
+              port: {{ .Values.web.mrQueryDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.web.mrQueryDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.mrQueryDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.mrQueryDeployment.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443
@@ -113,6 +115,8 @@ spec:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
               mountPath: "{{ .Values.web.volumes.certificates.destination }}"
               readOnly: true
+            - name: hadoop-config
+              mountPath: /etc/hadoop/conf
 
       #############################################################
       # Initialization Containers Associated with this Deployment #
@@ -128,8 +132,19 @@ spec:
         - name: "{{ .Chart.Name }}-init-accumulo"
           image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
           command: [ "sh", "-c", "until nslookup accumulo-master; do echo 'Waiting for Accumulo...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-metrics"
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.metricsService.meta.name }}; do echo 'Waiting for Metrics...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-authorization"
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.authorizationService.meta.name }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-kafka"
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}; do echo 'Waiting for Kafka...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-executor"
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.executorService.meta.name }}; do echo 'Waiting for Executor Service...'; sleep 2; done" ]
 
-      
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################
@@ -144,3 +159,6 @@ spec:
             secretName: {{ .Values.web.certificates.exernalSecret.name }}
             {{ end }}
             optional: false
+        - name: hadoop-config
+          configMap:
+            name: "{{ .Values.web.volumes.hadoop.configMapName }}"

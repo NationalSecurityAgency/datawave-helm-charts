@@ -39,7 +39,7 @@ spring:
     discovery:
       enabled: false
       failFast: true
-    host: '{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}'
+    host: '{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}'
   security:
     datawave:
       enforce-allowed-callers: false

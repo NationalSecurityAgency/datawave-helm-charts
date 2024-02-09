@@ -92,7 +92,7 @@ spec:
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.cacheDeployment.image.name }}:{{ .Values.web.cacheDeployment.image.tag }}"
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.cacheDeployment.image.name }}:{{ .Values.web.cacheDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.web.cacheDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:

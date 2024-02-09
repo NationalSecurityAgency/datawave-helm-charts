@@ -86,7 +86,7 @@ spec:
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.authorizationDeployment.image.name }}:{{ .Values.web.authorizationDeployment.image.tag }}"
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.authorizationDeployment.image.name }}:{{ .Values.web.authorizationDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.web.authorizationDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
@@ -128,7 +128,7 @@ spec:
           command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-messaging"
           image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup  {{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}; do echo 'Waiting for Messaging...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup  {{ .Chart.Name }}-{{ .Values.web.rabbitmqService.meta.name }}; do echo 'Waiting for Messaging...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #

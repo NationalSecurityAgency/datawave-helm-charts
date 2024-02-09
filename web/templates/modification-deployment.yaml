@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+  name: "{{ .Chart.Name }}-{{ .Values.web.modificationDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.modificationDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.auditDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.auditDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.web.modificationDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.modificationDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.auditDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.auditDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.web.modificationDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.modificationDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+      application: "{{ .Chart.Name }}-{{ .Values.web.modificationDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+        application: "{{ .Chart.Name }}-{{ .Values.web.modificationDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -69,7 +69,7 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      restartPolicy: "{{ .Values.web.auditDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.web.modificationDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -77,31 +77,31 @@ spec:
       securityContext:
         runAsUser: 1000
       containers:
-        - name: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+        - name: "{{ .Chart.Name }}-{{ .Values.web.modificationDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active={{ .Values.web.auditDeployment.profiles }}"
+            - "--spring.profiles.active={{ .Values.web.modificationDeployment.profiles }}"
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
             - name: ZOOKEEPER_HOST
               value: "{{ .Values.web.zookeeper.quorum }}"
-          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.auditDeployment.image.name }}:{{ .Values.web.auditDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.auditDeployment.image.pullPolicy }}"
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.modificationDeployment.image.name }}:{{ .Values.web.modificationDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.modificationDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.auditDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.auditDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.auditDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.auditDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.auditDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.web.modificationDeployment.livenessProbe.uri }}"
+              port: {{ .Values.web.modificationDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.web.modificationDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.modificationDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.modificationDeployment.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.auditDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.auditDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.auditDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.auditDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.auditDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.web.modificationDeployment.readinessProbe.uri }}"
+              port: {{ .Values.web.modificationDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.web.modificationDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.modificationDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.modificationDeployment.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443

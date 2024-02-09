@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.datawaveDeployment.meta.name }}"
+  name: "{{ .Chart.Name }}-{{ .Values.web.accumuloDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.datawaveDeployment.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.accumuloDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.datawaveDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.datawaveDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.web.accumuloDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.accumuloDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.datawaveDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.datawaveDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.web.accumuloDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.accumuloDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.datawaveDeployment.meta.name }}"
+      application: "{{ .Chart.Name }}-{{ .Values.web.accumuloDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.datawaveDeployment.meta.name }}"
+        application: "{{ .Chart.Name }}-{{ .Values.web.accumuloDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -69,39 +69,41 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      restartPolicy: "{{ .Values.web.datawaveDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.web.accumuloDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
       ##############################################
       securityContext:
-        runAsUser: 999
-      initContainers:
-        - name: init-authorization
-          securityContext:
-            runAsUser: 1000
-          image: busybox:1.28
-          command: ['sh', '-c', "until nslookup dwv-web-authorization; do echo waiting for auth service; sleep 2; done"]
+        runAsUser: 1000
       containers:
-
-        - name: "{{ .Chart.Name }}-{{ .Values.web.datawaveDeployment.meta.name }}"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.datawaveDeployment.image.name }}:{{ .Values.web.datawaveDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.datawaveDeployment.image.pullPolicy }}"
+        - name: "{{ .Chart.Name }}-{{ .Values.web.accumuloDeployment.meta.name }}"
+          args:
+            - "--spring.output.ansi.enabled=ALWAYS"
+            - "--spring.profiles.active={{ .Values.web.accumuloDeployment.profiles }}"
+          env:
+            - name: CONFIG_SERVER_URL
+              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
+            - name: ZOOKEEPER_HOST
+              value: "{{ .Values.web.zookeeper.quorum }}"
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.accumuloDeployment.image.name }}:{{ .Values.web.accumuloDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.accumuloDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.datawaveDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.datawaveDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.datawaveDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.datawaveDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.datawaveDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.web.accumuloDeployment.livenessProbe.uri }}"
+              port: {{ .Values.web.accumuloDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.web.accumuloDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.accumuloDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.accumuloDeployment.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.datawaveDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.datawaveDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.datawaveDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.datawaveDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.datawaveDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.web.accumuloDeployment.readinessProbe.uri }}"
+              port: {{ .Values.web.accumuloDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.web.accumuloDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.accumuloDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.accumuloDeployment.readinessProbe.periodSeconds }}
           ports:
+            - containerPort: 8080
             - containerPort: 8443
           resources: {}
           env:
@@ -131,6 +133,21 @@ spec:
               mountPath: /opt/jboss/wildfly/runtime-config.cli
               subPath: runtime-config.cli
 
+
+      #############################################################
+      # Initialization Containers Associated with this Deployment #
+      #############################################################
+
+      initContainers:
+
+        - name: "{{ .Chart.Name }}-init-authorization"
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.authorizationService.meta.name }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+      
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################

@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+  name: "{{ .Chart.Name }}-{{ .Values.web.metricsDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.metricsDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.auditDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.auditDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.web.metricsDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.metricsDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.auditDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.auditDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.web.metricsDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.metricsDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+      application: "{{ .Chart.Name }}-{{ .Values.web.metricsDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+        application: "{{ .Chart.Name }}-{{ .Values.web.metricsDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -69,7 +69,7 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      restartPolicy: "{{ .Values.web.auditDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.web.metricsDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -77,34 +77,35 @@ spec:
       securityContext:
         runAsUser: 1000
       containers:
-        - name: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+        - name: "{{ .Chart.Name }}-{{ .Values.web.metricsDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active={{ .Values.web.auditDeployment.profiles }}"
+            - "--spring.profiles.active={{ .Values.web.metricsDeployment.profiles }}"
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
             - name: ZOOKEEPER_HOST
               value: "{{ .Values.web.zookeeper.quorum }}"
-          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.auditDeployment.image.name }}:{{ .Values.web.auditDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.auditDeployment.image.pullPolicy }}"
+          image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.metricsDeployment.image.name }}:{{ .Values.web.metricsDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.metricsDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.auditDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.auditDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.auditDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.auditDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.auditDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.web.metricsDeployment.livenessProbe.uri }}"
+              port: {{ .Values.web.metricsDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.web.metricsDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.metricsDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.metricsDeployment.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.auditDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.auditDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.auditDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.auditDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.auditDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.web.metricsDeployment.readinessProbe.uri }}"
+              port: {{ .Values.web.metricsDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.web.metricsDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.web.metricsDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.web.metricsDeployment.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443
+            - containerPort: 5007
           resources: {}
           volumeMounts:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
