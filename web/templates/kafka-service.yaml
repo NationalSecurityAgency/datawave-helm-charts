@@ -10,9 +10,9 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.datawaveService.meta.name }}-http"
+  name: "{{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.datawaveService.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +25,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Chart.Name }}-{{ .Values.web.datawaveDeployment.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -33,6 +33,14 @@ spec:
 
   ports:
 
-    - name: http
-      port: {{ .Values.web.datawaveService.ports.http }}
-      targetPort: 8080
+    - name: kafka-controller
+      port: {{ .Values.web.kafkaService.ports.controller }}
+      targetPort: 9093
+    
+    - name: kafka-client
+      port: {{ .Values.web.kafkaService.ports.client }}
+      targetPort: 9092
+    
+    - name: kafka-external
+      port: {{ .Values.web.kafkaService.ports.external }}
+      targetPort: 9094

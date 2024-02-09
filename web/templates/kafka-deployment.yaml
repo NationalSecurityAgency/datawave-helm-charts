@@ -1,0 +1,108 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
+  labels:
+    application: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
+
+#####################################
+# Complete Deployment Specification #
+#####################################
+
+spec:
+
+  ######################################
+  # Replication / Update Configuration #
+  ######################################
+
+  replicas: {{ .Values.web.kafkaDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.kafkaDeployment.replication.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.web.kafkaDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.kafkaDeployment.replication.maxUnavailable }}
+
+  ###################################
+  # Resource Selector Configuration #
+  ###################################
+
+  selector:
+    matchLabels:
+      application: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
+  
+  #####################################
+  # Deployment Template Configuration #
+  #####################################
+
+  template:
+
+    ##################################################
+    # Basic Metadata for this Deployment's Resources #
+    ##################################################
+
+    metadata:
+      labels:
+        application: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
+
+    #######################################
+    # Deployment Resources Specifications #
+    #######################################
+
+    spec:
+      {{- with .Values.web.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+      restartPolicy: "{{ .Values.web.kafkaDeployment.restartPolicy }}"
+      ##############################################
+      # Containers Associated with this Deployment #
+      ##############################################
+
+      containers:
+
+        - name: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
+          image: "{{ .Values.web.kafkaDeployment.image.name }}:{{ .Values.web.kafkaDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.kafkaDeployment.image.pullPolicy }}"
+          resources: {}
+          env:
+            - name: KAFKA_CFG_NODE_ID
+              value: "1"
+            - name: KAFKA_CFG_PROCESS_ROLES
+              value: controller,broker
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: "yes"
+            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+              value: CLIENT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+            - name: KAFKA_CFG_LISTENERS
+              value: CLIENT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: CLIENT://kafka:9092,EXTERNAL://${DW_HOSTNAME}:9094
+            - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
+              value: 1@kafka:9093
+            - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
+              value: CONTROLLER
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: CLIENT
+            - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+              value: "false"
+            - name: KAFKA_CFG_DELETE_TOPICS_ENABLE
+              value: "true"
+

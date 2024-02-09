@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}"
+  name: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}"
+    application: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.messagingDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.messagingDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.web.rabbitmqDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.rabbitmqDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.messagingDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.messagingDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.web.rabbitmqDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.rabbitmqDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}"
+      application: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}"
+        application: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -71,16 +71,16 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.web.messagingDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.web.rabbitmqDeployment.restartPolicy }}"
       ##############################################
       # Containers Associated with this Deployment #
       ##############################################
 
       containers:
 
-        - name: "{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}"
-          image: "{{ .Values.web.messagingDeployment.image.name }}:{{ .Values.web.messagingDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.messagingDeployment.image.pullPolicy }}"
+        - name: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}"
+          image: "{{ .Values.web.rabbitmqDeployment.image.name }}:{{ .Values.web.rabbitmqDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.rabbitmqDeployment.image.pullPolicy }}"
           ports:
             - containerPort: 5672
             - containerPort: 15672
@@ -89,33 +89,33 @@ spec:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.rabbitmq.name }}"
               mountPath: "{{ .Values.web.volumes.rabbitmq.destination }}"
               readOnly: true
-          {{- if .Values.web.messagingDeployment.livenessProbe.enabled }}
+          {{- if .Values.web.rabbitmqDeployment.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
                 - /bin/bash
                 - -ec
                 - rabbitmq-diagnostics -q check_running
-            initialDelaySeconds: {{ .Values.web.messagingDeployment.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.web.messagingDeployment.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.web.messagingDeployment.livenessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.web.messagingDeployment.livenessProbe.successThreshold }}
-            failureThreshold: {{ .Values.web.messagingDeployment.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.web.rabbitmqDeployment.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.rabbitmqDeployment.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.rabbitmqDeployment.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.rabbitmqDeployment.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.rabbitmqDeployment.livenessProbe.failureThreshold }}
           {{- else if .Values.web.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.web.customLivenessProbe "context" $) | nindent 12 }}
           {{- end }}
-          {{- if .Values.web.messagingDeployment.readinessProbe.enabled }}
+          {{- if .Values.web.rabbitmqDeployment.readinessProbe.enabled }}
           readinessProbe:
             exec:
               command:
                 - /bin/bash
                 - -ec
                 - rabbitmq-diagnostics -q check_running
-            initialDelaySeconds: {{ .Values.web.messagingDeployment.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.web.messagingDeployment.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.web.messagingDeployment.readinessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.web.messagingDeployment.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.web.messagingDeployment.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.web.rabbitmqDeployment.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.rabbitmqDeployment.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.rabbitmqDeployment.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.rabbitmqDeployment.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.rabbitmqDeployment.readinessProbe.failureThreshold }}
           {{- else if .Values.web.customReadinessProbe }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.web.customReadinessProbe "context" $) | nindent 12 }}
           {{- end }}
@@ -128,4 +128,4 @@ spec:
         
         - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.rabbitmq.name }}"
           configMap:
-            name: "{{ .Chart.Name }}-{{ .Values.web.messagingMap.meta.name }}"
+            name: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqMap.meta.name }}"
