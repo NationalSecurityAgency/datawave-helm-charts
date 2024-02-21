@@ -132,13 +132,17 @@ spec:
             - name: "{{ .Chart.Name }}-web-runtime-config"
               mountPath: /opt/jboss/wildfly/runtime-config.cli
               subPath: runtime-config.cli
-
+            - name: logs
+              mountPath: /logs
 
       #############################################################
       # Initialization Containers Associated with this Deployment #
       #############################################################
 
       initContainers:
+        - name: init-accumulo
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
 
         - name: "{{ .Chart.Name }}-init-authorization"
           image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
@@ -147,12 +151,16 @@ spec:
         - name: "{{ .Chart.Name }}-init-configuration"
           image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
           command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          
       
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################
 
       volumes:
+        - name: logs
+          emptyDir:
+            sizeLimit: 10G
         - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
           secret:
             {{ if not .Values.web.certificates.externalSecret.enabled }}

@@ -125,7 +125,6 @@ spec:
       ###########################################
 
       volumes:
-        
         - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.rabbitmq.name }}"
           configMap:
             name: "{{ .Chart.Name }}-{{ .Values.web.rabbitmqMap.meta.name }}"

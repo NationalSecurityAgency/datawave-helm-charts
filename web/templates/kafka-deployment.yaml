@@ -77,7 +77,6 @@ spec:
       ##############################################
 
       containers:
-
         - name: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
           image: "{{ .Values.web.kafkaDeployment.image.name }}:{{ .Values.web.kafkaDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.web.kafkaDeployment.image.pullPolicy }}"
@@ -105,4 +104,3 @@ spec:
               value: "false"
             - name: KAFKA_CFG_DELETE_TOPICS_ENABLE
               value: "true"
-
