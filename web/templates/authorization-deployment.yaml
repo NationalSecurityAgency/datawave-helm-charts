@@ -108,6 +108,8 @@ spec:
             - containerPort: 8443
           resources: {}
           volumeMounts:
+            - name: logs
+              mountPath: /logs
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
               mountPath: "{{ .Values.web.volumes.certificates.destination }}"
               readOnly: true
@@ -137,7 +139,7 @@ spec:
       volumes:
         - name: logs
           emptyDir:
-            sizeLimit: 5G
+            sizeLimit: 10G
         - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
           secret:
             {{ if not .Values.web.certificates.externalSecret.enabled }}

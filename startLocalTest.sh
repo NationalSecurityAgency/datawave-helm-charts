@@ -2,31 +2,35 @@
 VALUES_FILE=${1:-values-testing.yaml}
 
 # Cache images and reset minikube. Then Setup minikube ingress.
-docker pull rabbitmq:3.11.4-alpine && \
-docker pull busybox:1.28 && \
-minikube delete --all --purge && \
-minikube start --cpus 8 --memory 30960 --disk-size 20480 && \
-minikube image load rabbitmq:3.11.4-alpine  && \
-minikube image load busybox:1.28 && \
-minikube image load datawave/accumulo-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/audit-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/dictionary-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/config-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/authorization-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/hazelcast-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/modification-service:1.0.0-SNAPSHOT && \
-minikube image load datawave/query-executor-service:1.0.0-SNAPSHOT && \
-minikube image load datawave/query-metric-service:4.0.0-SNAPSHOT && \
-minikube image load datawave/query-service:1.0.0-SNAPSHOT && \
-minikube image load datawave/mapreduce-query-service:1.0.0-SNAPSHOT && \
-minikube image load datawave/query-storage-service:1.0.0-SNAPSHOT && \
-minikube image load ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes:6.6.0-SNAPSHOT && \
-minikube addons enable ingress && \
-minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
-minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
-echo "$(minikube ip) example-ui.datawave.org" | sudo tee -a /etc/hosts  && \
-echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts && \
-echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts && \
+docker pull rabbitmq:3.11.4-alpine 
+docker pull busybox:1.28 
+minikube delete --all --purge
+minikube start --cpus 8 --memory 30960 --disk-size 20480
+minikube image load rabbitmq:3.11.4-alpine  &
+minikube image load busybox:1.28  &
+minikube image load datawave/accumulo-service:4.0.0-SNAPSHOT &
+minikube image load datawave/audit-service:4.0.0-SNAPSHOT &
+minikube image load datawave/dictionary-service:4.0.0-SNAPSHOT &
+minikube image load datawave/config-service:4.0.0-SNAPSHOT &
+minikube image load datawave/authorization-service:4.0.0-SNAPSHOT &
+minikube image load datawave/hazelcast-service:4.0.0-SNAPSHOT &
+minikube image load datawave/modification-service:1.0.0-SNAPSHOT &
+minikube image load datawave/query-executor-service:1.0.0-SNAPSHOT &
+minikube image load datawave/query-metric-service:4.0.0-SNAPSHOT &
+minikube image load datawave/query-service:1.0.0-SNAPSHOT &
+minikube image load datawave/mapreduce-query-service:1.0.0-SNAPSHOT &
+minikube image load obsidiandynamics/kafdrop:latest &
+minikube image load bitnami/kafka:3.2.3 &
+minikube image load mysql:8.0.32 &
+minikube image load datawave/query-storage-service:1.0.0-SNAPSHOT &
+minikube image load ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes:6.6.0-SNAPSHOT &
+minikube addons enable ingress
+minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]'
+
+# echo "$(minikube ip) example-ui.datawave.org" | sudo tee -a /etc/hosts 
+# echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts
+# echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts
 
 
 #Apply GHCR credendials

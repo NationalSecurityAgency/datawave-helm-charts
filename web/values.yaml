@@ -25,7 +25,7 @@ web:
   #######################################
   
   auditDeployment:
-    profiles: default,k8s
+    profiles: default,k8s,remoteauth
     image:
       name: datawave/audit-service
       pullPolicy: IfNotPresent
@@ -70,7 +70,7 @@ web:
   #######################################
   
   metricsDeployment:
-    profiles: default,k8s
+    profiles: default,k8s,remoteauth
     image:
       name: datawave/query-metric-service
       pullPolicy: IfNotPresent
@@ -157,6 +157,7 @@ web:
   #######################################
   
   cacheDeployment:
+    profiles: default,k8s,remoteauth
     image:
       name: datawave/hazelcast-service
       pullPolicy: IfNotPresent
@@ -246,6 +247,7 @@ web:
   ############################################
   
   executorDeployment:
+    profiles: default,k8s,remoteauth,querymessaging,metricssource,query,pool1
     image:
       name: datawave/query-executor-service
       pullPolicy: IfNotPresent
@@ -290,6 +292,7 @@ web:
   ############################################
   
   dictionaryDeployment:
+    profiles: defualt,k8s,remoteauth
     image:
       name: datawave/dictionary-service
       pullPolicy: IfNotPresent
@@ -334,6 +337,7 @@ web:
   ############################################
   
   accumuloDeployment:
+    profiles: default,k8s,remoteauth
     image:
       name: datawave/accumulo-service
       pullPolicy: IfNotPresent
@@ -436,7 +440,7 @@ web:
   ##########################################
   
   queryDeployment:
-    profiles: default,k8s,remoteauth,query,mrquery
+    profiles: default,k8s,remoteauth,querymessaging,metricssource,query,mrquery,cachedresults
     image:
       name: datawave/query-service
       pullPolicy: IfNotPresent
@@ -526,6 +530,7 @@ web:
   ###############################################
   
   queryStorageDeployment:
+    profiles: default,k8s,remoteauth,querymessaging,query
     image:
       name: datawave/query-storage-service
       pullPolicy: IfNotPresent
@@ -570,6 +575,7 @@ web:
   ###############################################
   
   modificationDeployment:
+    profiles: default,k8s,remoteauth,query
     image:
       name: datawave/modification-service
       pullPolicy: IfNotPresent

@@ -1,0 +1,23 @@
+warehouse-cluster:
+  accumulo:
+    zookeepers: '{{ .Values.web.zookeeper.quorom }}'
+    instanceName: '{{ .Values.web.accumulo.instanceName }}'
+    username: '{{ .Values.web.accumulo.user }}'
+    password: '{{ .Values.web.accumulo.password }}'
+
+accumulo:
+  lookup:
+    audit:
+      defaultAuditType: 'ACTIVE'
+  stats:
+    enabled: true
+
+audit-client:
+  discovery:
+    enabled: false
+  uri: '${AUDIT_SERVER_URL:http://localhost:11111/audit}'
+
+datawave:
+  swagger:
+    title: "Accumulo Service"
+    description: "REST API provided by the Accumulo Service"
