@@ -1,6 +1,9 @@
 hadoop: 
   # The base hadoop image to use for all components.
   # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+  initImage:
+    repository: docker.io/busybox
+    tag: 1.28
   image:
     repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
     tag: 3.3.6

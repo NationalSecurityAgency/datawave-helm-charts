@@ -4,6 +4,9 @@ ingest:
   nameOverride: ""
   fullnameOverride: ""
   labels: {}
+  initImage:
+    repository: docker.io/busybox
+    tag: 1.28
   image:
     repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
     tag: 6.6.0-SNAPSHOT

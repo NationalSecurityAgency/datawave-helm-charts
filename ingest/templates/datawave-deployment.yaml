@@ -18,7 +18,7 @@ spec:
       hostname: ingestmaster
       initContainers:
       - name: init-hdfs
-        image: busybox:1.28
+        image: {{ .Values.ingest.initImage.repository }}:{{ .Values.ingest.initImage.tag }}
         securityContext:
           runAsUser: 1000
         command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs; sleep 2; done"]
@@ -36,7 +36,7 @@ spec:
       - name: init-accumulo
         securityContext:
           runAsUser: 1000
-        image: busybox:1.28
+        image: {{ .Values.ingest.initImage.repository }}:{{ .Values.ingest.initImage.tag }}
         command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
       {{- with .Values.ingest.tolerations }}
       tolerations:

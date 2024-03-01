@@ -50,7 +50,7 @@ spec:
       terminationGracePeriodSeconds: 0
       initContainers:
       - name: init-hdfs
-        image: busybox:1.28
+        image: {{ .Values.hadoop.initImage.repository }}:{{ .Values.hadoop.initImage.tag }}
         command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs-nn; sleep 2; done"]
       {{- with .Values.hadoop.yarn.resourceManager.tolerations }}
       tolerations:

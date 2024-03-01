@@ -52,6 +52,9 @@ accumulo:
   initContainer:
     image: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
     tag: 3.3.6
+  initImage:
+    repository: docker.io/busybox
+    tag: 1.28
   image:
     repository: ghcr.io/nationalsecurityagency/datawave-stack-accumulo
     tag: 2.1.3

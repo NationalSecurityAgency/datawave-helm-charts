@@ -39,7 +39,7 @@ spec:
       - name: init-accumulo
         securityContext:
           runAsUser: 1000
-        image: busybox:1.28
+        image: {{ .Values.accumulo.initImage.repository }}:{{ .Values.accumulo.initImage.tag }}
         command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
       volumes:
       - name: hadoop-config

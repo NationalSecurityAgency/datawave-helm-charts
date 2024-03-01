@@ -50,7 +50,7 @@ spec:
       - name: init-hdfs
         securityContext:
           runAsUser: 1000
-        image: busybox:1.28
+        image: {{ .Values.hadoop.initImage.repository }}:{{ .Values.hadoop.initImage.tag }}
         command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs-nn; sleep 2; done"]
       securityContext:
         runAsUser: 1000

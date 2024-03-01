@@ -31,7 +31,7 @@ spec:
       - name: init-zookeeper
         securityContext:
           runAsUser: 1000
-        image: busybox:1.28
+        image: {{ .Values.hadoop.initImage.repository }}:{{ .Values.hadoop.initImage.tag }}
         command: ['sh', '-c', "until nslookup zookeeper; do echo waiting for zookeeper; sleep 2; done"]
       affinity:
         podAntiAffinity:

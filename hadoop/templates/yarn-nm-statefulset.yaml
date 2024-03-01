@@ -53,7 +53,7 @@ spec:
       terminationGracePeriodSeconds: 0
       initContainers:
       - name: init-yarn-rm
-        image: busybox:1.28
+        image: {{ .Values.hadoop.initImage.repository }}:{{ .Values.hadoop.initImage.tag }}
         securityContext:
           runAsUser: 1000
         command: ['sh', '-c', "until nslookup yarn-rm; do echo waiting for yarn-rm; sleep 2; done"]

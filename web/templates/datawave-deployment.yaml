@@ -80,7 +80,7 @@ spec:
         - name: init-authorization
           securityContext:
             runAsUser: 1000
-          image: busybox:1.28
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
           command: ['sh', '-c', "until nslookup dwv-web-authorization; do echo waiting for auth service; sleep 2; done"]
       containers:
 

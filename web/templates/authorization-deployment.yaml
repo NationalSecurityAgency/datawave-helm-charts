@@ -118,7 +118,7 @@ spec:
 
       initContainers:
         - name: init-accumulo
-          image: busybox:1.28
+          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
           command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
         - name: "{{ .Chart.Name }}-init-cache"
           image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
