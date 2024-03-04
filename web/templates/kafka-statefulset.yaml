@@ -3,7 +3,7 @@
 ####################################
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 
 ######################################
 # Basic Metadata for this Deployment #
@@ -23,15 +23,10 @@ spec:
   ######################################
   # Replication / Update Configuration #
   ######################################
-
+  serviceName: "{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}"
   replicas: {{ .Values.web.kafkaDeployment.replication.replicaCount }}
   revisionHistoryLimit: {{ .Values.web.kafkaDeployment.replication.revisionHistoryLimit }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: {{ .Values.web.kafkaDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.kafkaDeployment.replication.maxUnavailable }}
-
+  
   ###################################
   # Resource Selector Configuration #
   ###################################
@@ -93,7 +88,7 @@ spec:
             - name: KAFKA_CFG_LISTENERS
               value: CLIENT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: CLIENT://kafka:9092,EXTERNAL://${DW_HOSTNAME}:9094
+              value: CLIENT://kafka:9092,EXTERNAL://{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}-0:9094
             - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
               value: 1@kafka:9093
             - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES

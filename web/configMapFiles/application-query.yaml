@@ -1,5 +1,10 @@
 
 warehouse:
+  accumulo:
+    zookeepers: '{{.Values.web.zookeeper.quorom}}'
+    instanceName: '{{.Values.web.accumulo.instanceName}}'
+    username: '{{.Values.web.accumulo.user}}'
+    password: '{{.Values.web.accumulo.password}}'
   statsd:
     host: localhost
     port: 8125
@@ -517,8 +522,3 @@ datawave:
             modelFieldName: "ATTR3"
             direction: "FORWARD"
             indexOnly: false
-  accumulo:
-    zookeepers: '{{.Values.web.zookeeper.quorom}}'
-    instanceName: '{{.Values.web.accumulo.instanceName}}'
-    username: '{{.Values.web.accumulo.user}}'
-    password: '{{.Values.web.accumulo.password}}'

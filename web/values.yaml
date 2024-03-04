@@ -735,7 +735,7 @@ web:
     image:
       name: rabbitmq
       pullPolicy: IfNotPresent
-      tag: 3.11.4-alpine
+      tag: 3.12.4-alpine
     meta:
       name: messaging
     replication:
