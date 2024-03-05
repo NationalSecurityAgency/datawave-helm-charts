@@ -88,9 +88,9 @@ spec:
             - name: KAFKA_CFG_LISTENERS
               value: CLIENT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: CLIENT://kafka:9092,EXTERNAL://{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}-0:9094
+              value: CLIENT://{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}:9092,EXTERNAL://{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}-0:9094
             - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-              value: 1@kafka:9093
+              value: 1@{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}:9093
             - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
               value: CONTROLLER
             - name: KAFKA_INTER_BROKER_LISTENER_NAME

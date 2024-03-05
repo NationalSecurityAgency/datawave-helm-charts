@@ -95,6 +95,9 @@ spec:
               value: /etc/hadoop/conf
             - name: BACKEND
               value: kafka
+            - name: CONFIG_SERVER_URL
+              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
+          
           image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.executorDeployment.image.name }}:{{ .Values.web.executorDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.web.executorDeployment.image.pullPolicy }}"
           livenessProbe:
