@@ -267,9 +267,7 @@ web:
 
 
   datawaveRuntimeConfig:
-      additions: |-
-        /subsystem=ee/managed-executor-service=default:write-attribute(name=max-threads,value=32)
-  
+      additions: ""
   #######################################
   # Default Values for DataWave Service #
   #######################################
