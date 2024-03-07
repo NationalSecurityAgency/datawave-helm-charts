@@ -1,6 +1,8 @@
 ingest:
   accumuloConfigMap: accumulo-config
   hadoopConfigMap: dwv-dwv-hadoop
+  hadoop:
+    classpath: /usr/local/hadoop/*:/usr/local/hadoop/lib/*:/usr/local/hadoop-hdfs/*:/usr/local/hadoop-hdfs/lib/*:/usr/lib/hadoop-mapreduce/*
   nameOverride: ""
   fullnameOverride: ""
   labels: {}

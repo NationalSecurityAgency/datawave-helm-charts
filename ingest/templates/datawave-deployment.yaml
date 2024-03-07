@@ -49,6 +49,8 @@ spec:
       containers:
       - name: ingest
         env:
+        - name: HADOOP_CLASSPATH
+          value: {{ .Values.ingest.hadoop.classpath }}
         - name: HADOOP_CONF_DIR
           value: /usr/local/hadoop/conf
         image: {{ .Values.ingest.image.repository }}:{{ .Values.ingest.image.tag }}

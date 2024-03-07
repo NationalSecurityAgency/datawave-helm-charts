@@ -264,6 +264,11 @@ web:
       replicaCount: 1
       revisionHistoryLimit: 10
     restartPolicy: Always
+
+
+  datawaveRuntimeConfig:
+      additions: |-
+        /subsystem=ee/managed-executor-service=default:write-attribute(name=max-threads,value=32)
   
   #######################################
   # Default Values for DataWave Service #
@@ -443,6 +448,10 @@ web:
       name: rabbitmq
       destination: /etc/rabbitmq
   
+  hadoop:
+    classpath: /usr/local/hadoop/*:/usr/local/hadoop/lib/*:/usr/local/hadoop-hdfs/*:/usr/local/hadoop-hdfs/lib/*:/usr/lib/hadoop-mapreduce/*
+
+
   ##############################################
   # Default Values for ZooKeeper Configuration #
   ##############################################
