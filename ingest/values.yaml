@@ -50,7 +50,7 @@ ingest:
           "myjson.data.category.index": NAME,ID,ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME,EMBEDDED_CAST_PERSON_ID,GENRES,NETWORK_NAME,OFFICIALSITE,TYPE,STATUS,RUNTIME,URL
           "myjson.data.category.index.reverse": NAME,NETWORK_NAME,OFFICIALSITE,URL
           "myjson.data.category.token.fieldname.designator": _TOKEN
-          "myjson.data.category.index.tokenize.whitelist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
+          "myjson.data.category.index.tokenize.allowlist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
           "myjson.data.category.index.only": SUMMARY_TOKEN,NETWORK_NAME_TOKEN,NAME_TOKEN,EMBEDDED_CAST_CHARACTER_NAME_TOKEN,EMBEDDED_CAST_PERSON_NAME_TOKEN
           "myjson.data.default.normalization.failure.policy": FAIL
           "myjson.data.default.type.class": datawave.data.type.LcNoDiacriticsType
@@ -77,7 +77,7 @@ ingest:
           "mycsv.data.category.index": NAME,ID,ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME,EMBEDDED_CAST_PERSON_ID,GENRES,NETWORK_NAME,OFFICIALSITE,TYPE,STATUS,RUNTIME,URL
           "mycsv.data.category.index.reverse": NAME,NETWORK_NAME,OFFICIALSITE,URL
           "mycsv.data.category.token.fieldname.designator": _TOKEN
-          "mycsv.data.category.index.tokenize.whitelist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
+          "mycsv.data.category.index.tokenize.allowlist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
           "mycsv.data.category.index.only": SUMMARY_TOKEN,NETWORK_NAME_TOKEN,NAME_TOKEN,EMBEDDED_CAST_CHARACTER_NAME_TOKEN,EMBEDDED_CAST_PERSON_NAME_TOKEN
           "mycsv.data.default.normalization.failure.policy": FAIL
           "mycsv.data.default.type.class": datawave.data.type.LcNoDiacriticsType
