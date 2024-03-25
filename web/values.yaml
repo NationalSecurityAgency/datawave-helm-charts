@@ -243,7 +243,7 @@ web:
     image:
       name: datawave/webservice-kubernetes
       pullPolicy: Always
-      tag: 6.6.0-SNAPSHOT
+      tag: 6.9.0-SNAPSHOT
     livenessProbe:
       delaySeconds: 60
       periodSeconds: 5

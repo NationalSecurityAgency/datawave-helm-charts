@@ -1,19 +1,33 @@
+#Set up etc hosts for DNS
+SET_UP_HOSTS=${1:-true}
+
 #Values overrides file. See umbrella/values-testing.yaml
-VALUES_FILE=${1:-values-testing.yaml}
+VALUES_FILE=${2:-values-testing.yaml}
 
 # Cache images and reset minikube. Then Setup minikube ingress.
-docker pull rabbitmq:3.11.4-alpine && \
-docker pull busybox:1.28 && \
-minikube delete --all --purge && \
-minikube start --cpus 8 --memory 30960 --disk-size 20480 && \
-minikube image load rabbitmq:3.11.4-alpine  && \
-minikube image load busybox:1.28 && \
-minikube addons enable ingress && \
-minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
-minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
-echo "$(minikube ip) example-ui.datawave.org" | sudo tee -a /etc/hosts  && \
-echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts && \
-echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts && \
+docker pull rabbitmq:3.11.4-alpine
+docker pull busybox:1.28
+minikube delete --all --purge
+minikube start --cpus 8 --memory 30960 --disk-size 20480
+minikube image load rabbitmq:3.11.4-alpine
+minikube image load busybox:1.28
+minikube addons enable ingress
+minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]'
+
+
+if [ "$SET_UP_HOSTS" = true ]; then
+  # First Remove all datawave.org from /etc/hosts
+  grep -v "datawave.org" /etc/hosts > /tmp/cleanHosts
+  sudo mv /tmp/cleanHosts /etc/hosts
+  echo "$(minikube ip) example-ui.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts 
+  echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) hdfs-nn.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) yarn-rm.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) test.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts
+fi
 
 
 #Apply GHCR credendials
