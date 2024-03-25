@@ -69,6 +69,8 @@ spec:
         ports:
         - containerPort: 8088
           name: web
+        - containerPort: 19888
+          name: history-server
         command:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"
