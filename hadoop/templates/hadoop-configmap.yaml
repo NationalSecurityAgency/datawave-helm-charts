@@ -199,7 +199,7 @@ data:
       </property>
       <property>
         <name>mapreduce.jobhistory.address</name>
-        <value>0.0.0.0:10020</value>
+        <value>yarn-rm:10020</value>
       </property>
       <property>
         <name>mapreduce.jobhistory.webapp.address</name>
