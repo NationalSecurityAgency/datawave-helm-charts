@@ -57,6 +57,8 @@ spec:
           value: {{ .Values.accumulo.config.path }}
         - name: ACCUMULO_INSTANCE_NAME
           value: {{ .Values.accumulo.instanceId }}
+        - name: HADOOP_CLASSPATH
+          value: {{ .Values.accumulo.hadoop.classpath }}
         - name: ACCUMULO_ROOT_PASSWORD
           value: root
         volumeMounts:

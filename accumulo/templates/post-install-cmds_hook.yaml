@@ -35,6 +35,8 @@ spec:
       mountPath: /cmds
       readOnly: true
     env:
+    - name: HADOOP_CLASSPATH
+      value: {{ .Values.accumulo.hadoop.classpath }}
     - name: HADOOP_CONF_DIR
       value: /opt/hadoop/conf
     - name: ACCUMULO_CONF_DIR

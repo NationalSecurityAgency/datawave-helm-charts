@@ -33,6 +33,9 @@ spec:
           readOnly: true
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
+        env:
+        - name: HADOOP_CLASSPATH
+          value: {{ .Values.ingest.hadoop.classpath }}
       - name: init-accumulo
         securityContext:
           runAsUser: 1000
@@ -49,6 +52,10 @@ spec:
       containers:
       - name: ingest
         env:
+        - name: ADDITIONAL_INGEST_LIBS
+          value: {{ .Values.ingest.libs }}
+        - name: HADOOP_CLASSPATH
+          value: {{ .Values.ingest.hadoop.classpath }}
         - name: HADOOP_CONF_DIR
           value: /usr/local/hadoop/conf
         image: {{ .Values.ingest.image.repository }}:{{ .Values.ingest.image.tag }}
