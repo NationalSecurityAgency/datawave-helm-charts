@@ -6,7 +6,7 @@ ingest:
   labels: {}
   image:
     repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-    tag: 6.6.0-SNAPSHOT
+    tag: 6.9.0-SNAPSHOT
     pullPolicy: IfNotPresent
     pullSecrets:
       - dockerconfigjson-ghcr 
@@ -16,7 +16,11 @@ ingest:
     nodeSelector: {}
     tolerations: []
     affinity: {}
-    datawaveVersion: 5.4.0-SNAPSHOT 
+    datawaveVersion: 5.4.0-SNAPSHOT
+  libs: "/lib/hadoop-mapreduce/hadoop-mapreduce-client-core.jar:/lib/hadoop-hdfs/hadoop-hdfs-client.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-yarn/hadoop-yarn-client.jar:/lib/hadoop-yarn/hadoop-yarn-common.jar:/lib/hadoop-yarn/hadoop-yarn-api.jar:/lib/hadoop-yarn/lib/websocket-api-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-client-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-common-9.4.48.v20220622.jar"
+  hadoop:
+    classpath:
+      "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
   config:
     lockFileDir: /var/run/datawave
     hadoopHome: /usr/local/hadoop
