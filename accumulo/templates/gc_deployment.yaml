@@ -44,6 +44,8 @@ spec:
         env:
         - name: HADOOP_CONF_DIR
           value: /opt/hadoop/conf
+        - name: HADOOP_CLASSPATH
+          value: {{ .Values.accumulo.hadoop.classpath }}
         - name: ACCUMULO_CONF_DIR
           value: {{ .Values.accumulo.config.path }}
         resources:
