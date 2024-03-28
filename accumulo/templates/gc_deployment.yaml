@@ -32,6 +32,7 @@ spec:
         - name: config
           configMap:
             name: accumulo-config
+      hostname: accumulo-gc
       containers:
       - name: accumulo-gc
         image: {{ .Values.accumulo.image.repository }}:{{ .Values.accumulo.image.tag }}

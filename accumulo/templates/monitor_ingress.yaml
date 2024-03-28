@@ -31,33 +31,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: {{ required "Ingress path required, please set: .Values.accumulo.monitor.ingress.rootPathPrefix" .Values.accumulo.monitor.ingress.rootPathPrefix }}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "accumulo.fullname" . }}-monitor
-            port: 
-              name: http
-{{- else }}
-        backend:
-          serviceName: {{ include "accumulo.fullname" . }}-monitor
-          servicePort: http
-{{- end }}
-      - path: {{ required "Ingress path required, please set: .Values.accumulo.monitor.ingress.restPathPrefix" .Values.accumulo.monitor.ingress.restPathPrefix }}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "accumulo.fullname" . }}-monitor
-            port: 
-              name: http
-{{- else }}
-        backend:
-          serviceName: {{ include "accumulo.fullname" . }}-monitor
-          servicePort: http
-{{- end }}
-      - path: {{ required "Ingress path required, please set: .Values.accumulo.monitor.ingress.resourcesPathPrefix" .Values.accumulo.monitor.ingress.resourcesPathPrefix }}
+      - path: /
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:

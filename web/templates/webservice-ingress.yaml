@@ -35,7 +35,7 @@ spec:
     - host: "{{ .Values.web.ingress.webservice.domain }}"
       http:
         paths:
-          - path: /DataWave
+          - path: /
             pathType: Prefix
             backend:
               service:
