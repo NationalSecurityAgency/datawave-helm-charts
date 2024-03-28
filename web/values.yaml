@@ -321,6 +321,8 @@ web:
       ingressClassName: nginx
     webservice:
       domain: "web.datawave.org"
+    authorization:
+      domain: "authorization.datawave.org"
     dictionary:
       domain: "dictionary.datawave.org"
     filestorage:

@@ -17,6 +17,7 @@ echo "$(minikube ip) historyserver.datawave.org" | sudo tee -a /etc/hosts  && \
 echo "$(minikube ip) accumulo.datawave.org" | sudo tee -a /etc/hosts  && \
 echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts && \
 echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts && \
+echo "$(minikube ip) authorization.datawave.org" | sudo tee -a /etc/hosts
 
 
 #Apply GHCR credendials
