@@ -105,8 +105,10 @@ spec:
             - containerPort: 8443
           resources: {}
           env:
-            - name: ACCUMULLO_PASSWORD
+            - name: ACCUMULO_PASSWORD
               value: {{ .Values.web.accumulo.password }} 
+            - name: HADOOP_CLASSPATH
+              value: {{ .Values.web.hadoop.classpath }}
             - name: KEYSTORE
               value: {{ .Values.web.volumes.certificates.destination }}/keystore.p12
             - name: KEYSTORE_TYPE
@@ -125,6 +127,10 @@ spec:
               readOnly: true
             - name: hadoop-config
               mountPath: /etc/hadoop/conf
+            - name: "{{ .Chart.Name }}-web-runtime-config"
+              mountPath: /opt/jboss/wildfly/runtime-config.cli
+              subPath: runtime-config.cli
+
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################
@@ -141,4 +147,7 @@ spec:
         - name: hadoop-config
           configMap:
             name: "{{ .Values.web.volumes.hadoop.configMapName }}"
+        - name: "{{ .Chart.Name }}-web-runtime-config"
+          configMap:
+            name: "{{ .Chart.Name }}-web-runtime-config"
 

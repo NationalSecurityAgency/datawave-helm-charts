@@ -18,11 +18,11 @@ mock:
         JBossAdministrator: JBOSS_ADMIN
         PRivateRole: PRIVATE
         PublicRole: PUBLIC
-      '[cn=testserver.example.com, ou=servers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us]':
+      '[cn=testserver.example.com, ou=servers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us>]':
         AuthorizedServer: DW_SERV
         PublicRole: PUBLIC
         PrivateRole: PRIVATE
-    server-DN-regex: '.*server.*'
+    server-DN-regex: '.*notused.*'
 server:
   ssl:
     client-auth: NEED
