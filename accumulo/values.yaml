@@ -91,10 +91,8 @@ accumulo:
     affinity: {}
     ingress:
       enabled: true
-      annotations:
-        nginx.ingress.kubernetes.io/rewrite-target: /$2
-      host: ""
+      annotations: []
+      host: "accumulo.datawave.org"
       # For Traefik:
       #pathPrefix: /accumulo/
       # For Nginx:
-      pathPrefix: "/"

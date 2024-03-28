@@ -1,4 +1,6 @@
 hadoop: 
+
+ 
   # The base hadoop image to use for all components.
   # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
   image:
@@ -22,6 +24,10 @@ hadoop:
       - hadoop fs -ls /
   hdfs:
     nameNode:
+      ingress:
+        enabled: true
+        annotations: []
+        host: "namenode.datawave.org"
       tolerations: []
       pdbMinAvailable: 1
   
@@ -51,7 +57,16 @@ hadoop:
       enabled: false
   
   yarn:
+    historyServer:
+      ingress:
+        enabled: true
+        annotations: []
+        host: "historyserver.datawave.org"
     resourceManager:
+      ingress:
+        enabled: true
+        annotations: []
+        host: "resourcemanager.datawave.org"
       tolerations: []
       pdbMinAvailable: 1
   
