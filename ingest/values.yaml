@@ -6,7 +6,7 @@ ingest:
   labels: {}
   image:
     repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-    tag: 6.9.0-SNAPSHOT
+    tag: 6.11.0-SNAPSHOT
     pullPolicy: IfNotPresent
     pullSecrets:
       - dockerconfigjson-ghcr 
@@ -21,6 +21,8 @@ ingest:
   hadoop:
     classpath:
       "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
+  shardConfig:
+    partitioner: datawave.ingest.mapreduce.partition.ShardIdPartitioner
   config:
     lockFileDir: /var/run/datawave
     hadoopHome: /usr/local/hadoop

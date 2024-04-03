@@ -75,6 +75,9 @@ spec:
         - name: ingest-config
           mountPath: /opt/datawave-ingest/current/config/ingest-config.xml
           subPath: ingest-config.xml
+        - name: shard-ingest-config
+          mountPath: /opt/datawave-ingest/current/config/shard-ingest-config.xml
+          subPath: shard-ingest-config.xml
         - name: ingest-env
           mountPath: /opt/datawave-ingest/current/bin/ingest/ingest-env.sh
           subPath: ingest-env.sh
@@ -113,6 +116,10 @@ spec:
       - name: ingest-config
         configMap:
           name: "{{ .Chart.Name }}-ingest-config-configmap"
+          defaultMode: 0775
+      - name: shard-ingest-config
+        configMap:
+          name: "{{ .Chart.Name }}-shard-ingest-config-configmap"
           defaultMode: 0775
       - name: genders
         configMap:

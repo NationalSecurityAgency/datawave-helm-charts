@@ -60,7 +60,7 @@ data:
             <collectMetrics>false</collectMetrics>
         </defaultCfg>
         <sleepMilliSecs>5000</sleepMilliSecs>
-        <timeoutMilliSecs>480000</timeoutMilliSecs>
+        <timeoutMilliSecs>5000</timeoutMilliSecs>
         <baseHDFSDir>/data</baseHDFSDir>
         <distributorType>simple</distributorType>
         <!-- No dot "." files, and no files ending with punctuation, etc -->
