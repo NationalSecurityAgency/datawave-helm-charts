@@ -11,7 +11,10 @@ minikube image load busybox:1.28 && \
 minikube addons enable ingress && \
 minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
 minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
-echo "$(minikube ip) example-ui.datawave.org" | sudo tee -a /etc/hosts  && \
+echo "$(minikube ip) namenode.datawave.org" | sudo tee -a /etc/hosts  && \
+echo "$(minikube ip) resourcemanager.datawave.org" | sudo tee -a /etc/hosts  && \
+echo "$(minikube ip) historyserver.datawave.org" | sudo tee -a /etc/hosts  && \
+echo "$(minikube ip) accumulo.datawave.org" | sudo tee -a /etc/hosts  && \
 echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts && \
 echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts && \
 

@@ -310,7 +310,8 @@ web:
     enabled: true
     tls:
       enabled: true
-    annotations: []
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     domains:
       datawave: "datawave.gov"
     meta:
