@@ -49,11 +49,6 @@ data:
       </property>
       
       <property>
-        <name>split.work.dir</name>
-        <value>hdfs://hdfs-nn:9000/data/splitsCache</value>
-      </property>
-      
-      <property>
     <name>snowflake.zookeepers</name>
     <value></value>
     <description>List of zookeepers for caching snowflake timestamps if enabled</description>

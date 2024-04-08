@@ -252,6 +252,13 @@ data:
         <value>false</value>
       </property>
 
+
+      <!-- STOPGAP: should be removed once permissions can be enabled -->
+      <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+      </property>
+
       <property>
         <name>dfs.client.use.datanode.hostname</name>
         <value>false</value>
