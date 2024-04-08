@@ -34,8 +34,55 @@ ingest:
     hadoopConfDif: /usr/local/hadoop/conf
     bulkDataTypes: shardStats
     liveDataTypes: wikipedia,mycsv,myjson
+    overallFlagConfig:
+      defaultCfg:
+        live:
+          maxFlags: 4
+          reducers: 10
+          script: bin/ingest/live-ingest.sh
+          fileListMarker: "***FILE_LIST***"
+          collectMetrics: false
+        bulk:
+          maxFlags: 4
+          reducers: 10
+          script: bin/ingest/bulk-ingest.sh
+          fileListMarker: "***FILE_LIST***"
+          collectMetrics: false
+      properties:
+        live:
+          timeoutMilliSecs: 10000
+          baseHDFSDir: /data
+          distributorType: simple
+          filePattern: "[0-9a-zA-Z]*[0-9a-zA-Z]"
+          hdfs: hdfs://hdfs-nn:9000
+          socketPort: 20000
+          datawaveHome: /opt/datawave-ingest/current
+          flagFileDirectory: /srv/data/datawave/flags
+          setFlagFileTimestamp: false
+          useFolderTimestamp: false
+        bulk:
+          sleepMilliSecs: 5000
+          timeoutMilliSecs: 480000
+          baseHDFSDir: /data
+          distributorType: simple
+          filePattern: "[0-9a-zA-Z]*[0-9a-zA-Z]"
+          hdfs: hdfs://hdfs-nn:9000
+          socketPort: 20001
+          datawaveHome: /opt/datawave-ingest/current
+          flagFileDirectory: /srv/data/datawave/flags
+          setFlagFileTimestamp: false
+          useFolderTimestamp: false
+          
     types:
       - name: myjson
+        flagMakerConfig:
+          liveFolder: myjson
+          bulkFolder: myjson-bulk
+          config:
+            distrubutionArgs: none
+            extraIngestArgs: "-data.name.override=myjson"
+            inputFormat: datawave.ingest.json.mr.input.JsonInputFormat
+            lifo: false
         properties: 
           "file.input.format": datawave.ingest.json.mr.input.JsonInputFormat
           "data.name": myjson
@@ -63,6 +110,14 @@ ingest:
           "myjson.RUNTIME.data.field.type.class": datawave.data.type.NumberType
           "myjson.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"  
       - name: mycsv
+        flagMakerConfig:
+          liveFolder: mycsv
+          bulkFolder: mycsv-bulk
+          config:
+            distrubutionArgs: none
+            extraIngestArgs: "-data.name.override=mycsv"
+            inputFormat: datawave.ingest.csv.mr.input.CSVFileInputFormat
+            lifo: false
         properties: 
           "file.input.format": datawave.ingest.csv.mr.input.CSVFileInputFormat
           "data.name": mycsv

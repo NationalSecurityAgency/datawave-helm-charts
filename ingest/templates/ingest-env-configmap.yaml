@@ -95,7 +95,7 @@ data:
     
     # Provides a method to run map-file-bulk-loader as a different user
     MAP_FILE_LOADER_COMMAND_PREFIX="${MAP_FILE_LOADER_COMMAND_PREFIX}"
-    MAP_FILE_LOADER_EXTRA_ARGS="-ingestMetricsDisabled"
+    MAP_FILE_LOADER_EXTRA_ARGS=""
     MAP_FILE_LOADER_SEPARATE_START="${MAP_FILE_LOADER_SEPARATE_START}"
     MAP_FILE_LOADER_SEPARATE_START="${MAP_FILE_LOADER_SEPARATE_START:-false}"
     RCPT_TO="hadoop@localhost"
