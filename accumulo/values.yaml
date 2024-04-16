@@ -72,6 +72,14 @@ accumulo:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+  scanServers:
+    resourceGroups:
+    - resourceGroupName: group1
+      replicaCount: 1
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
   gc:
     replicaCount: 1
     resources: {}
