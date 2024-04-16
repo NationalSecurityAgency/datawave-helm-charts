@@ -1,7 +1,7 @@
 accumulo:
   logging:
     shellRootLevel: debug
-    shellAccumuloLevel: trace
+    shellAccumuloLevel: debug
     serviceAccumuloLevel: debug
     serviceRootLevel: debug
   hadoopConfigMap: dwv-dwv-hadoop
