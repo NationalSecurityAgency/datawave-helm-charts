@@ -12,6 +12,9 @@ data:
     instance.zookeepers=zookeeper:2181
     auth.principal=root
     auth.token=root
+   
+    scan.server.selector.opts.profiles=[{"isDefault":true,"maxBusyTimeout":"5m","busyTimeoutMultiplier":4,"attemptPlans":[{"servers":"3", "busyTimeout":"33ms"},{"servers":"100%", "busyTimeout":"100ms"}]}{{- range .Values.accumulo.scanServers.resourceGroups }},{"scanTypeActivations":["{{ .resourceGroupName }}"],"maxBusyTimeout":"20m","busyTimeoutMultiplier":8,"group":"{{ .resourceGroupName }}","attemptPlans":[{"servers":"1", "busyTimeout":"10s"},{"servers":"3", "busyTimeout":"30s","salt":"42"},{"servers":"9", "busyTimeout":"60s","salt":"84"}]}{{- end}}]
+
 
   accumulo-env.sh: |
     #! /usr/bin/env bash
@@ -196,8 +199,6 @@ data:
      auth.principal=root
      auth.token=root
 
-
-
   log4j2-service.properties: |
     status = info
     dest = err
@@ -225,7 +226,7 @@ data:
     
     
     logger.accumulo.name = org.apache.accumulo
-    logger.accumulo.level = debug
+    logger.accumulo.level = {{ .Values.accumulo.logging.serviceAccumuloLevel }}
     
     logger.zookeeper.name = org.apache.zookeeper
     logger.zookeeper.level = error
@@ -233,4 +234,41 @@ data:
     logger.hadoop.name = org.apache.hadoop
     logger.hadoop.level = warn
     
-    rootLogger.level = debug
+    rootLogger.level = {{ .Values.accumulo.logging.serviceRootLevel }}
+
+  log4j2.properties: |
+    status = info
+    dest = err
+    name = AccumuloCoreTestLoggingProperties
+    monitorInterval = 30
+    
+    
+    rootLogger=INFO, STDOUT, LOGFILE
+    
+    # Direct log messages to STDOUT
+    appender.console.type = Console
+    appender.console.name = STDOUT
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+    
+    # Direct to a file
+    appender.file.type = File
+    appender.file.name = LOGFILE
+    appender.file.fileName  /tmp/not-service.log
+    appender.file.layout.type = PatternLayout
+    appender.file.layout.pattern = [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+    appender.file.filter.threshold.type = ThresholdFilter
+    appender.file.filter.threshold.level = debug
+    
+    
+    
+    logger.accumulo.name = org.apache.accumulo
+    logger.accumulo.level = {{ .Values.accumulo.logging.shellAccumuloLevel }}
+    
+    logger.zookeeper.name = org.apache.zookeeper
+    logger.zookeeper.level = error
+    
+    logger.hadoop.name = org.apache.hadoop
+    logger.hadoop.level = warn
+    
+    rootLogger.level = {{ .Values.accumulo.logging.shellRootLevel }}

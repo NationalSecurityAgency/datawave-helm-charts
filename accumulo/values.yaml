@@ -1,4 +1,9 @@
 accumulo:
+  logging:
+    shellRootLevel: debug
+    shellAccumuloLevel: debug
+    serviceAccumuloLevel: debug
+    serviceRootLevel: debug
   hadoopConfigMap: dwv-dwv-hadoop
   nameOverride: ""
   fullnameOverride: ""
