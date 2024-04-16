@@ -11,12 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+<<<<<<< HEAD
 {{ range .Values.accumulo.scanServers.resourceGroups}}
 ---
+=======
+>>>>>>> Add logging templating and template conf
 
 apiVersion: v1
 kind: Service
 metadata:
+<<<<<<< HEAD
   name: {{ include "accumulo.fullname" $ }}-sservers-{{ .resourceGroupName }}
   labels:
     {{- include "accumulo.labels" $ | nindent 4 }}
@@ -25,6 +29,16 @@ spec:
   selector:
     {{- include "accumulo.selectorLabels" $ | nindent 4 }}
     app.kubernetes.io/component: sserver-{{ .resourceGroupName }}
+=======
+  name: {{ include "accumulo.fullname" . }}-sservers
+  labels:
+    {{- include "accumulo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sserver
+spec:
+  selector:
+    {{- include "accumulo.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: sserver
+>>>>>>> Add logging templating and template conf
   type: ClusterIP
   clusterIP: None
   ports:
@@ -32,7 +46,10 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
+<<<<<<< HEAD
 {{ end }}
+=======
+>>>>>>> Add logging templating and template conf
 
 
 
