@@ -97,6 +97,7 @@ ingest:
           "myjson.data.json.flattener.mode": GROUPED_AND_NORMAL
           "myjson.data.category.marking.default": PRIVATE|(BAR&amp;FOO)
           "myjson.SUMMARY.data.field.marking": PUBLIC
+          "myjson.data.category.date": PREMIERED
           "myjson.data.category.date.formats": yyyy-MM-dd,yyyy-MM-dd'T'HH:mm:ss'Z',yyyy-MM-dd HH:mm:ss
           "myjson.data.category.index": NAME,ID,ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME,EMBEDDED_CAST_PERSON_ID,GENRES,NETWORK_NAME,OFFICIALSITE,TYPE,STATUS,RUNTIME,URL
           "myjson.data.category.index.reverse": NAME,NETWORK_NAME,OFFICIALSITE,URL
