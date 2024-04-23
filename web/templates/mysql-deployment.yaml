@@ -1,0 +1,135 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+  labels:
+    application: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+
+#####################################
+# Complete Deployment Specification #
+#####################################
+
+spec:
+
+  ######################################
+  # Replication / Update Configuration #
+  ######################################
+
+  replicas: {{ .Values.web.mysqlDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.web.mysqlDeployment.replication.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.web.mysqlDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.web.mysqlDeployment.replication.maxUnavailable }}
+
+  ###################################
+  # Resource Selector Configuration #
+  ###################################
+
+  selector:
+    matchLabels:
+      application: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+  
+  #####################################
+  # Deployment Template Configuration #
+  #####################################
+
+  template:
+
+    ##################################################
+    # Basic Metadata for this Deployment's Resources #
+    ##################################################
+
+    metadata:
+      labels:
+        application: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+
+    #######################################
+    # Deployment Resources Specifications #
+    #######################################
+
+    spec:
+      {{- with .Values.web.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+      restartPolicy: "{{ .Values.web.mysqlDeployment.restartPolicy }}"
+      {{- with .Values.web.mysql.configMap.init }}
+      volumes: 
+      {{ range . }}     
+      - name: {{ .name }}
+        configMap:
+          name: "{{ $.Chart.Name }}-{{ $.Values.web.mysql.configMap.name}}"
+      {{- end }}
+      {{- end }}
+      ##############################################
+      # Containers Associated with this Deployment #
+      ##############################################
+      containers:
+        - name: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+          image: "{{ .Values.web.mysqlDeployment.image.name }}:{{ .Values.web.mysqlDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.web.mysqlDeployment.image.pullPolicy }}"
+          resources: {}
+          env:
+            - name: MYSQL_RANDOM_ROOT_PASSWORD
+              value: "true"
+            - name: MYSQL_USER
+              value: datawave
+            - name: MYSQL_PASSWORD
+              value: secret
+          {{- if .Values.web.mysqlDeployment.livenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command:
+                - "mysqladmin"
+                - "ping"
+                - "-h"
+                - "localhost"
+            initialDelaySeconds: {{ .Values.web.mysqlDeployment.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.mysqlDeployment.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.mysqlDeployment.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.mysqlDeployment.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.mysqlDeployment.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.web.mysqlDeployment.readinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command:
+                - "mysqladmin"
+                - "ping"
+                - "-h"
+                - "localhost"
+            initialDelaySeconds: {{ .Values.web.mysqlDeployment.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.mysqlDeployment.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.web.mysqlDeployment.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.web.mysqlDeployment.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.web.mysqlDeployment.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- with .Values.web.mysql.configMap.init }}
+          volumeMounts: 
+          {{ range $.Values.web.mysql.configMap.init }}
+          - name: {{ .name }}
+            mountPath: /docker-entrypoint-initdb.d/{{ .fileName }}
+            subPath: {{ .fileName }}
+          {{- end }}
+          {{- end }}
+
+
