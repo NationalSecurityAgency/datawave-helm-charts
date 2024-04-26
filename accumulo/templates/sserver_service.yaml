@@ -11,18 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+{{ range .Values.accumulo.scanServers.resourceGroups}}
+---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "accumulo.fullname" . }}-sservers
+  name: {{ include "accumulo.fullname" $ }}-sservers-{{ .resourceGroupName }}
   labels:
-    {{- include "accumulo.labels" . | nindent 4 }}
-    app.kubernetes.io/component: sserver
+    {{- include "accumulo.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: sserver-{{ .resourceGroupName }}
 spec:
   selector:
-    {{- include "accumulo.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: sserver
+    {{- include "accumulo.selectorLabels" $ | nindent 4 }}
+    app.kubernetes.io/component: sserver-{{ .resourceGroupName }}
   type: ClusterIP
   clusterIP: None
   ports:
@@ -30,6 +32,7 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
+{{ end }}
 
 
 

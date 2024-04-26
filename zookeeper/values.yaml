@@ -192,7 +192,7 @@
   logLevel: ERROR
   ## @param jvmFlags Default JVM flags for the ZooKeeper process
   ##
-  jvmFlags: "-Xmx10g -Xms10g -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC"
+  jvmFlags: "-Xmx256m -Xms256m -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC"
   ## @param dataLogDir Dedicated data log directory
   ## This allows a dedicated log device to be used, and helps avoid competition between logging and snapshots.
   ## E.g.
@@ -236,7 +236,7 @@
   
   ## @param replicaCount Number of ZooKeeper nodes
   ##
-  replicaCount: 5
+  replicaCount: 3
   ## @param containerPorts.client ZooKeeper client container port
   ## @param containerPorts.tls ZooKeeper TLS container port
   ## @param containerPorts.follower ZooKeeper follower container port
@@ -316,7 +316,7 @@
   resources:
     limits: {}
     requests:
-      memory: 11Gi
+      memory: 300Mi
       cpu: 250m
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
