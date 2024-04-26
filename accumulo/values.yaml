@@ -1,7 +1,7 @@
 accumulo:
   logging:
     shellRootLevel: debug
-    shellAccumuloLevel: debug
+    shellAccumuloLevel: trace
     serviceAccumuloLevel: debug
     serviceRootLevel: debug
   hadoopConfigMap: dwv-dwv-hadoop
@@ -80,6 +80,12 @@ accumulo:
   scanServers:
     resourceGroups:
     - resourceGroupName: group1
+      replicaCount: 1
+      resources: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+    - resourceGroupName: default
       replicaCount: 1
       resources: {}
       nodeSelector: {}
