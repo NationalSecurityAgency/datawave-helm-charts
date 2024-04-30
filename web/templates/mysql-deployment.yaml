@@ -92,9 +92,17 @@ spec:
             - name: MYSQL_RANDOM_ROOT_PASSWORD
               value: "true"
             - name: MYSQL_USER
-              value: datawave
+              value: {{ .Values.web.mysql.user }}
             - name: MYSQL_PASSWORD
+              {{ if hasKey .Values.web.mysql "secretName" }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.web.mysql.secretName }}  # Name of the secret
+                  key: {{ .Values.web.mysql.secretKey }}  # Key in the secret containing the value for the environment variable
+              {{ else }}
               value: secret
+              {{ end }}
+
           {{- if .Values.web.mysqlDeployment.livenessProbe.enabled }}
           livenessProbe:
             exec:

@@ -1,5 +1,6 @@
 web:
   mysql:
+    user: datawave
     configMap:
       name: mysql-init-config
       init:
