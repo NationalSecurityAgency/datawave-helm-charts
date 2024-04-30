@@ -26,6 +26,7 @@ ingest:
     hadoopHome: /usr/local/hadoop
     mapredHome: /usr/local/hadoop-mapreduce
     accumuloUser: root
+    accumuloPassword: Th1sP@ssw0rd1sBANANAS
     accumuloDir: /opt/accumulo
     hdfsNamenode: hdfs://hdfs-nn:9000
     jobTracker: yarn-rm:8032

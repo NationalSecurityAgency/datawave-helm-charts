@@ -40,7 +40,7 @@ accumulo:
       tserver.sort.buffer.size: 50M
       tserver.walog.max.size: 128M
     userManagement:
-      rootPassword: "root"
+      rootPassword: "Th1sP@ssw0rd1sBANANAS"
       # If accumulo.config.userManagement.revoke.enabled is:
       # true - Any users or permissions not specified below will be removed
       # false - Only missing users and permissions will be added

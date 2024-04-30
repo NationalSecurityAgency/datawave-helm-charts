@@ -11,7 +11,7 @@ data:
     instance.name=dev
     instance.zookeepers=zookeeper:2181
     auth.principal=root
-    auth.token=root
+    auth.token={{ .Values.accumulo.config.userManagement.rootPassword }}
    
     scan.server.selector.opts.profiles=[{"isDefault":true,"maxBusyTimeout":"5m","busyTimeoutMultiplier":4,"attemptPlans":[{"servers":"3", "busyTimeout":"33ms"},{"servers":"100%", "busyTimeout":"100ms"}]}{{- range .Values.accumulo.scanServers.resourceGroups }},{"scanTypeActivations":["{{ .resourceGroupName }}"],"maxBusyTimeout":"20m","busyTimeoutMultiplier":8,"group":"{{ .resourceGroupName }}","attemptPlans":[{"servers":"1", "busyTimeout":"10s"},{"servers":"3", "busyTimeout":"30s","salt":"42"},{"servers":"9", "busyTimeout":"60s","salt":"84"}]}{{- end}}]
 
@@ -197,7 +197,7 @@ data:
      # instance.rcp.sasl.enabled=false
      # rpc.sasl.qop=auth
      auth.principal=root
-     auth.token=root
+     auth.token={{ .Values.accumulo.config.userManagement.rootPassword }}
 
   log4j2-service.properties: |
     status = info

@@ -149,7 +149,7 @@ data:
       dictionary:
         accumulo-properties:
           instance-name: "dev"
-          password: "root"
+          password: "bananas"
           username: "root"
           zookeepers: "zookeeper:2181"
         edge:
