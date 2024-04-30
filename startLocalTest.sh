@@ -9,8 +9,6 @@ minikube start --cpus 8 --memory 30960 --disk-size 20480 && \
 minikube image load rabbitmq:3.11.4-alpine  && \
 minikube image load busybox:1.28 && \
 minikube image load mysql:8.0.32 && \
-minikube image load ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes:6.11.0-SNAPSHOT  && \
-minikube image load ghcr.io/nationalsecurityagency/datawave/webservice-kubernetes:6.11.0-SNAPSHOT   && \
 minikube addons enable ingress && \
 minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
 minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
