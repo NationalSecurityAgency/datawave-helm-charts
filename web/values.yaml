@@ -31,7 +31,7 @@ web:
   
   accumulo:
     instanceName: dev
-    password: root
+    password: Th1sP@ssw0rd1sBANANAS
     user: root
   
   #######################################
