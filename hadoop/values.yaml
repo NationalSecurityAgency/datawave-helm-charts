@@ -24,6 +24,8 @@ hadoop:
       - hadoop fs -ls /
   hdfs:
     nameNode:
+      hostname: hdfs-nn
+      serviceName: hdfs-nn-ext
       ingress:
         enabled: true
         annotations: []

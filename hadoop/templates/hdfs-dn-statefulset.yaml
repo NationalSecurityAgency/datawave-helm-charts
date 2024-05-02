@@ -51,7 +51,7 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs-nn; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup {{ .Values.hadoop.hdfs.nameNode.serviceName }}; do echo waiting for {{ .Values.hadoop.hdfs.nameNode.serviceName }}; sleep 2; done"]
       securityContext:
         runAsUser: 1000
         fsGroup: 1000

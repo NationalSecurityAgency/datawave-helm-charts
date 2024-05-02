@@ -23,7 +23,7 @@ spec:
               name: hs-web
 {{- else }}
         backend:
-          serviceName: hdfs-nn
+          serviceName: {{ .Values.hadoop.hdfs.nameNode.serviceName }}
           servicePort: hs-web
 {{- end }}
     {{- if ne .Values.hadoop.yarn.historyServer.ingress.host "" }}

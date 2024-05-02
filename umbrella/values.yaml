@@ -1,6 +1,16 @@
 ######################################
 # Default Values for Docker Registry #
 ######################################
-
+global:
+  hadoop:
+    enabled: true
+  accumulo:
+    enabled: true
+  zookeeper:
+    enabled: true
+  ingest:
+    enabled: true
+  web:
+    enabled: true  
 dockerRegistry:
   url: ghcr.io/nationalsecurityagency/

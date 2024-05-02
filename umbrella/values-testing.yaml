@@ -1,7 +1,19 @@
+global:
+  hadoop:
+    enabled: true
+  accumulo:
+    enabled: true
+  zookeeper:
+    enabled: true
+  ingest:
+    enabled: false
+  web:
+    enabled: false
 dwv-accumulo:
   accumulo:
+    waitForDatawaveJars: false
     image:
-      tag: 2.1.3
+      tag: 2.1.3-env
     initContainer:
       tag: 3.3.6
 dwv-hadoop:
