@@ -33,7 +33,7 @@ data:
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_HOME/ ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
-    if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
+    if [[ "${HOSTNAME}" =~ "{{ .Values.hadoop.hdfs.nameNode.hostname }}" ]]; then
       echo "Check if Namenode directory exists"
       if [[ ! -d /usr/local/hadoop/data ]]; then
         echo "Creating Namenode directory"
@@ -61,16 +61,16 @@ data:
         mkdir -p /usr/local/hadoop/hdfs/datanode
       fi
       #  wait up to 30 seconds for namenode
-      (while [[ $count -lt 15 && -z `curl -sf http://hdfs-nn:9870/dfshealth.html` ]]; do ((count=count+1)) ; echo "Waiting for hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
-      [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
+      (while [[ $count -lt 15 && -z `curl -sf http://{{ .Values.hadoop.hdfs.nameNode.serviceName }}:9870/dfshealth.html` ]]; do ((count=count+1)) ; echo "Waiting for {{ .Values.hadoop.hdfs.nameNode.serviceName }}" ; sleep 2; done && [[ $count -lt 15 ]])
+      [[ $? -ne 0 ]] && echo "Timeout waiting for {{ .Values.hadoop.hdfs.nameNode.serviceName }}, exiting." && exit 1
 
       $HADOOP_HOME/sbin/hadoop-daemon.sh start datanode
       $HADOOP_HDFS_HOME/bin/hdfs dfs -chmod 777 /
     fi
 
     if [[ "${HOSTNAME}" =~ "yarn-rm" ]]; then
-      (while [[ $count -lt 15 && -z `curl -sf http://hdfs-nn:9870/dfshealth.html` ]]; do ((count=count+1)) ; echo "Waiting for hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
-      [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
+      (while [[ $count -lt 15 && -z `curl -sf http://{{ .Values.hadoop.hdfs.nameNode.serviceName }}:9870/dfshealth.html` ]]; do ((count=count+1)) ; echo "Waiting for {{ .Values.hadoop.hdfs.nameNode.serviceName }}" ; sleep 2; done && [[ $count -lt 15 ]])
+      [[ $? -ne 0 ]] && echo "Timeout waiting for {{ .Values.hadoop.hdfs.nameNode.serviceName }}, exiting." && exit 1
       cp ${CONFIG_DIR}/start-yarn-rm.sh $HADOOP_YARN_HOME/sbin/
       cd $HADOOP_YARN_HOME/sbin
       chmod +x start-yarn-rm.sh
@@ -226,7 +226,7 @@ data:
     <configuration>
       <property>
             <name>fs.defaultFS</name>
-            <value>hdfs://hdfs-nn:9000/</value>
+            <value>hdfs://{{ .Values.hadoop.hdfs.nameNode.serviceName }}:9000/</value>
             <description>NameNode URI</description>
       </property>
       <property>

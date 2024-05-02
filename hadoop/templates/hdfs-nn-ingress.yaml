@@ -18,12 +18,12 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: hdfs-nn
+            name: {{ .Values.hadoop.hdfs.nameNode.serviceName }}
             port: 
               name: webhdfs
 {{- else }}
         backend:
-          serviceName: hdfs-nn
+          serviceName: {{ .Values.hadoop.hdfs.nameNode.serviceName }}
           servicePort: webhdfs
 {{- end }}
     {{- if ne .Values.hadoop.hdfs.nameNode.ingress.host "" }}

@@ -1,4 +1,5 @@
 accumulo:
+  waitForDatawaveJars: true
   logging:
     shellRootLevel: debug
     shellAccumuloLevel: trace
@@ -15,7 +16,7 @@ accumulo:
     volumes:
       - /accumulo
     namenode:
-      hostname: "hdfs-nn"
+      hostname: "hdfs-nn-ext"
       ports:
         clientRpc: 9000
     postInstallCommands:
@@ -59,7 +60,7 @@ accumulo:
     postInstallCommands: []
   initContainer:
     image: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-    tag: 3.3.6
+    tag: 2.1.3-env
   image:
     repository: ghcr.io/nationalsecurityagency/datawave-stack-accumulo
     tag: 2.1.3

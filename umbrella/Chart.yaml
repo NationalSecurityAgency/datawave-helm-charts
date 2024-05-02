@@ -22,15 +22,20 @@ dependencies:
   - name: dwv-ingest
     repository: file://../ingest
     version: 3.38.1
+    condition: global.ingest.enabled
   - name: dwv-web
     repository: file://../web
     version: 3.40.0
+    condition: global.web.enabled
   - name: dwv-zookeeper
     repository: file://../zookeeper
     version: 3.6.3
+    condition: global.zookeeper.enabled
   - name: dwv-accumulo
     repository: file://../accumulo
     version: 2.1.0
+    condition: global.accumulo.enabled
   - name: dwv-hadoop
     repository: file://../hadoop
     version: 3.3.3
+    condition: global.hadoop.enabled

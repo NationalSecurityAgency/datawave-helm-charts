@@ -167,7 +167,7 @@ data:
 
   accumulo.properties: |
     ## Sets location in HDFS where Accumulo will store data
-    instance.volumes=hdfs://hdfs-nn:9000/accumulo
+    instance.volumes=hdfs://{{ .Values.accumulo.hdfs.namenode.hostname }}:9000/accumulo
     
     ## Sets location of Zookeepers
     instance.zookeeper.host=zookeeper:2181
@@ -188,7 +188,7 @@ data:
     
     general.classpaths=$ACCUMULO_HOME/lib/accumulo-server.jar,$ACCUMULO_HOME/lib/accumulo-core.jar,$ACCUMULO_HOME/lib/accumulo-start.jar,$ACCUMULO_HOME/lib/accumulo-fate.jar,$ACCUMULO_HOME/lib/accumulo-proxy.jar,$ACCUMULO_HOME/lib/[^.].*.jar,$ZOOKEEPER_HOME/lib/zookeeper[^.].*.jar,$HADOOP_CONF_DIR,$HADOOP_HOME/share/hadoop/client/[^.].*.jar,$HADOOP_HOME/share/hadoop/common/lib/(?!slf4j)[^.].*.jar
     
-    general.vfs.context.classpath.datawave=hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath/.*.jar
+    general.vfs.context.classpath.datawave=hdfs://{{ .Values.accumulo.hdfs.namenode.hostname }}:9000/datawave/accumulo-vfs-classpath/.*.jar
 
   client.conf: |
      instance.zookeeper.host=zookeeper:2181
