@@ -18,10 +18,33 @@ hadoop:
   config:
     postInstallCommands:
       - chmod -R 777 /usr/lib/zookeeper
-      - hadoop fs -mkdir -p /accumulo
-      - hadoop fs -chown accumulo /accumulo
-      - hadoop fs -chmod 700 /accumulo
-      - hadoop fs -ls /
+      - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/accumulo
+      - hdfs dfs -chown accumulo hdfs://hdfs-nn:9000/accumulo
+      - hdfs dfs -chmod 700 hdfs://hdfs-nn:9000/accumulo
+      - hdfs dfs -chmod 777 hdfs://hdfs-nn:9000/
+      - hdfs dfs -mkdir hdfs://hdfs-nn:9000/data
+      - hdfs dfs -mkdir hdfs://hdfs-nn:9000/datawave
+      - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/data
+      - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/datawave
+      - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/tmp/hadoop-yarn/staging/history
+      - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/tmp/
+      - hdfs ec -addPolicies -policyFile /tmp/hadoop-config/erasure-coding-policies.xml
+      - hdfs ec -enablePolicy 6-3-64k
+      - hdfs ec -enablePolicy 6-3-128k
+      - hdfs ec -enablePolicy 6-2-64k
+      - hdfs ec -enablePolicy 6-2-128k
+      - hdfs ec -enablePolicy 4-2-64k
+      - hdfs ec -enablePolicy 4-2-128k
+      - hdfs ec -enablePolicy 4-3-64k
+      - hdfs ec -enablePolicy 4-3-128k
+
+
+
+
+
+
+
+
   hdfs:
     nameNode:
       ingress:
