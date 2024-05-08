@@ -8,3 +8,8 @@ dwv-hadoop:
   hadoop:
     image:
       tag: 3.3.6
+dwv-web:
+  web:
+    datawaveRuntimeConfig:
+      additions: |-
+                /subsystem=ee/managed-executor-service=default:write-attribute(name=core-threads,value=32)
