@@ -17,33 +17,28 @@ hadoop:
   antiAffinity: "soft"
   config:
     postInstallCommands:
-      - chmod -R 777 /usr/lib/zookeeper
       - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/accumulo
       - hdfs dfs -chown accumulo hdfs://hdfs-nn:9000/accumulo
       - hdfs dfs -chmod 700 hdfs://hdfs-nn:9000/accumulo
       - hdfs dfs -chmod 777 hdfs://hdfs-nn:9000/
-      - hdfs dfs -mkdir hdfs://hdfs-nn:9000/data
-      - hdfs dfs -mkdir hdfs://hdfs-nn:9000/datawave
       - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/data
       - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/datawave
       - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/tmp/hadoop-yarn/staging/history
       - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/tmp/
-      - hdfs ec -addPolicies -policyFile /tmp/hadoop-config/erasure-coding-policies.xml
-      - hdfs ec -enablePolicy 6-3-64k
-      - hdfs ec -enablePolicy 6-3-128k
-      - hdfs ec -enablePolicy 6-2-64k
-      - hdfs ec -enablePolicy 6-2-128k
-      - hdfs ec -enablePolicy 4-2-64k
-      - hdfs ec -enablePolicy 4-2-128k
-      - hdfs ec -enablePolicy 4-3-64k
-      - hdfs ec -enablePolicy 4-3-128k
-
-
-
-
-
-
-
+    ec:
+      enabled: true
+      postInstallCommands: 
+        - export HADOOP_CONF_DIR=/tmp/hadoop-config
+        - hdfs ec -addPolicies -policyFile /tmp/hadoop-config/erasure-coding-policies.xml
+        - echo "done adding start enabling"
+        - hdfs ec -enablePolicy -policy RS-6-3-64k
+        - hdfs ec -enablePolicy -policy RS-6-3-128k
+        - hdfs ec -enablePolicy -policy RS-6-2-64k
+        - hdfs ec -enablePolicy -policy RS-6-2-128k
+        - hdfs ec -enablePolicy -policy RS-4-2-64k
+        - hdfs ec -enablePolicy -policy RS-4-2-128k
+        - hdfs ec -enablePolicy -policy RS-4-3-64k
+        - hdfs ec -enablePolicy -policy RS-4-3-128k
 
   hdfs:
     nameNode:
