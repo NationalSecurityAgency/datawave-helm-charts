@@ -31,7 +31,7 @@ web:
   
   accumulo:
     instanceName: dev
-    password: Th1sP@ssw0rd1sBANANAS
+    password: ThisP@ssw0rd1sBANANAS
     user: root
   
   #######################################
@@ -299,7 +299,7 @@ web:
     image:
       name: datawave/webservice-kubernetes
       pullPolicy: Always
-      tag: 6.6.0-SNAPSHOT
+      tag: 6.13.0-SNAPSHOT
     livenessProbe:
       delaySeconds: 60
       periodSeconds: 5
