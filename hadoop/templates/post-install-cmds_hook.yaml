@@ -26,6 +26,8 @@ spec:
     - name: cmds
       mountPath: /cmds
       readOnly: true
+    - name: hadoop-config
+      mountPath: /tmp/hadoop-config
     resources:
       {{- toYaml .Values.hadoop.cmds.resources | nindent 6 }}
   volumes:
@@ -33,6 +35,10 @@ spec:
     secret:
       secretName: {{ include "hadoop.fullname" . }}-cmds
       optional: false
+  - name: hadoop-config
+    configMap:
+      name: {{ include "hadoop.fullname" . }}
+     
   {{- with .Values.hadoop.cmds.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
