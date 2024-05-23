@@ -17,7 +17,7 @@ data:
     /system-property=dw.metrics.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
     /system-property=dw.uuid.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
 
-    /system-property=dw.mapreduce.securitydomain.keyStoreURL:remove+
+    /system-property=dw.mapreduce.securitydomain.keyStoreURL:remove
     /system-property=dw.mapreduce.securitydomain.keyStoreType:remove
     /system-property=dw.mapreduce.securitydomain.keyStorePassword:remove
     /system-property=dw.mapreduce.securitydomain.trustStoreURL:remove

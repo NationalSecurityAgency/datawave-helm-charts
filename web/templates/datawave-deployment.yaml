@@ -121,6 +121,9 @@ spec:
               value: JKS
             - name: TRUSTSTORE_PASSWORD
               value: {{ .Values.web.certificates.truststorePassword }} 
+            - name: JAVA_OPTS
+              value: {{ .Values.web.java.options }}{{if .Values.web.java.debug.enabled}} {{.Values.web.java.debug.options}} {{- end }}
+             
           volumeMounts:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
               mountPath: "{{ .Values.web.volumes.certificates.destination }}"
