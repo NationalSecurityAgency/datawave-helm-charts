@@ -1,4 +1,8 @@
 datawave:
+  security:
+    util:
+      subjectDnPattern: "(?:^|,)\\s*OU\\s*=\\s*.*\\s*(?:,|$)"
+      npeOuList: "EXAMPLE_SERVER_OU1,EXAMPLE_SERVER_OU2"
   authorization:
     uri: "https://{{ .Chart.Name }}-{{ .Values.web.authorizationService.meta.name }}:{{ .Values.web.authorizationService.ports.https }}/{{ .Values.web.authorizationService.endpoints.authorize }}"
 logging:
