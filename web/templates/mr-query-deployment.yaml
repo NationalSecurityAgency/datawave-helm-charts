@@ -84,6 +84,8 @@ spec:
             - "--spring.output.ansi.enabled=ALWAYS"
             - "--spring.profiles.active={{ .Values.web.mrQueryDeployment.profiles }}"
           env:
+            - name: CONFIG_SERVER_URL
+              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
             - name: ZOOKEEPER_HOST
               value: "{{ .Values.web.zookeeper.quorum }}"
             - name: HADOOP_HOST

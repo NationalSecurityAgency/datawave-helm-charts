@@ -81,11 +81,6 @@ spec:
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
             - "--spring.profiles.active={{ .Values.web.accumuloDeployment.profiles }}"
-          env:
-            - name: CONFIG_SERVER_URL
-              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
-            - name: ZOOKEEPER_HOST
-              value: "{{ .Values.web.zookeeper.quorum }}"
           image: "{{ .Values.web.dockerRegistry.url }}{{ .Values.web.accumuloDeployment.image.name }}:{{ .Values.web.accumuloDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.web.accumuloDeployment.image.pullPolicy }}"
           livenessProbe:
@@ -123,6 +118,10 @@ spec:
               value: JKS
             - name: TRUSTSTORE_PASSWORD
               value: {{ .Values.web.certificates.truststorePassword }} 
+            - name: CONFIG_SERVER_URL
+              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
+            - name: ZOOKEEPER_HOST
+              value: "{{ .Values.web.zookeeper.quorum }}"
           volumeMounts:
             - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
               mountPath: "{{ .Values.web.volumes.certificates.destination }}"

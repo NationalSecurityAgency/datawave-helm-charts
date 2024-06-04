@@ -1,4 +1,5 @@
-
+# This profile should be included by any service which depends on the query starter.  This
+# file contains all of the configuration required to use the QueryLogicFactory.
 warehouse:
   accumulo:
     zookeepers: '{{.Values.web.zookeeper.quorom}}'
@@ -98,7 +99,36 @@ datawave:
     logic:
       factory:
         enabled: true
+        # Uncomment the following line to override the query logic beans to load
+        # xmlBeansPath: "classpath:MyTestQueryLogicFactory.xml"
+
+        # If desired, you may populate this map to redefine the name for each query logic.
+        # This can also be used to limit the available query logics.
+        queryLogicsByName:
+          "EventQuery": "EventQuery"
+          "ErrorEventQuery": "ErrorEventQuery"
+          "DiscoveryQuery": "DiscoveryQuery"
+          "ErrorDiscoveryQuery": "ErrorDiscoveryQuery"
+          "LuceneUUIDEventQuery": "LuceneUUIDEventQuery"
+          "ContentQuery": "ContentQuery"
+          "EdgeQuery": "EdgeQuery"
+          "CountQuery": "CountQuery"
+          "ErrorCountQuery": "ErrorCountQuery"
+          "FieldIndexCountQuery": "FieldIndexCountQuery"
+          "ErrorFieldIndexCountQuery": "ErrorFieldIndexCountQuery"
+          "TermFrequencyQuery": "TermFrequencyQuery"
+          "IndexStatsQuery": "IndexStatsQuery"
+          "QueryMetricsQuery": "QueryMetricsQuery"
+          "InternalQueryMetricsQuery": "InternalQueryMetricsQuery"
+          "FacetedQuery": "FacetedQuery"
+          "HitHighlights": "HitHighlights"
+          "EdgeEventQuery": "EdgeEventQuery"
+          "FederatedEventQuery": "FederatedEventQuery"
+
+        # The max page size that a user can request.  0 turns off this feature
         maxPageSize: 10000
+
+        # The number of bytes at which a page will be returned, event if the pagesize has not been reached.  0 turns off this feature
         pageByteTrigger: 0
       logics:
         BaseEventQuery:
@@ -272,10 +302,16 @@ datawave:
           metadataTableName: ${warehouse.tables.metadata.name}
           modelTableName: ${warehouse.tables.model.name}
           modelName: ${warehouse.defaults.edgeModelName}
-          queryThreads: 16
-          auditType: "NONE"
           maxResults: 25000
           maxWork: -1
+          queryThreads: 16
+          auditType: "NONE"
+          logicDescription: "Retrieve graph edges matching the search term(s)"
+          querySyntaxParsers:
+            "JEXL": ""
+            "LIST": ""
+            "LIMITED_JEXL": ""
+            "LUCENE": ""
 
         CountQuery:
           checkpointable: ${warehouse.defaults.checkpointable}
@@ -419,20 +455,25 @@ datawave:
     uuidTypes: &defaultUuidTypes
       'EVENT_ID':
         fieldName: 'EVENT_ID'
-        queryLogic: 'LuceneUUIDEventQuery'
+        queryLogics:
+          'default': 'LuceneUUIDEventQuery'
         allowedWildcardAfter: 28
       'UUID':
         fieldName: 'UUID'
-        queryLogic: 'LuceneUUIDEventQuery'
+        queryLogics:
+          'default': 'LuceneUUIDEventQuery'
       'PARENT_UUID':
         fieldName: 'PARENT_UUID'
-        queryLogic: 'LuceneUUIDEventQuery'
+        queryLogics:
+          'default': 'LuceneUUIDEventQuery'
       'PAGE_ID':
         fieldName: 'PAGE_ID'
-        queryLogic: 'LuceneUUIDEventQuery'
+        queryLogics:
+          'default': 'LuceneUUIDEventQuery'
       'PAGE_TITLE':
         fieldName: 'PAGE_TITLE'
-        queryLogic: 'LuceneUUIDEventQuery'
+        queryLogics:
+          'default': 'LuceneUUIDEventQuery'
 
     lookup:
       columnVisibility: ""
@@ -445,6 +486,8 @@ datawave:
       types: *defaultUuidTypes
 
     edge:
+      # Uncomment the following line to override the edge beans to load
+      # xmlBeansPath: "classpath:EdgeBeans.xml"
       model:
         baseFieldMap:
           EDGE_SOURCE: 'SOURCE'
@@ -522,3 +565,5 @@ datawave:
             modelFieldName: "ATTR3"
             direction: "FORWARD"
             indexOnly: false
+          
+

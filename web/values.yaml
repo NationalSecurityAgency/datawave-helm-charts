@@ -1,14 +1,16 @@
 web:
   mysql:
     user: datawave
+    minIdle: 10
+    maxSize: 10
     configMap:
       name: mysql-init-config
       init:
       - name: init-db
         fileName: init-db.sql
         fileContents: |-
-          create database example;
-          use example;
+          create database cachedresults;
+          use cachedresults;
           GRANT ALL PRIVILEGES ON example TO 'datawave'@'%' WITH GRANT OPTION;
   hadoop:
     classpath:
@@ -41,9 +43,9 @@ web:
   auditDeployment:
     profiles: default,k8s,remoteauth
     image:
-      name: datawave/audit-service
+      name: datawave-audit-service
       pullPolicy: IfNotPresent
-      tag: 4.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 60
       periodSeconds: 5
@@ -86,9 +88,9 @@ web:
   metricsDeployment:
     profiles: default,k8s,remoteauth
     image:
-      name: datawave/query-metric-service
+      name: datawave-query-metric-service
       pullPolicy: IfNotPresent
-      tag: 4.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 60
       periodSeconds: 5
@@ -128,7 +130,7 @@ web:
   authorizationDeployment:
     profiles: "default,mock,k8s"
     image:
-      name: datawave/authorization-service
+      name: datawave-authorization-service
       pullPolicy: IfNotPresent
       tag: latest
     livenessProbe:
@@ -159,7 +161,7 @@ web:
   
   authorizationService:
     endpoints:
-      authorize: authorization/v1/authorize
+      authorize: authorization/v2
     meta:
       name: authorization
     ports:
@@ -215,7 +217,7 @@ web:
   cacheDeployment:
     profiles: default,k8s,remoteauth
     image:
-      name: datawave/hazelcast-service
+      name: datawave-hazelcast-service
       pullPolicy: IfNotPresent
       tag: latest
     livenessProbe:
@@ -259,9 +261,9 @@ web:
   
   configurationDeployment:
     image:
-      name: datawave/config-service
+      name: datawave-config-service
       pullPolicy: IfNotPresent
-      tag: 4.0.0-SNAPSHOT
+      tag: latest
     meta:
       name: configuration
     replication:
@@ -305,9 +307,9 @@ web:
   executorDeployment:
     profiles: default,k8s,remoteauth,querymessaging,metricssource,query,pool1
     image:
-      name: datawave/query-executor-service
+      name: datawave-query-executor-service
       pullPolicy: IfNotPresent
-      tag: 1.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 20
       periodSeconds: 5
@@ -350,7 +352,7 @@ web:
   dictionaryDeployment:
     profiles: defualt,k8s,remoteauth
     image:
-      name: datawave/dictionary-service
+      name: datawave-dictionary-service
       pullPolicy: IfNotPresent
       tag: latest
     livenessProbe:
@@ -395,9 +397,9 @@ web:
   accumuloDeployment:
     profiles: default,k8s,remoteauth
     image:
-      name: datawave/accumulo-service
+      name: datawave-accumulo-service
       pullPolicy: IfNotPresent
-      tag: 4.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 20
       periodSeconds: 5
@@ -498,9 +500,9 @@ web:
   queryDeployment:
     profiles: default,k8s,remoteauth,querymessaging,metricssource,query,mrquery,cachedresults
     image:
-      name: datawave/query-service
+      name: datawave-query-service
       pullPolicy: IfNotPresent
-      tag: 1.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 20
       periodSeconds: 5
@@ -546,9 +548,9 @@ web:
   mrQueryDeployment:
     profiles: default,k8s,remoteauth,query,mrquery
     image:
-      name: datawave/mapreduce-query-service
+      name: datawave-mapreduce-query-service
       pullPolicy: IfNotPresent
-      tag: 1.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 20
       periodSeconds: 5
@@ -582,53 +584,6 @@ web:
       https: 8443
       http: 8080
 
-
-
-  ###############################################
-  # Default Values for Query Storage Deployment #
-  ###############################################
-  
-  queryStorageDeployment:
-    profiles: default,k8s,remoteauth,querymessaging,query
-    image:
-      name: datawave/query-storage-service
-      pullPolicy: IfNotPresent
-      tag: 1.0.0-SNAPSHOT
-    livenessProbe:
-      delaySeconds: 20
-      periodSeconds: 5
-      failureThreshold: 60
-      port: 8080
-      scheme: HTTP
-      uri: query-storage/mgmt/health
-    readinessProbe:
-      delaySeconds: 24
-      periodSeconds: 5
-      port: 8080
-      scheme: HTTP
-      uri: query-storage/mgmt/health
-    meta:
-      name: query-storage
-    replication:
-      maxSurge: 2
-      maxUnavailable: 1
-      replicaCount: 1
-      revisionHistoryLimit: 10
-    restartPolicy: Always
-  
-  #######################################
-  # Default Values for DataWave Service #
-  #######################################
-  
-  queryStorageService:
-    meta:
-      name: query-storage
-    ports:
-      https: 8443
-      http: 8080
-
-
-
   ###############################################
   # Default Values for Query Storage Deployment #
   ###############################################
@@ -636,9 +591,9 @@ web:
   modificationDeployment:
     profiles: default,k8s,remoteauth,query
     image:
-      name: datawave/modification-service
+      name: datawave-modification-service
       pullPolicy: IfNotPresent
-      tag: 1.0.0-SNAPSHOT
+      tag: latest
     livenessProbe:
       delaySeconds: 20
       periodSeconds: 5
@@ -677,7 +632,7 @@ web:
   # Default Values for Docker Registry #
   ######################################
   dockerRegistry:
-    url: ""
+    url: "ghcr.io/nationalsecurityagency/"
   
   ##################################
   # External Service Configuration #

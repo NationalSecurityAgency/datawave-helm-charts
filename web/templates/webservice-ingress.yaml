@@ -39,7 +39,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: "{{ .Chart.Name }}-{{ .Values.web.datawaveService.meta.name }}"
+                name: "{{ .Chart.Name }}-{{ .Values.web.queryService.meta.name }}"
                 port: 
-                  number: {{ .Values.web.datawaveService.ports.https }}
+                  number: {{ .Values.web.queryService.ports.https }}
 {{- end }}
