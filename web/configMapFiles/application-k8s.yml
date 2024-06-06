@@ -15,7 +15,7 @@ system.name: CONTAINERS
 spring:
   security:
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: {{ .Values.web.kafkaService.meta.name }}:{{ .Values.web.kafkaService.ports.client }}
     consumer:
       autoOffsetReset: earliest
       enableAutoCommit: false

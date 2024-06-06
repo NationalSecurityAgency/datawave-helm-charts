@@ -66,6 +66,3 @@ datawave:
     util:
       subjectDnPattern: "(?:^|,)\\s*OU\\s*=\\s*My Department\\s*(?:,|$)"
       npeOuList: "EXAMPLE_SERVER_OU1,EXAMPLE_SERVER_OU2"
- 
-
-s
