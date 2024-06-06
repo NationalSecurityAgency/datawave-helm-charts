@@ -15,7 +15,7 @@ system.name: CONTAINERS
 spring:
   security:
   kafka:
-    bootstrap-servers: {{ .Values.web.kafkaService.meta.name }}:{{ .Values.web.kafkaService.ports.client }}
+    bootstrap-servers: {{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}:{{ .Values.web.kafkaService.ports.client }}
     consumer:
       autoOffsetReset: earliest
       enableAutoCommit: false
@@ -25,12 +25,12 @@ spring:
 # This is the accumulo configuration we use in services.  These don't map directly to a properties class, but 
 # they are here to be used as a reference for other properties.
 accumulo:
-  zookeepers: '{{ .Values.web.zookeeper.quorom }}'
+  zookeepers: '{{ .Values.web.zookeeper.quorum }}'
   instanceName: '{{ .Values.web.accumulo.instanceName }}'
   username: '{{ .Values.web.accumulo.user }}'
   password: '{{ .Values.web.accumulo.password }}'
 # Configuration placeholders which 1) determines what backend will be used for transmitting query results
 # and 2) determines the message size limit before claim checks are used with RabbitMQ messaging
 messaging:
-  backend: ${BACKEND:kafka}
+  backend: {{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}
   maxMessageSizeBytes: 536870912

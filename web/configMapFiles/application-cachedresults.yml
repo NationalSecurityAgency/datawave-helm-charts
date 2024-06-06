@@ -1,7 +1,7 @@
 spring:
   datasource:
     cachedResults:
-      url: 'jdbc:mysql://{{ .Values.web.mysqlService.meta.name }}:3306/cachedresults?zeroDateTimeBehavior=convertToNull'
+      url: 'jdbc:mysql://{{ .Chart.Name }}-{{ .Values.web.mysqlService.meta.name }}:3306/cachedresults?zeroDateTimeBehavior=convertToNull'
       username: '{{ .Values.web.mysql.user }}'
       password: 'secret'
       driver-class-name: 'com.mysql.cj.jdbc.Driver'

@@ -11,7 +11,7 @@ web:
         fileContents: |-
           create database cachedresults;
           use cachedresults;
-          GRANT ALL PRIVILEGES ON example TO 'datawave'@'%' WITH GRANT OPTION;
+          GRANT ALL PRIVILEGES ON cachedresults TO 'datawave'@'%' WITH GRANT OPTION;
   hadoop:
     classpath:
       "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
