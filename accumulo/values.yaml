@@ -77,6 +77,11 @@ accumulo:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+  compactors:
+    queues:
+      - name: test1
+        queueName: test1
+        replicaCount: 1
   scanServers:
     resourceGroups:
     - resourceGroupName: group1

@@ -2,7 +2,7 @@
 # file contains all of the configuration required to use the QueryLogicFactory.
 warehouse:
   accumulo:
-    zookeepers: '{{.Values.web.zookeeper.quorom}}'
+    zookeepers: '{{.Values.web.zookeeper.quorum}}'
     instanceName: '{{.Values.web.accumulo.instanceName}}'
     username: '{{.Values.web.accumulo.user}}'
     password: '{{.Values.web.accumulo.password}}'

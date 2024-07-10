@@ -7,6 +7,8 @@ metadata:
     chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
 data:
+  hadoop-env.sh: |
+    #ENV for hadoop based files
   bootstrap.sh: |
     #!/bin/bash
 
@@ -21,7 +23,7 @@ data:
 
     # Copy config files from volume mount
 
-    for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml erasure-coding-policies.xml; do
+    for f in slaves hadoop-env.sh core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml erasure-coding-policies.xml; do
       if [[ -e ${CONFIG_DIR}/$f ]]; then
         cp ${CONFIG_DIR}/$f $HADOOP_HOME/etc/hadoop/$f
       else

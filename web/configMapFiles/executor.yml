@@ -25,7 +25,7 @@ datawave:
     cache:
       zookeepers: '${accumulo.zookeepers}'
       tableNames:
-        - '${warehouse.accumulo.tables.metadata.name}'
+        - '${warehouse.tables.metadata.name}'
       poolName: 'default'
       reloadInterval: 360000
       evictionReaperIntervalInSeconds: 360

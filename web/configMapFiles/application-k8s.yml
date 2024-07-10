@@ -1,5 +1,6 @@
 hazelcast:
   client:
+    clusterName: cache
     k8s:
       service-dns-name: {{ .Chart.Name }}-{{ .Values.web.cacheService.meta.name }}.{{ .Release.Namespace }}.svc.cluster.local
 
@@ -13,7 +14,6 @@ system.name: CONTAINERS
 # specify one value in the list below.
 # Since enforce-allowed-callers is false, you can skip configuring this section if you want.
 spring:
-  security:
   kafka:
     bootstrap-servers: {{ .Chart.Name }}-{{ .Values.web.kafkaService.meta.name }}:{{ .Values.web.kafkaService.ports.client }}
     consumer:

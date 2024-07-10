@@ -32,6 +32,8 @@ server:
     trust-store-type: '{{ .Values.web.secrets.truststore.type }}'
     trust-store-password: '{{ .Values.web.secrets.truststore.password }}'
 spring:
+  jackson:
+    default-property-include: non_null
   cloud:
     consul:
       enabled: false

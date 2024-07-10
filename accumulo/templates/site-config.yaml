@@ -190,6 +190,10 @@ data:
     
     general.vfs.context.classpath.datawave=hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath/.*.jar
 
+    {{ range .Values.accumulo.compactors.queues}} }}
+    tserver.compaction.major.service.{{ .queueName }}.planner=org.apache.accumulo.core.spi.compaction.DefaultCompactionPlanner
+    tserver.compaction.major.service.{{ .queueName }}.planner.opts.executors=[{"name":"external", "type":"external","queue":"{{ .queueName }}"}]
+    {{ end }}
   client.conf: |
      instance.zookeeper.host=zookeeper:2181
      # instance.rpc.ssl.enabled=false

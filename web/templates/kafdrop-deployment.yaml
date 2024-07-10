@@ -71,6 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
+        fsGroup: 1000
       restartPolicy: "{{ .Values.web.kafdropDeployment.restartPolicy }}"
       ##############################################
       # Containers Associated with this Deployment #

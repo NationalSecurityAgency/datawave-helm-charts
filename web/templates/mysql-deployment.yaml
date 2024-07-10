@@ -71,6 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
+        fsGroup: 1000
       restartPolicy: "{{ .Values.web.mysqlDeployment.restartPolicy }}"
       {{- with .Values.web.mysql.configMap.init }}
       volumes: 

@@ -71,6 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
+        fsGroup: 1000
       restartPolicy: "{{ .Values.web.executorDeployment.restartPolicy }}"
 
       ##############################################
@@ -172,5 +173,7 @@ spec:
             {{ end }}
             optional: false
         - name: hadoop-config
+
+
           configMap:
             name: "{{ .Values.web.volumes.hadoop.configMapName }}"
