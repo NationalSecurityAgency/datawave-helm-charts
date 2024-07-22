@@ -13,6 +13,7 @@ management:
   endpoints.web.base-path: /mgmt
   endpoints.web.exposure.include: "*"
 server:
+  cdn-uri: /${spring.application.name}/
   non-secure-port: 8080
   outbound-ssl:
     key-store: ${server.ssl.key-store}
@@ -42,6 +43,9 @@ spring:
       enabled: false
       failFast: true
     host: '{{ .Chart.Name }}-{{ .Values.web.rabbitmqDeployment.meta.name }}'
+    publisher-confirm-type: simple
+    publisher-confirms: true
+    publisher-returns: true
   security:
     datawave:
       enforce-allowed-callers: false

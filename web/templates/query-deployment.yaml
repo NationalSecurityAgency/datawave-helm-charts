@@ -88,7 +88,7 @@ spec:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"            
             - name: AUDIT_SERVER_URL
-              value: http://{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}:{{ .Values.web.auditService.ports.default }}/audit
+              value: http://{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}:{{ .Values.web.auditService.ports.http }}/audit
             - name: HADOOP_HOST
               value: hdfs-nn
             - name: HADOOP_CONF_DIR

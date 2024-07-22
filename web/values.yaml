@@ -11,7 +11,8 @@ web:
         fileContents: |-
           create database cachedresults;
           use cachedresults;
-          GRANT ALL PRIVILEGES ON cachedresults TO 'datawave'@'%' WITH GRANT OPTION;
+          GRANT ALL PRIVILEGES ON *.* TO 'datawave'@'%' WITH GRANT OPTION;
+          
   hadoop:
     classpath:
       "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
@@ -96,7 +97,7 @@ web:
       periodSeconds: 5
       port: 8080
       scheme: HTTP
-      uri: audit/mgmt/health
+      uri: querymetric/mgmt/health
     meta:
       name: query-metrics
     readinessProbe:
@@ -104,7 +105,7 @@ web:
       periodSeconds: 5
       port: 8080
       scheme: HTTP
-      uri: audit/mgmt/health
+      uri: querymetric/mgmt/health
     replication:
       maxSurge: 2
       maxUnavailable: 1
@@ -161,7 +162,7 @@ web:
   
   authorizationService:
     endpoints:
-      authorize: authorization/v2
+      authorize: authorization/v2/authorize
     meta:
       name: authorization
     ports:
@@ -305,7 +306,7 @@ web:
   ############################################
   
   executorDeployment:
-    profiles: default,k8s,remoteauth,querymessaging,metricssource,query,pool1
+    profiles: default,k8s,remoteauth,querymessaging,metricssource,federation,query,pool1
     image:
       name: datawave-query-executor-service
       pullPolicy: IfNotPresent
@@ -498,7 +499,7 @@ web:
   ##########################################
   
   queryDeployment:
-    profiles: default,k8s,remoteauth,querymessaging,metricssource,query,mrquery,cachedresults
+    profiles: default,k8s,remoteauth,querymessaging,metricssource,query,mrquery,cachedresults,federation
     image:
       name: datawave-query-service
       pullPolicy: IfNotPresent
@@ -546,7 +547,7 @@ web:
   ##########################################
   
   mrQueryDeployment:
-    profiles: default,k8s,remoteauth,query,mrquery
+    profiles: default,k8s,remoteauth,query,federation,mrquery
     image:
       name: datawave-mapreduce-query-service
       pullPolicy: IfNotPresent
@@ -557,13 +558,13 @@ web:
       failureThreshold: 60
       port: 8080
       scheme: HTTP
-      uri: query/mgmt/health
+      uri: mrquery/mgmt/health
     readinessProbe:
       delaySeconds: 24
       periodSeconds: 5
       port: 8080
       scheme: HTTP
-      uri: query/mgmt/health
+      uri: mrquery/mgmt/health
     meta:
       name: mr-query
     replication:
@@ -670,6 +671,8 @@ web:
       domain: "dictionary.datawave.org"
     filestorage:
       domain: "filestorage.datawave.org"
+    authorization:
+      domain: "auth.datawave.org"
   
   ################################################
   # Default Values for Initialization Containers #

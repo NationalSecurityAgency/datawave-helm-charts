@@ -5,7 +5,7 @@ hadoop:
   # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
   image:
     repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-    tag: 3.3.6
+    tag: 3.3.5-jdk11
     pullPolicy: IfNotPresent
     pullSecrets:
     - dockerconfigjson-ghcr

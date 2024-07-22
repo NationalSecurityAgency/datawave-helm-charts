@@ -79,9 +79,9 @@ spec:
       ##############################################
 
       containers:
-
         - name: "{{ .Chart.Name }}-{{ .Values.web.executorDeployment.meta.name }}"
           #TODO use same yaml for pool1 and pool2
+          command:
           args:
             - --spring.application.name=executor-pool1
             - --spring.cloud.config.name=executor
@@ -173,7 +173,5 @@ spec:
             {{ end }}
             optional: false
         - name: hadoop-config
-
-
           configMap:
             name: "{{ .Values.web.volumes.hadoop.configMapName }}"

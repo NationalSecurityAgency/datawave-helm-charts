@@ -1,5 +1,4 @@
 # This serves as a set of sensible defaults for authorization and query federation.
-
 datawave:
   authorization:
     federation:

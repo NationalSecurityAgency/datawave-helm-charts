@@ -1,2 +1,3 @@
 ghcr-image-pull-secret.yaml
 **/*.tgz
+keystore.p12

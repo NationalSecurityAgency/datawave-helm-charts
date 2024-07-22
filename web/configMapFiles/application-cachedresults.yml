@@ -28,7 +28,7 @@ datawave:
     cachedResults:
       enabled: ${CACHED_RESULTS:false}
       remoteQuery:
-        queryServiceUri: "https://query:8443/query/v1/query"
+        queryServiceUri: "https://dwv-web-query:8443/query/v1/query"
         # unlimited
         maxBytesToBuffer: -1
       numFields: 900
