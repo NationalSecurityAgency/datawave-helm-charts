@@ -1,6 +1,13 @@
 #Values overrides file. See umbrella/values-testing.yaml
 VALUES_FILE=${1:-values-testing.yaml}
 
+#Package charts
+mkdir -p ./umbrella/charts/
+find ./ -name "*.tgz"  -delete   
+cd ./; for chart in hadoop accumulo zookeeper ingest web; do cd $chart; helm lint . && helm package . || exit 1; cp *.tgz ../umbrella/charts/; cd ..; done
+find ./ -name "*.tgz"  -exec cp {} umbrella/charts/ \;
+
+
 # Cache images and reset minikube. Then Setup minikube ingress.
 docker pull rabbitmq:3.11.4-alpine && \
 docker pull busybox:1.28 && \
@@ -11,6 +18,8 @@ minikube image load rabbitmq:3.11.4-alpine  && \
 minikube image load busybox:1.28 && \
 minikube image load mysql:8.0.32 && \
 minikube addons enable ingress && \
+minikube addons enable csi-hostpath-driver && \
+minikube addons enable volumesnapshots && \
 minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
 minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
 sudo sed -i "s/.*datawave\.org.*//g" /etc/hosts
@@ -28,17 +37,12 @@ if test -f ./ghcr-image-pull-secret.yaml; then
   minikube kubectl -- apply -f ./ghcr-image-pull-secret.yaml
 fi
 
-
-#Package charts
-mkdir -p ./umbrella/charts/
-find ./ -name "*.tgz"  -delete   
-cd ./; for chart in hadoop accumulo zookeeper ingest web; do cd $chart; helm lint . && helm package .; cp *.tgz ../umbrella/charts/; cd ..; done
-find ./ -name "*.tgz"  -exec cp {} umbrella/charts/ \;
 # Deploy umbrella chart
 cd umbrella;
 helm package .
 helm install dwv *.tgz -f ${VALUES_FILE} && \
 cd ../
+
 
 
 #Currently Disabled. See DataWave repo on how to get this json file.
