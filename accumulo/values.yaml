@@ -72,30 +72,30 @@ accumulo:
     tolerations: []
     affinity: {}
   tabletServers:
-    replicaCount: 5
+    replicaCount: 2
     resources: {}
     nodeSelector: {}
     tolerations: []
     affinity: {}
-  compactors:
-    queues:
-      - name: test1
-        queueName: test1
-        replicaCount: 1
-  scanServers:
-    resourceGroups:
-    - resourceGroupName: group1
-      replicaCount: 1
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
-    - resourceGroupName: default
-      replicaCount: 1
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
+  compactors: {}
+    # queues:
+    #   - name: test1
+    #     queueName: test1
+    #     replicaCount: 1
+  scanServers: {}
+    # resourceGroups:
+    # - resourceGroupName: group1
+    #   replicaCount: 1
+    #   resources: {}
+    #   nodeSelector: {}
+    #   tolerations: []
+    #   affinity: {}
+    # - resourceGroupName: default
+    #   replicaCount: 1
+    #   resources: {}
+    #   nodeSelector: {}
+    #   tolerations: []
+    #   affinity: {}
   gc:
     replicaCount: 1
     resources: {}

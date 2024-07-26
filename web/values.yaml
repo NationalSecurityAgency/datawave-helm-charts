@@ -109,7 +109,7 @@ web:
     replication:
       maxSurge: 2
       maxUnavailable: 1
-      replicaCount: 0
+      replicaCount: 1
       revisionHistoryLimit: 10
     restartPolicy: Always
   

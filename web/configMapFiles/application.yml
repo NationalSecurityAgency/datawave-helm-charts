@@ -23,7 +23,7 @@ server:
     trust-store-password: ${server.ssl.trust-store-password}
     trust-store-type: ${server.ssl.trust-store-type}
   port: 8443
-  servlet.context-path: /${spring.application.name}/
+  servlet.context-path: /${spring.application.name}
   ssl:
     client-auth: WANT
     key-store: '{{ .Values.web.secrets.keystore.path }}'
@@ -51,5 +51,5 @@ spring:
       enforce-allowed-callers: false
       issuers-required: true
       jwt.ttl: 86400
-      manager-roles: Administator,JBossAdministrator
+      manager-roles: Administrator,JBossAdministrator
     user.password: passwordNotUsed

@@ -88,6 +88,8 @@ spec:
               value: CLIENT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
             - name: KAFKA_CFG_LISTENERS
               value: CLIENT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+            - name: KAFKA_CFG_MAX_REQUEST_SIZE
+              value: "10485880"
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
               value: CLIENT://{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}:9092,EXTERNAL://{{ .Chart.Name }}-{{ .Values.web.kafkaDeployment.meta.name }}-0:9094
             - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
