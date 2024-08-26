@@ -114,5 +114,14 @@ The new sction will need to follow the following format:
 | (data.name).(FieldName).data.field.type.class | Fully-qualified class name of the DataWave type to be used to interpret and normalize "FieldName" values Example types are datawave.data.type.DateType, datawave.data.type.NumberType, datawave.data.type.GeoType, etc |
 
 
-
-
+## Known Roles
+| Role | Description |
+| ---- | ----------- |
+| Administrator | Provides all access to admin functions within Datawave |
+| AuthorizedQueryServer | Allowed to perform queries |
+| AuthorizedServer | Used to provide proxy entities from a server |
+| AuthorizedUser | A normal user |
+| InternalUser | Used for monitoring users within the system |
+| JBossAdministrator | Same as Administrator, provides all access to admin functions within Datawave |
+| MetricsAdministrator | TBD |
+| SecurityUser | Security admin functions? | 
