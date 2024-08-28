@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 {{- $fullname := .Release.Name -}}
-{{ range .Values.accumulo.scanServers.resourceGroups}}
+{{ range .Values.scanServers.resourceGroups}}
 
 ---
 
@@ -48,14 +48,14 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ $.Values.accumulo.hadoopConfigMap }}
+          name: {{ $.Values.hadoopConfigMap }}
       - name: config
         configMap:
           name: accumulo-config
       containers:
       - name: accumulo-sserver
-        image: {{ $.Values.accumulo.image.repository }}:{{ $.Values.accumulo.image.tag }}
-        imagePullPolicy: {{ $.Values.accumulo.image.pullPolicy }}
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
         {{ if eq .resourceGroupName "default" }}
         args: ["accumulo sserver -a $(hostname -f) " ]
@@ -71,11 +71,11 @@ spec:
           mountPath: /opt/accumulo/conf
         env:
         - name: HADOOP_CLASSPATH
-          value: {{ $.Values.accumulo.hadoop.classpath }}
+          value: {{ $.Values.hadoop.classpath }}
         - name: HADOOP_CONF_DIR
           value: /opt/hadoop/conf
         - name: ACCUMULO_CONF_DIR
-          value: {{ $.Values.accumulo.config.path }}
+          value: {{ $.Values.config.path }}
         resources:
           {{- toYaml .resources | nindent 10 }}
       {{- with .affinity }}
@@ -90,7 +90,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with $.Values.accumulo.image.pullSecrets }}
+      {{- with $.Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}

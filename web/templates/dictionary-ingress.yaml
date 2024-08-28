@@ -1,7 +1,7 @@
 ####################################
 # Core Helm Template Configuration #
 ####################################
-{{- if .Values.web.ingress.enabled }}
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 
@@ -29,17 +29,17 @@ spec:
   #########################################
   # Ingress Controller Rule Configuration #
   #########################################
-  ingressClassName: {{ .Values.web.ingress.services.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.services.ingressClassName }}
   rules:
-    - host: "{{ .Values.web.ingress.dictionary.domain }}"
+    - host: "{{ .Values.ingress.dictionary.domain }}"
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: "{{ .Chart.Name }}-{{ .Values.web.dictionaryService.meta.name }}"
+                name: "{{ .Values.dictionaryService.meta.name }}"
                 port: 
-                  number: {{ .Values.web.dictionaryService.ports.https }}
+                  number: {{ .Values.dictionaryService.ports.https }}
 {{- end }}
 

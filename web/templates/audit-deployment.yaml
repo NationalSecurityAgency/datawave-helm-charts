@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+  name: "{{ .Values.auditDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+    application: "{{ .Values.auditDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.auditDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.auditDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.auditDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.auditDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.auditDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.auditDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.auditDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.auditDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+      application: "{{ .Values.auditDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,24 +52,24 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+        application: "{{ .Values.auditDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
     #######################################
 
     spec:
-      {{- with .Values.web.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.pullSecrets }}
+      {{- with .Values.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      restartPolicy: "{{ .Values.web.auditDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.auditDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -77,36 +77,36 @@ spec:
       securityContext:
         runAsUser: 1000
       containers:
-        - name: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+        - name: "{{ .Values.auditDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
             - "--spring.profiles.active=default,k8s"
           env:
             - name: CONFIG_SERVER_URL
-              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.auditDeployment.image.name }}:{{ .Values.web.auditDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.auditDeployment.image.pullPolicy }}"
+              value: "http://{{ .Values.configurationDeployment.meta.name }}:{{ .Values.configurationService.ports.default }}/configserver"
+          image: "{{ .Values.dockerRegistry.url }}/{{ .Values.auditDeployment.image.name }}:{{ .Values.auditDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.auditDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.auditDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.auditDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.auditDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.auditDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.auditDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.auditDeployment.livenessProbe.uri }}"
+              port: {{ .Values.auditDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.auditDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.auditDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.auditDeployment.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.auditDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.auditDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.auditDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.auditDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.auditDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.auditDeployment.readinessProbe.uri }}"
+              port: {{ .Values.auditDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.auditDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.auditDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.auditDeployment.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443
           resources: {}
           volumeMounts:
-            - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
-              mountPath: "{{ .Values.web.volumes.certificates.destination }}"
+            - name: "{{ .Values.volumes.certificates.name }}"
+              mountPath: "{{ .Values.volumes.certificates.destination }}"
               readOnly: true
 
       #############################################################
@@ -116,23 +116,23 @@ spec:
       initContainers:
 
         - name: "{{ .Chart.Name }}-init-authorization"
-          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.authorizationService.meta.name }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.authorizationService.meta.name }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
 
         - name: "{{ .Chart.Name }}-init-configuration"
-          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################
 
       volumes:
-        - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
+        - name: "{{ .Values.volumes.certificates.name }}"
           secret:
-            {{ if not .Values.web.certificates.externalSecret.enabled }}
-            secretName: "{{ .Chart.Name }}-{{ .Values.web.certificatesSecret.meta.name }}"
+            {{ if not .Values.certificates.externalSecret.enabled }}
+            secretName: "{{ .Values.certificatesSecret.meta.name }}"
             {{ else }}
-            secretName: {{ .Values.web.certificates.externalSecret.name }}
+            secretName: {{ .Values.certificates.externalSecret.name }}
             {{ end }}
             optional: false

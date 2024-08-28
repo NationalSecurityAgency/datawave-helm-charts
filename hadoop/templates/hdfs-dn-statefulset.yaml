@@ -11,7 +11,7 @@ metadata:
     component: hdfs-dn
 spec:
   serviceName: {{ include "hadoop.fullname" . }}-hdfs-dn
-  replicas: {{ .Values.hadoop.hdfs.dataNode.replicas }}
+  replicas: {{ .Values.hdfs.dataNode.replicas }}
   selector:
     matchLabels:
       app: {{ include "hadoop.name" . }}
@@ -26,7 +26,7 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
-        {{- if eq .Values.hadoop.antiAffinity "hard" }}
+        {{- if eq .Values.antiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
@@ -34,7 +34,7 @@ spec:
                 app:  {{ include "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: hdfs-dn
-        {{- else if eq .Values.hadoop.antiAffinity "soft" }}
+        {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
@@ -55,11 +55,11 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-      {{- with .Values.hadoop.hdfs.dataNode.tolerations }}
+      {{- with .Values.hdfs.dataNode.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.hadoop.image.pullSecrets }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
@@ -67,14 +67,14 @@ spec:
       {{- end }}
       containers:
       - name: hdfs-dn
-        image: "{{ .Values.hadoop.image.repository }}:{{ .Values.hadoop.image.tag }}"
-        imagePullPolicy: {{ .Values.hadoop.image.pullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:
-          {{ toYaml .Values.hadoop.hdfs.dataNode.resources | nindent 10 }}
+          {{ toYaml .Values.hdfs.dataNode.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /
@@ -90,7 +90,7 @@ spec:
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
-        {{- if .Values.hadoop.persistence.dataNode.enabled }}
+        {{- if .Values.persistence.dataNode.enabled }}
         - name: dfs
           mountPath: /usr/local/hadoop/hdfs/
         {{- end }}
@@ -98,8 +98,8 @@ spec:
       - name: hadoop-config
         configMap:
           name: {{ include "hadoop.fullname" . }}
-  {{- if .Values.hadoop.persistence.dataNode.enabled }}
-  {{- with .Values.hadoop.persistence.dataNode.definitions }}
+  {{- if .Values.persistence.dataNode.enabled }}
+  {{- with .Values.persistence.dataNode.definitions }}
   volumeClaimTemplates:
     {{- toYaml . | nindent 4 }}
   {{- end }}

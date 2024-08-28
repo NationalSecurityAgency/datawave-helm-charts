@@ -28,12 +28,12 @@ fi
 
 
 #Package charts
-mkdir -p ./umbrella/charts/
+mkdir -p ./datawave-stack/charts/
 find ./ -name "*.tgz"  -delete   
-cd ./; for chart in hadoop accumulo zookeeper ingest web; do cd $chart; helm lint . && helm package .; cp *.tgz ../umbrella/charts/; cd ..; done
-find ./ -name "*.tgz"  -exec cp {} umbrella/charts/ \;
-# Deploy umbrella chart
-cd umbrella;
+cd ./; for chart in hadoop accumulo zookeeper ingest web; do cd $chart; helm lint . && helm package .; cp *.tgz ../datawave-stack/charts/; cd ..; done
+find ./ -name "*.tgz"  -exec cp {} datawave-stack/charts/ \;
+# Deploy datawave-stack chart
+cd datawave-stack;
 helm package .
 helm install dwv *.tgz -f ${VALUES_FILE} && \
 cd ../

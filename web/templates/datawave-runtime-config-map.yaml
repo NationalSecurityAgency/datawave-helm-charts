@@ -40,7 +40,7 @@ data:
     # /core-service=management/security-realm=SSLRealm/authentication=truststore/:add(keystore-path=${env.TRUSTSTORE},keystore-provider=${env.TRUSTSTORE_TYPE},keystore-password="${env.TRUSTSTORE_PASSWORD}")
     # /subsystem=security/security-domain=datawave/jsse=classic:add(keystore={type="${env.KEYSTORE_TYPE}",password="${env.KEYSTORE_PASSWORD}",url="file://${env.KEYSTORE}"},truststore={type="${env.TRUSTSTORE_TYPE}",password="${env.TRUSTSTORE_PASSWORD}",url="file://${env.TRUSTSTORE}"})
 
-    {{ .Values.web.datawaveRuntimeConfig.additions}}
+    {{ .Values.datawaveRuntimeConfig.additions}}
 
     # Run the batch commands (MUST BE LAST)
     run-batch

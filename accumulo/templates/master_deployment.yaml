@@ -15,52 +15,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "accumulo.fullname" . }}-masters
+  name: {{ include "accumulo.fullname" . }}-managers
   labels:
     {{- include "accumulo.labels" . | nindent 4 }}
-    app.kubernetes.io/component: master
+    app.kubernetes.io/component: manager
 spec:
   replicas: 1
   selector:
     matchLabels:
       {{- include "accumulo.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: master
+      app.kubernetes.io/component: manager
   template:
     metadata:
       labels:
         {{- include "accumulo.labels" . | nindent 8 }}
-        app.kubernetes.io/component: master
+        app.kubernetes.io/component: manager
     spec:
       securityContext:
         runAsUser: 1001
       initContainers:
       - name: check-hadoop-jars
-        image: "{{ .Values.accumulo.initContainer.image }}:{{ .Values.accumulo.initContainer.tag }}"
+        image: "{{ .Values.initContainer.image }}:{{ .Values.initContainer.tag }}"
         securityContext:
           runAsUser: 1000
         command: 
         - "/bin/sh"
         args: ["-c", "while [ `hdfs dfs -ls hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
-      hostname: accumulo-master 
+      hostname: accumulo-manager 
       containers:
-      - name: accumulo-master
-        image: {{ .Values.accumulo.image.repository }}:{{ .Values.accumulo.image.tag }}
-        imagePullPolicy: {{ .Values.accumulo.image.pullPolicy }}
+      - name: accumulo-manager
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
-        args: ["./entrypoint.sh accumulo master -a $(hostname -f)" ]
+        args: ["./entrypoint.sh accumulo manager -a $(hostname -f)" ]
         ports:
           - containerPort: 9999
         env:
         - name: HADOOP_CONF_DIR
           value: /opt/hadoop/conf
         - name: ACCUMULO_CONF_DIR
-          value: {{ .Values.accumulo.config.path }}
+          value: {{ .Values.config.path }}
         - name: ACCUMULO_INSTANCE_NAME
-          value: {{ .Values.accumulo.instanceId }}
+          value: {{ .Values.instanceId }}
         - name: HADOOP_CLASSPATH
-          value: {{ .Values.accumulo.hadoop.classpath }}
+          value: {{ .Values.hadoop.classpath }}
         - name: ACCUMULO_ROOT_PASSWORD
-          value: {{ .Values.accumulo.config.userManagement.rootPassword }}
+          value: {{ .Values.config.userManagement.rootPassword }}
         volumeMounts:
           - name: hadoop-config
             mountPath: /opt/hadoop/conf
@@ -70,11 +70,11 @@ spec:
             mountPath: /cmds
             readOnly: true
         resources:
-          {{- toYaml .Values.accumulo.master.resources | nindent 10 }}
+          {{- toYaml .Values.manager.resources | nindent 10 }}
       volumes:
         - name: hadoop-config
           configMap:
-            name: {{ .Values.accumulo.hadoopConfigMap }}
+            name: {{ .Values.hadoopConfigMap }}
         - name: config
           configMap:
             name: accumulo-config
@@ -82,19 +82,19 @@ spec:
           secret:
             secretName: {{ include "accumulo.fullname" . }}-cmds
             optional: false
-      {{- with .Values.accumulo.master.affinity }}
+      {{- with .Values.manager.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.accumulo.master.nodeSelector }}
+      {{- with .Values.manager.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.accumulo.master.tolerations }}
+      {{- with .Values.manager.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.accumulo.image.pullSecrets }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}

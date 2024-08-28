@@ -10,9 +10,9 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.auditService.meta.name }}"
+  name: "{{ .Values.auditService.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.auditService.meta.name }}"
+    application: "{{ .Values.auditService.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +25,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Chart.Name }}-{{ .Values.web.auditDeployment.meta.name }}"
+    application: "{{ .Values.auditDeployment.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -34,9 +34,9 @@ spec:
   ports:
 
     - name: http
-      port: {{ .Values.web.auditService.ports.http }}
+      port: {{ .Values.auditService.ports.http }}
       targetPort: 8080
 
     - name: https
-      port: {{ .Values.web.auditService.ports.https }}
+      port: {{ .Values.auditService.ports.https }}
       targetPort: 8443

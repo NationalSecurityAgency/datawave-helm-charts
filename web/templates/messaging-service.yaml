@@ -10,9 +10,9 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}"
+  name: "{{ .Values.messagingService.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}"
+    application: "{{ .Values.messagingService.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +25,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Chart.Name }}-{{ .Values.web.messagingDeployment.meta.name }}"
+    application: "{{ .Values.messagingDeployment.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -34,9 +34,9 @@ spec:
   ports:
 
     - name: amqp
-      port: {{ .Values.web.messagingService.ports.amqp }}
+      port: {{ .Values.messagingService.ports.amqp }}
       targetPort: 5672
 
     - name: mgmt
-      port: {{ .Values.web.messagingService.ports.mgmt }}
+      port: {{ .Values.messagingService.ports.mgmt }}
       targetPort: 15672

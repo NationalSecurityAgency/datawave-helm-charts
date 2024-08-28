@@ -10,9 +10,9 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.mysqlService.meta.name }}"
+  name: "{{ .Values.mysqlService.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.mysqlService.meta.name }}"
+    application: "{{ .Values.mysqlService.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +25,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Chart.Name }}-{{ .Values.web.mysqlService.meta.name }}"
+    application: "{{ .Values.mysqlService.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -34,5 +34,5 @@ spec:
   ports:
 
     - name: mysql
-      port: {{ .Values.web.mysqlService.ports.mysql }}
+      port: {{ .Values.mysqlService.ports.mysql }}
       targetPort: 3306

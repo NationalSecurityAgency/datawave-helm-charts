@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.cacheDeployment.meta.name }}"
+  name: "{{ .Values.cacheDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.cacheDeployment.meta.name }}"
+    application: "{{ .Values.cacheDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.cacheDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.cacheDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.cacheDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.cacheDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.cacheDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.cacheDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.cacheDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.cacheDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.cacheDeployment.meta.name }}"
+      application: "{{ .Values.cacheDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,18 +52,18 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.cacheDeployment.meta.name }}"
+        application: "{{ .Values.cacheDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
     #######################################
 
     spec:
-      {{- with .Values.web.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.pullSecrets }}
+      {{- with .Values.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
@@ -71,7 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.web.cacheDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.cacheDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -79,7 +79,7 @@ spec:
 
       containers:
 
-        - name: "{{ .Chart.Name }}-{{ .Values.web.cacheDeployment.meta.name }}"
+        - name: "{{ .Values.cacheDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
             - "--spring.profiles.active=default,k8s"
@@ -91,23 +91,23 @@ spec:
             - "--log4j.appender.stdout.layout.ConversionPattern=%t %-5p %c{2} - %m%n"
           env:
             - name: CONFIG_SERVER_URL
-              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.cacheDeployment.image.name }}:{{ .Values.web.cacheDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.cacheDeployment.image.pullPolicy }}"
+              value: "http://{{ .Values.configurationDeployment.meta.name }}:{{ .Values.configurationService.ports.default }}/configserver"
+          image: "{{ .Values.dockerRegistry.url }}/{{ .Values.cacheDeployment.image.name }}:{{ .Values.cacheDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.cacheDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.cacheDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.cacheDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.cacheDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.cacheDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.cacheDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.cacheDeployment.livenessProbe.uri }}"
+              port: {{ .Values.cacheDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.cacheDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.cacheDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.cacheDeployment.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.cacheDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.cacheDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.cacheDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.cacheDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.cacheDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.cacheDeployment.readinessProbe.uri }}"
+              port: {{ .Values.cacheDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.cacheDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.cacheDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.cacheDeployment.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 5701
             - containerPort: 5702
@@ -116,8 +116,8 @@ spec:
             - containerPort: 8443
           resources: {}
           volumeMounts:
-            - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
-              mountPath: "{{ .Values.web.volumes.certificates.destination }}"
+            - name: "{{ .Values.volumes.certificates.name }}"
+              mountPath: "{{ .Values.volumes.certificates.destination }}"
               readOnly: true
 
       #############################################################
@@ -127,8 +127,8 @@ spec:
       initContainers:
 
         - name: "{{ .Chart.Name }}-init-configuration"
-          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #
@@ -136,11 +136,11 @@ spec:
 
       volumes:
         
-        - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
+        - name: "{{ .Values.volumes.certificates.name }}"
           secret:
-            {{ if not .Values.web.certificates.externalSecret.enabled }}
-            secretName: "{{ .Chart.Name }}-{{ .Values.web.certificatesSecret.meta.name }}"
+            {{ if not .Values.certificates.externalSecret.enabled }}
+            secretName: "{{ .Values.certificatesSecret.meta.name }}"
             {{ else }}
-            secretName: {{ .Values.web.certificates.externalSecret.name }}
+            secretName: {{ .Values.certificates.externalSecret.name }}
             {{ end }}
             optional: false

@@ -24,7 +24,7 @@ data:
        for bulk import into DataWave's Accumulo tables
     -->
     <flagMakerConfig>
-    {{- range $type := .Values.ingest.config.types }}
+    {{- range $type := .Values.config.types }}
         <flagCfg>
           <folder>{{$type.flagMakerConfig.bulkFolder}}</folder>
           <ingestPool>bulk</ingestPool>
@@ -34,11 +34,11 @@ data:
         </flagCfg>
     {{- end }}
         <defaultCfg>
-        {{- range $k, $v := .Values.ingest.config.overallFlagConfig.defaultCfg.bulk }}
+        {{- range $k, $v := .Values.config.overallFlagConfig.defaultCfg.bulk }}
           <{{$k}}>{{$v}}</{{$k}}>
         {{- end }}
         </defaultCfg>
-        {{- range $k, $v := .Values.ingest.config.overallFlagConfig.properties.bulk }}
+        {{- range $k, $v := .Values.config.overallFlagConfig.properties.bulk }}
         <{{$k}}>{{$v}}</{{$k}}>
         {{- end }}
     </flagMakerConfig>
@@ -51,7 +51,7 @@ data:
        Accumulo tables during the IngestJob map phase
     -->
     <flagMakerConfig>
-      {{- range $type := .Values.ingest.config.types }}
+      {{- range $type := .Values.config.types }}
       <flagCfg>
         <folder>{{$type.flagMakerConfig.liveFolder}}</folder>
         <ingestPool>live</ingestPool>
@@ -61,11 +61,11 @@ data:
       </flagCfg>
       {{- end }}
       <defaultCfg>
-      {{- range $k, $v := .Values.ingest.config.overallFlagConfig.defaultCfg.live }}
+      {{- range $k, $v := .Values.config.overallFlagConfig.defaultCfg.live }}
         <{{$k}}>{{$v}}</{{$k}}>
       {{- end }}
       </defaultCfg>
-      {{- range $k, $v := .Values.ingest.config.overallFlagConfig.properties.live }}
+      {{- range $k, $v := .Values.config.overallFlagConfig.properties.live }}
       <{{$k}}>{{$v}}</{{$k}}>
       {{- end }}
     </flagMakerConfig>

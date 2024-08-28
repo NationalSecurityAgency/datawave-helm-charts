@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.authorizationDeployment.meta.name }}"
+  name: "{{ .Values.authorizationDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.authorizationDeployment.meta.name }}"
+    application: "{{ .Values.authorizationDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.authorizationDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.authorizationDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.authorizationDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.authorizationDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.authorizationDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.authorizationDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.authorizationDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.authorizationDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.authorizationDeployment.meta.name }}"
+      application: "{{ .Values.authorizationDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,18 +52,18 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.authorizationDeployment.meta.name }}"
+        application: "{{ .Values.authorizationDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
     #######################################
 
     spec:
-      {{- with .Values.web.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.pullSecrets }}
+      {{- with .Values.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
@@ -71,7 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.web.authorizationDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.authorizationDeployment.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -79,37 +79,37 @@ spec:
 
       containers:
 
-        - name: "{{ .Chart.Name }}-{{ .Values.web.authorizationDeployment.meta.name }}"
+        - name: "{{ .Values.authorizationDeployment.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active={{ .Values.web.authorizationDeployment.profiles }}"
+            - "--spring.profiles.active={{ .Values.authorizationDeployment.profiles }}"
           env:
             - name: CONFIG_SERVER_URL
-              value: "http://{{ .Chart.Name }}-{{ .Values.web.configurationDeployment.meta.name }}:{{ .Values.web.configurationService.ports.default }}/configserver"
-          image: "{{ .Values.web.dockerRegistry.url }}/{{ .Values.web.authorizationDeployment.image.name }}:{{ .Values.web.authorizationDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.authorizationDeployment.image.pullPolicy }}"
+              value: "http://{{ .Values.configurationDeployment.meta.name }}:{{ .Values.configurationService.ports.default }}/configserver"
+          image: "{{ .Values.dockerRegistry.url }}/{{ .Values.authorizationDeployment.image.name }}:{{ .Values.authorizationDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.authorizationDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.web.authorizationDeployment.livenessProbe.uri }}"
-              port: {{ .Values.web.authorizationDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.web.authorizationDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.authorizationDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.authorizationDeployment.livenessProbe.periodSeconds }}
-            failureThreshold: {{ .Values.web.authorizationDeployment.livenessProbe.failureThreshold }}
+              path: "{{ .Values.authorizationDeployment.livenessProbe.uri }}"
+              port: {{ .Values.authorizationDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.authorizationDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.authorizationDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.authorizationDeployment.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.authorizationDeployment.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.web.authorizationDeployment.readinessProbe.uri }}"
-              port: {{ .Values.web.authorizationDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.web.authorizationDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.web.authorizationDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.web.authorizationDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.authorizationDeployment.readinessProbe.uri }}"
+              port: {{ .Values.authorizationDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.authorizationDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.authorizationDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.authorizationDeployment.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443
           resources: {}
           volumeMounts:
-            - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
-              mountPath: "{{ .Values.web.volumes.certificates.destination }}"
+            - name: "{{ .Values.volumes.certificates.name }}"
+              mountPath: "{{ .Values.volumes.certificates.destination }}"
               readOnly: true
 
       #############################################################
@@ -119,16 +119,16 @@ spec:
       initContainers:
         - name: init-accumulo
           image: busybox:1.28
-          command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
         - name: "{{ .Chart.Name }}-init-cache"
-          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Chart.Name }}-{{ .Values.web.cacheService.meta.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Values.cacheService.meta.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-configuration"
-          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Chart.Name }}-{{ .Values.web.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-messaging"
-          image: "{{ .Values.web.initialization.image.name }}:{{ .Values.web.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup  {{ .Chart.Name }}-{{ .Values.web.messagingService.meta.name }}; do echo 'Waiting for Messaging...'; sleep 2; done" ]
+          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup  {{ .Values.messagingService.meta.name }}; do echo 'Waiting for Messaging...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #
@@ -138,11 +138,11 @@ spec:
         - name: logs
           emptyDir:
             sizeLimit: 5G
-        - name: "{{ .Chart.Name }}-{{ .Values.web.volumes.certificates.name }}"
+        - name: "{{ .Values.volumes.certificates.name }}"
           secret:
-            {{ if not .Values.web.certificates.externalSecret.enabled }}
-            secretName: "{{ .Chart.Name }}-{{ .Values.web.certificatesSecret.meta.name }}"
+            {{ if not .Values.certificates.externalSecret.enabled }}
+            secretName: "{{ .Values.certificatesSecret.meta.name }}"
             {{ else }}
-            secretName: {{ .Values.web.certificates.externalSecret.name }}
+            secretName: {{ .Values.certificates.externalSecret.name }}
             {{ end }}
             optional: false

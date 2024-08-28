@@ -6,7 +6,7 @@ metadata:
     {{- include "datawave.labels" . | nindent 4 }}
     app.kubernetes.io/component: ingest
 spec:
-  replicas: {{ .Values.ingest.deployment.replicaCount }}
+  replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: ingest
@@ -15,7 +15,7 @@ spec:
       labels:
         app.kubernetes.io/component: ingest
     spec:
-      hostname: ingestmaster
+      hostname: ingestmanager
       initContainers:
       - name: init-hdfs
         image: busybox:1.28
@@ -25,7 +25,7 @@ spec:
       - name: accumulo-classpath-loader
         securityContext:
           runAsUser: 1000
-        image: {{ .Values.ingest.image.repository }}:{{ .Values.ingest.image.tag }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         command: ["/bin/bash", "/cmds/run.sh"]
         volumeMounts:
         - name: init-container-cmds
@@ -35,13 +35,13 @@ spec:
           mountPath: /usr/local/hadoop/conf
         env:
         - name: HADOOP_CLASSPATH
-          value: {{ .Values.ingest.hadoop.classpath }}
+          value: {{ .Values.hadoop.classpath }}
       - name: init-accumulo
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
-      {{- with .Values.ingest.tolerations }}
+        command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -53,15 +53,15 @@ spec:
       - name: ingest
         env:
         - name: ADDITIONAL_INGEST_LIBS
-          value: {{ .Values.ingest.libs }}
+          value: {{ .Values.libs }}
         - name: HADOOP_CLASSPATH
-          value: {{ .Values.ingest.hadoop.classpath }}
+          value: {{ .Values.hadoop.classpath }}
         - name: HADOOP_CONF_DIR
           value: /usr/local/hadoop/conf
-        image: {{ .Values.ingest.image.repository }}:{{ .Values.ingest.image.tag }}
-        imagePullPolicy: {{ .Values.ingest.image.pullPolicy }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          {{- toYaml .Values.ingest.deployment.resources | nindent 10 }}
+          {{- toYaml .Values.deployment.resources | nindent 10 }}
         command: ["/bin/bash", "/cmds/run.sh"]
         volumeMounts:
         - name: accumulo-config
@@ -78,7 +78,7 @@ spec:
         - name: ingest-env
           mountPath: /opt/datawave-ingest/current/bin/ingest/ingest-env.sh
           subPath: ingest-env.sh
-        {{ range .Values.ingest.config.types }}
+        {{ range .Values.config.types }}
         - name: {{ .name }}
           mountPath: /opt/datawave-ingest/current/config/{{ .name }}-ingest-config.xml
           subPath: {{ .name }}-ingest-config.xml
@@ -92,7 +92,7 @@ spec:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
       volumes:
-      {{ range .Values.ingest.config.types }}
+      {{ range .Values.config.types }}
       - name: {{ .name }}
         configMap:
           name: "{{ $.Chart.Name }}-data-types-configmap"
@@ -119,10 +119,10 @@ spec:
           name: {{ .Chart.Name }}-genders
       - name: hadoop-config
         configMap:
-          name: {{ .Values.ingest.hadoopConfigMap }}
+          name: {{ .Values.hadoopConfigMap }}
       - name: accumulo-config
         configMap:
-          name: {{ .Values.ingest.accumuloConfigMap }}
+          name: {{ .Values.accumuloConfigMap }}
       - name: cmds
         secret:
           secretName: {{ include "datawave.fullname" . }}-cmds
@@ -131,19 +131,19 @@ spec:
         secret:
           secretName: {{ include "datawave.fullname" . }}-initconatiner-cmds
           optional: false
-      {{- with .Values.ingest.deployment.affinity }}
+      {{- with .Values.deployment.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.ingest.deployment.nodeSelector }}
+      {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.ingest.deployment.tolerations }}
+      {{- with .Values.deployment.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.ingest.image.pullSecrets }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}

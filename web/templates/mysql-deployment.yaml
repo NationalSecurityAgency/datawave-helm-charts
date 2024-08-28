@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+  name: "{{ .Values.mysqlDeployment.meta.name }}"
   labels:
-    application: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+    application: "{{ .Values.mysqlDeployment.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.web.mysqlDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.web.mysqlDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.mysqlDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.mysqlDeployment.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.web.mysqlDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.web.mysqlDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.mysqlDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.mysqlDeployment.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+      application: "{{ .Values.mysqlDeployment.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,18 +52,18 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
+        application: "{{ .Values.mysqlDeployment.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
     #######################################
 
     spec:
-      {{- with .Values.web.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.pullSecrets }}
+      {{- with .Values.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
@@ -71,39 +71,39 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.web.mysqlDeployment.restartPolicy }}"
-      {{- with .Values.web.mysql.configMap.init }}
+      restartPolicy: "{{ .Values.mysqlDeployment.restartPolicy }}"
+      {{- with .Values.mysql.configMap.init }}
       volumes: 
       {{ range . }}     
       - name: {{ .name }}
         configMap:
-          name: "{{ $.Chart.Name }}-{{ $.Values.web.mysql.configMap.name}}"
+          name: "{{ $.Chart.Name }}-{{ $.Values.mysql.configMap.name}}"
       {{- end }}
       {{- end }}
       ##############################################
       # Containers Associated with this Deployment #
       ##############################################
       containers:
-        - name: "{{ .Chart.Name }}-{{ .Values.web.mysqlDeployment.meta.name }}"
-          image: "{{ .Values.web.mysqlDeployment.image.name }}:{{ .Values.web.mysqlDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.web.mysqlDeployment.image.pullPolicy }}"
+        - name: "{{ .Values.mysqlDeployment.meta.name }}"
+          image: "{{ .Values.mysqlDeployment.image.name }}:{{ .Values.mysqlDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.mysqlDeployment.image.pullPolicy }}"
           resources: {}
           env:
             - name: MYSQL_RANDOM_ROOT_PASSWORD
               value: "true"
             - name: MYSQL_USER
-              value: {{ .Values.web.mysql.user }}
+              value: {{ .Values.mysql.user }}
             - name: MYSQL_PASSWORD
-              {{ if hasKey .Values.web.mysql "secretName" }}
+              {{ if hasKey .Values.mysql "secretName" }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.mysql.secretName }}  # Name of the secret
-                  key: {{ .Values.web.mysql.secretKey }}  # Key in the secret containing the value for the environment variable
+                  name: {{ .Values.mysql.secretName }}  # Name of the secret
+                  key: {{ .Values.mysql.secretKey }}  # Key in the secret containing the value for the environment variable
               {{ else }}
               value: secret
               {{ end }}
 
-          {{- if .Values.web.mysqlDeployment.livenessProbe.enabled }}
+          {{- if .Values.mysqlDeployment.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
@@ -111,13 +111,13 @@ spec:
                 - "ping"
                 - "-h"
                 - "localhost"
-            initialDelaySeconds: {{ .Values.web.mysqlDeployment.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.web.mysqlDeployment.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.web.mysqlDeployment.livenessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.web.mysqlDeployment.livenessProbe.successThreshold }}
-            failureThreshold: {{ .Values.web.mysqlDeployment.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.mysqlDeployment.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.mysqlDeployment.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.mysqlDeployment.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.mysqlDeployment.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.mysqlDeployment.livenessProbe.failureThreshold }}
           {{- end }}
-          {{- if .Values.web.mysqlDeployment.readinessProbe.enabled }}
+          {{- if .Values.mysqlDeployment.readinessProbe.enabled }}
           readinessProbe:
             exec:
               command:
@@ -125,15 +125,15 @@ spec:
                 - "ping"
                 - "-h"
                 - "localhost"
-            initialDelaySeconds: {{ .Values.web.mysqlDeployment.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.web.mysqlDeployment.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.web.mysqlDeployment.readinessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.web.mysqlDeployment.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.web.mysqlDeployment.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.mysqlDeployment.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.mysqlDeployment.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.mysqlDeployment.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.mysqlDeployment.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.mysqlDeployment.readinessProbe.failureThreshold }}
           {{- end }}
-          {{- with .Values.web.mysql.configMap.init }}
+          {{- with .Values.mysql.configMap.init }}
           volumeMounts: 
-          {{ range $.Values.web.mysql.configMap.init }}
+          {{ range $.Values.mysql.configMap.init }}
           - name: {{ .name }}
             mountPath: /docker-entrypoint-initdb.d/{{ .fileName }}
             subPath: {{ .fileName }}

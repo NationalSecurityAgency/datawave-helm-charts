@@ -7,7 +7,7 @@ data:
     hazelcast:
       client:
         k8s:
-          service-dns-name: dwv-web-cache.default.svc.cluster.local
+          service-dns-name: cache.default.svc.cluster.local
   application.yml: |-
     datawave:
       authorization:
@@ -133,7 +133,7 @@ data:
     hazelcast:
       server:
         k8s:
-          service-dns-name: dwv-web-cache.default.svc.cluster.local
+          service-dns-name: cache.{{ .Release.Namespace }}.svc.cluster.local
   cache.yml: "hazelcast:\n  network:\n    join:\n      multicast:\n        enabled:
     false\n      kubernetes:\n        enabled: true\n  server:\n    initialMergeDelaySeconds:
     50\n    xml-config: |\n      <hazelcast \n          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n

@@ -3,12 +3,12 @@
 Generate secret name.
 
 Usage:
-{{ include "common.secrets.name" (dict "existingSecret" .Values.zookeeper.path.to.the.existingSecret "defaultNameSuffix" "mySuffix" "context" $) }}
+{{ include "common.secrets.name" (dict "existingSecret" .Values.path.to.the.existingSecret "defaultNameSuffix" "mySuffix" "context" $) }}
 
 Params:
   - existingSecret - ExistingSecret/String - Optional. The path to the existing secrets in the values.yaml given by the user
     to be used instead of the default one. Allows for it to be of type String (just the secret name) for backwards compatibility.
-    +info: https://github.com/bitnami/charts/tree/master/bitnami/common#existingsecret
+    +info: https://github.com/bitnami/charts/tree/manager/bitnami/common#existingsecret
   - defaultNameSuffix - String - Optional. It is used only if we have several secrets in the same deployment.
   - context - Dict - Required. The context for the template evaluation.
 */}}
@@ -36,12 +36,12 @@ Params:
 Generate secret key.
 
 Usage:
-{{ include "common.secrets.key" (dict "existingSecret" .Values.zookeeper.path.to.the.existingSecret "key" "keyName") }}
+{{ include "common.secrets.key" (dict "existingSecret" .Values.path.to.the.existingSecret "key" "keyName") }}
 
 Params:
   - existingSecret - ExistingSecret/String - Optional. The path to the existing secrets in the values.yaml given by the user
     to be used instead of the default one. Allows for it to be of type String (just the secret name) for backwards compatibility.
-    +info: https://github.com/bitnami/charts/tree/master/bitnami/common#existingsecret
+    +info: https://github.com/bitnami/charts/tree/manager/bitnami/common#existingsecret
   - key - String - Required. Name of the key in the secret.
 */}}
 {{- define "common.secrets.key" -}}
@@ -101,12 +101,12 @@ The order in which this function returns a secret password:
   {{- $password = $providedPasswordValue | toString | b64enc | quote }}
 {{- else }}
 
-  {{- if .context.Values.zookeeper.enabled }}
+  {{- if .context.Values.enabled }}
     {{- $subchart = $chartName }}
   {{- end -}}
 
   {{- $requiredPassword := dict "valueKey" $providedPasswordKey "secret" .secret "field" .key "subchart" $subchart "context" $.context -}}
-  {{- $requiredPasswordError := include "common.validations.Values.zookeeper.single.empty" $requiredPassword -}}
+  {{- $requiredPasswordError := include "common.validations.Values.single.empty" $requiredPassword -}}
   {{- $passwordValidationErrors := list $requiredPasswordError -}}
   {{- include "common.errors.upgrade.passwords.empty" (dict "validationErrors" $passwordValidationErrors "context" $.context) -}}
 

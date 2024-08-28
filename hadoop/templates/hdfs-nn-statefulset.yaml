@@ -35,7 +35,7 @@ spec:
         command: ['sh', '-c', "until nslookup zookeeper; do echo waiting for zookeeper; sleep 2; done"]
       affinity:
         podAntiAffinity:
-        {{- if eq .Values.hadoop.antiAffinity "hard" }}
+        {{- if eq .Values.antiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
@@ -43,7 +43,7 @@ spec:
                 app:  {{ include "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: hdfs-nn
-        {{- else if eq .Values.hadoop.antiAffinity "soft" }}
+        {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
@@ -55,11 +55,11 @@ spec:
                   component: hdfs-nn
         {{- end }}
       terminationGracePeriodSeconds: 0
-      {{- with .Values.hadoop.hdfs.nameNode.tolerations }}
+      {{- with .Values.hdfs.nameNode.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.hadoop.image.pullSecrets }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
@@ -67,14 +67,14 @@ spec:
       {{- end }}
       containers:
       - name: hdfs-nn
-        image: "{{ .Values.hadoop.image.repository }}:{{ .Values.hadoop.image.tag }}"
-        imagePullPolicy: {{ .Values.hadoop.image.pullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
         - "/bin/sh"
         - "/tmp/hadoop-config/bootstrap.sh"
         - "-d"
         resources:
-          {{ toYaml .Values.hadoop.hdfs.nameNode.resources | nindent 10 }}
+          {{ toYaml .Values.hdfs.nameNode.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /
@@ -90,7 +90,7 @@ spec:
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
-        {{- if .Values.hadoop.persistence.nameNode.enabled }}
+        {{- if .Values.persistence.nameNode.enabled }}
         - name: dfs
           mountPath: /usr/local/hadoop/data/
         {{- end }}
@@ -98,8 +98,8 @@ spec:
       - name: hadoop-config
         configMap:
           name: {{ include "hadoop.fullname" . }}
-  {{- if .Values.hadoop.persistence.nameNode.enabled }}
-  {{- with .Values.hadoop.persistence.nameNode.definitions }}
+  {{- if .Values.persistence.nameNode.enabled }}
+  {{- with .Values.persistence.nameNode.definitions }}
   volumeClaimTemplates:
     {{- toYaml . | nindent 2 }}
   {{- end }}

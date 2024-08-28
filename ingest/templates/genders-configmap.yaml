@@ -23,6 +23,6 @@ data:
   #################################################
 
   genders: |
-    ingestmaster ingest=master
+    ingestmanager ingest=manager
     hdfs-nn ingest=namenode
     zookeeper zookeeper

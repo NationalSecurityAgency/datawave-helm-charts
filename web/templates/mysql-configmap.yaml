@@ -1,10 +1,10 @@
-{{ with .Values.web.mysql.configMap.init }}
+{{ with .Values.mysql.configMap.init }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ $.Chart.Name }}-{{ $.Values.web.mysql.configMap.name}}"
+  name: "{{ $.Chart.Name }}-{{ $.Values.mysql.configMap.name}}"
 data:
-{{ range $.Values.web.mysql.configMap.init }}
+{{ range $.Values.mysql.configMap.init }}
   {{ .fileName }}: |-
     {{ .fileContents  | nindent 4}}
 {{- end }}

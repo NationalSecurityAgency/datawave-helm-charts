@@ -1,10 +1,10 @@
 datawave:
   dictionary:
     accumulo-properties:
-      instance-name: "{{ .Values.web.accumulo.instanceName }}"
-      password: "{{ .Values.web.accumulo.password }}"
-      username: "{{ .Values.web.accumulo.user }}"
-      zookeepers: "{{ .Values.web.zookeeper.quorum }}"
+      instance-name: "{{ .Values.accumulo.instanceName }}"
+      password: "{{ .Values.accumulo.password }}"
+      username: "{{ .Values.accumulo.user }}"
+      zookeepers: "{{ .Values.zookeeper.quorum }}"
     edge:
       metadata-table-name: ${metadata.tabl.name:datawave.metadata}
       num-threads: 8
