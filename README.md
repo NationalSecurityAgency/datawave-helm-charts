@@ -33,11 +33,35 @@ In order to test changes to helm charts, you can run the following script:
 ```
 This will package all the helm charts from the local directories, and launch the cluster.
 
-## Adding a New Data Type to DataWave
+## DataWave Configuration and Deployment
 
-Inside the umbrella/values-testing.yaml file, you will need to add a new section under
-the `dwv-ingest->ingest->config->types` section.
+### Required Information for onboarding a new datatype
+- name of the datatype
+- What fields will be queryable
+  - types for the fields
+  - what fields are unique identifiers
 
+### Steps for Adding a new Datatype
+1) Open the umbrella/values.yaml or your own values.yaml.
+1) Add the datatype name to the  `dwv-ingest->ingest->config->liveDataTypes` value.
+1) Add a new section under the `dwv-ingest->ingest->config->types`.
+1) Fill in all the sections within the YAML. See [New Datatype Configuration](#new-datatype-configuration-help) for additional details.
+1) Deploy using the [DataWave Deployment](#datawave-deployment) section
+
+### DataWave Deployment
+To build the helm package: `build_pkg.sh`<br>
+To install via helm: `helm install -n <namespace> datawave-system-X.X.X.tgz`<br>
+To upgrade via helm: `helm upgrade -n <namespace> datawave-system-X.X.X.tgz`
+
+When performing an upgrade that contains any datatype changes, you may need to roll the ingest pod to pick up the changes to the configuration. You also may not see the changes in the dictionary until you ingest more data.
+
+#### Verifying the Deployment
+##### Checking the datatype folders were created
+1) remote into the hadoop-nn pod (any of them if there is more than 1)
+1) run the following cmd: `hdfs dfs -ls hdfs://hdfs-nn:9000/data`
+3) verify all the datatype folders exists
+
+### New Datatype Configuration Help
 <details>
 <summary>Example of what to add</summary>
 The new sction will need to follow the following format:
@@ -49,7 +73,7 @@ The new sction will need to follow the following format:
           bulkFolder: <name of datatype>-bulk
           config:
             distrubutionArgs: none
-            extraIngestArgs: "-data.name.override=<name of datatpye>"
+            extraIngestArgs: "-data.name.override=<name of datatype>"
             inputFormat: datawave.ingest.json.mr.input.JsonInputFormat
             lifo: false
         properties:
@@ -169,15 +193,15 @@ The following is a list of common errors and their usual cause
     * It should further be noted that once this cache refresh has been completed it should not need to be done again until a new datatype is uploaded or the existing datatype structure is changed.
   * Otherwise the following two issues are usually the cause.
     1) You're trying to search on a column that does not exist. Check that you're spelling it correctly. It should be noted that capitaliation does not matter as datawave normalizes it anyway.
-    1) You forgot to wrap the value you're searching on in quotes. For example `DATATYPE == oms` would return this error since oms is not quoted.
+    1) You forgot to wrap the value you're searching on in quotes. For example `GENRES == IntegrationTest` would return this error since IntegrationTest is not quoted.
 * ERROR: User requested authorizations that they don't have
   * This error does a pretty good job of explaining what is missing.
   * You can use `datawave authorization` to check which auths that the user you're running the query with has. From there you should be able to resolve this.
 * ERROR: Full table scan required but not enabled
   * You are trying to query on a field that is not indexed. When creating a new datatype you have to specify which fields are to be queriable. If you try to search one of the fields that has not been set up as queriable then datawave will return this error.
   * This error also occurs if you have messed up the JEXL format. Here are two examples that we have observed this error occuring
-    1) `DATATYPE == 'oms' & OMSDATATYPE == 'PositionReport'`, the problem being that there is a single & rather than &&.
-    1) `DATATYPE = 'oms'`, in this case we have a single = instead of ==.
+    1) `GENRES == 'IntegrationTest' & LANGUAGE == 'English'`, the problem being that there is a single & rather than &&.
+    1) `GENRES = 'IntegrationTest'`, in this case we have a single = instead of ==.
 * If you are not getting results when you know there should be some.
   1) Check the ingest job completed. These can be checked by calling `datawave ingest` without passing it a file.
   1) You may need to refresh the cache. Use `datawave accumulo` to request a refresh and wait a moment.
