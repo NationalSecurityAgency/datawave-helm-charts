@@ -66,3 +66,5 @@ configurationService:
   port: 8888
 authorizationService:
   dnsName: authorization
+cacheService:
+  dnsName: cache

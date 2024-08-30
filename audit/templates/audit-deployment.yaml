@@ -118,6 +118,10 @@ spec:
         - name: "{{ .Chart.Name }}-init-authorization"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
           command: [ "sh", "-c", "until nslookup {{ .Values.authorizationService.dnsName }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+        
+        - name: "{{ .Chart.Name }}-init-cache"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.cacheService.dnsName }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
 
         - name: "{{ .Chart.Name }}-init-configuration"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
