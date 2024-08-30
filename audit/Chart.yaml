@@ -3,7 +3,7 @@
 #################################
 
 apiVersion: v2
-name: dwv-cache
+name: dwv-audit
 type: application
 version: 1.0.0
 
@@ -12,6 +12,6 @@ version: 1.0.0
 #################################
 
 appVersion: 4.0.2
-description: Deploys a datawave hazelcast service
+description: Deploys a datawave audit service
 icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 

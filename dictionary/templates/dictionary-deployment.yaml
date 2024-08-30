@@ -63,7 +63,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.pullSecrets }}
+      {{- with .Values.global.pullSecrets }}
       imagePullSecrets:
       {{- range . }}
       - name: {{ . }}
@@ -135,5 +135,6 @@ spec:
       volumes:
         
         - name: "{{ .Values.global.volumes.certificates.name }}"
-          secret:secretName: "{{ .Values.global.certSecretName }}"
-          optional: false
+          secret:
+            secretName: "{{ .Values.global.certSecretName }}"
+            optional: false

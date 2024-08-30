@@ -1,3 +1,7 @@
+global:
+  pullSecrets: 
+  - dockerconfigjson-ghcr
+
 logging:
   shellRootLevel: debug
   shellAccumuloLevel: trace
@@ -61,11 +65,9 @@ initContainer:
   tag: 3.3.6
 image:
   repository: ghcr.io/nationalsecurityagency/datawave-stack-accumulo
-  tag: 2.1.3d:q
+  tag: 2.1.3
   
   pullPolicy: IfNotPresent
-  pullSecrets: 
-  - dockerconfigjson-ghcr
 manager:
   resources: {}
   nodeSelector: {}

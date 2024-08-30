@@ -38,14 +38,16 @@ global:
     user: root
   zookeeper:
     quorum: zookeeper:2181
+  pullSecrets:
+    - dockerconfigjson-ghcr
 
 
 
 configurationDeployment:
   image:
-    name: datawave-configuration-service
+    name: datawave-config-service
     pullPolicy: IfNotPresent
-    tag: 4.0.3
+    tag: 4.0.1
   livenessProbe:
     delaySeconds: 20
     periodSeconds: 5
@@ -76,7 +78,7 @@ configurationService:
   meta:
     name: configuration
   ports:
-    http: 8888
+    default: 8888
 
 ########################################
 # Default Values for Configuration Map #

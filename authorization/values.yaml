@@ -10,6 +10,8 @@ global:
       name: busybox
       tag: 1.28
   certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
 
 
 ###############################################
@@ -21,7 +23,7 @@ authorizationDeployment:
   image:
     name: datawave-authorization-service
     pullPolicy: IfNotPresent
-    tag: latest
+    tag: 4.0.3
   livenessProbe:
     delaySeconds: 60
     periodSeconds: 5

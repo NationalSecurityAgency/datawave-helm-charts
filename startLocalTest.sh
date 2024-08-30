@@ -26,15 +26,15 @@ if test -f ./ghcr-image-pull-secret.yaml; then
   minikube kubectl -- apply -f ./ghcr-image-pull-secret.yaml
 fi
 
-
 #Package charts
-mkdir -p ./datawave-stack/charts/
-find ./ -name "*.tgz"  -delete   
-cd ./; for chart in hadoop accumulo zookeeper ingest web; do cd $chart; helm lint . && helm package .; cp *.tgz ../datawave-stack/charts/; cd ..; done
-find ./ -name "*.tgz"  -exec cp {} datawave-stack/charts/ \;
-# Deploy datawave-stack chart
-cd datawave-stack;
+find . -name "*.tgz" -delete
+cd datawave-monolith-umbrella
+helm dependency update
 helm package .
+cd ../datawave-stack;
+helm dependency update
+helm package .
+kubectl create secret generic certificates-secret --from-file=keystore.p12=certificates/keystore.p12 --from-file=truststore.jks=certificates/truststore.jks
 helm install dwv *.tgz -f ${VALUES_FILE} && \
 cd ../
 

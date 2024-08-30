@@ -1,3 +1,7 @@
+global:
+  pullSecrets:
+  - dockerconfigjson-ghcr
+
 nameOverride: hadoop
 
 # The base hadoop image to use for all components.
@@ -6,8 +10,6 @@ image:
   repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
   tag: 3.3.6
   pullPolicy: IfNotPresent
-  pullSecrets:
-  - dockerconfigjson-ghcr
 
 # The version of the hadoop libraries being used in the image.
 hadoopVersion: 3.3.6-2

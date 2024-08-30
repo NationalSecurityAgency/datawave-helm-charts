@@ -15,4 +15,4 @@ icon: https://bitnami.com/assets/stacks/zookeeper/img/zookeeper-stack-220x234.pn
 keywords:
 - zookeeper
 name: dwv-zookeeper
-version: 3.6.3
+version: 1.0.0

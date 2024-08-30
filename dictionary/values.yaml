@@ -10,6 +10,8 @@ global:
       name: busybox
       tag: 1.28
   certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
 
 dictionaryDeployment:
   image:

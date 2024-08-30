@@ -10,6 +10,8 @@ global:
       name: busybox
       tag: 1.28
   certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
 
 
 
@@ -21,7 +23,7 @@ auditDeployment:
   image:
     name: datawave-audit-service
     pullPolicy: IfNotPresent
-    tag: latest
+    tag: 4.0.2
   livenessProbe:
     delaySeconds: 60
     periodSeconds: 5
