@@ -13,7 +13,7 @@ rabbitmqDeployment:
     pullPolicy: IfNotPresent
     tag: 3.11.4-alpine
   meta:
-    name: messaging
+    name: rabbitmq
   replication:
     maxSurge: 2
     maxUnavailable: 1

@@ -8,6 +8,7 @@ data:
     batch
     # Run an embedded server to perform the configuration
     embed-server --server-config=standalone-full.xml
+    /system-property=dw.remoteDatawaveUserService.host:remove
 
     /system-property=dw.warehouse.accumulo.password:remove
     /system-property=dw.metrics.accumulo.password:remove
@@ -17,7 +18,7 @@ data:
     /system-property=dw.metrics.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
     /system-property=dw.uuid.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
 
-    /system-property=dw.mapreduce.securitydomain.keyStoreURL:remove+
+    /system-property=dw.mapreduce.securitydomain.keyStoreURL:remove
     /system-property=dw.mapreduce.securitydomain.keyStoreType:remove
     /system-property=dw.mapreduce.securitydomain.keyStorePassword:remove
     /system-property=dw.mapreduce.securitydomain.trustStoreURL:remove
@@ -40,6 +41,7 @@ data:
     # /core-service=management/security-realm=SSLRealm/authentication=truststore/:add(keystore-path=${env.TRUSTSTORE},keystore-provider=${env.TRUSTSTORE_TYPE},keystore-password="${env.TRUSTSTORE_PASSWORD}")
     # /subsystem=security/security-domain=datawave/jsse=classic:add(keystore={type="${env.KEYSTORE_TYPE}",password="${env.KEYSTORE_PASSWORD}",url="file://${env.KEYSTORE}"},truststore={type="${env.TRUSTSTORE_TYPE}",password="${env.TRUSTSTORE_PASSWORD}",url="file://${env.TRUSTSTORE}"})
 
+    /system-property=dw.remoteDatawaveUserService.host:add(value={{ .Values.authorizationService.dnsName }})
     {{ .Values.datawaveRuntimeConfig.additions}}
 
     # Run the batch commands (MUST BE LAST)

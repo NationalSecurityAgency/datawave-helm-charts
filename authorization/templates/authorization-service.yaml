@@ -62,7 +62,7 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.19.0 (f63a961c)
-  name: dwv-web-{{ .Values.authorizationService.meta.name }}
+  name: dwv-web-{{ .Values.authorizationService.meta.name }}-old
   labels:
     application: "{{ .Values.authorizationService.meta.name }}"
 

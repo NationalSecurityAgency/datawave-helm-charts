@@ -46,7 +46,7 @@ datawaveDeployment:
     scheme: HTTP
     uri: DataWave/Common/Health/health
   meta:
-    name: datawave
+    name: datawave-monolith
   replication:
     maxSurge: 2
     maxUnavailable: 1
