@@ -1,5 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
     "properties": {
         "authorizationService": {
             "properties": {
@@ -138,7 +139,7 @@
                 },
                 "ports": {
                     "properties": {
-                        "http": {
+                        "default": {
                             "type": "integer"
                         }
                     },
@@ -219,6 +220,12 @@
                 },
                 "keystorePassword": {
                     "type": "string"
+                },
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
                 },
                 "secrets": {
                     "properties": {

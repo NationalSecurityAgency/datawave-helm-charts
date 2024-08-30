@@ -1,0 +1,379 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+        "accumuloConfigMap": {
+            "type": "string"
+        },
+        "config": {
+            "properties": {
+                "accumuloDir": {
+                    "type": "string"
+                },
+                "accumuloPassword": {
+                    "type": "string"
+                },
+                "accumuloUser": {
+                    "type": "string"
+                },
+                "bulkDataTypes": {
+                    "type": "string"
+                },
+                "hadoopConfDif": {
+                    "type": "string"
+                },
+                "hadoopHome": {
+                    "type": "string"
+                },
+                "hdfsNamenode": {
+                    "type": "string"
+                },
+                "instanceName": {
+                    "type": "string"
+                },
+                "jobTracker": {
+                    "type": "string"
+                },
+                "liveDataTypes": {
+                    "type": "string"
+                },
+                "lockFileDir": {
+                    "type": "string"
+                },
+                "mapredHome": {
+                    "type": "string"
+                },
+                "overallFlagConfig": {
+                    "properties": {
+                        "defaultCfg": {
+                            "properties": {
+                                "bulk": {
+                                    "properties": {
+                                        "collectMetrics": {
+                                            "type": "boolean"
+                                        },
+                                        "fileListMarker": {
+                                            "type": "string"
+                                        },
+                                        "maxFlags": {
+                                            "type": "integer"
+                                        },
+                                        "reducers": {
+                                            "type": "integer"
+                                        },
+                                        "script": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "live": {
+                                    "properties": {
+                                        "collectMetrics": {
+                                            "type": "boolean"
+                                        },
+                                        "fileListMarker": {
+                                            "type": "string"
+                                        },
+                                        "maxFlags": {
+                                            "type": "integer"
+                                        },
+                                        "reducers": {
+                                            "type": "integer"
+                                        },
+                                        "script": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "properties": {
+                            "properties": {
+                                "bulk": {
+                                    "properties": {
+                                        "baseHDFSDir": {
+                                            "type": "string"
+                                        },
+                                        "datawaveHome": {
+                                            "type": "string"
+                                        },
+                                        "distributorType": {
+                                            "type": "string"
+                                        },
+                                        "filePattern": {
+                                            "type": "string"
+                                        },
+                                        "flagFileDirectory": {
+                                            "type": "string"
+                                        },
+                                        "hdfs": {
+                                            "type": "string"
+                                        },
+                                        "setFlagFileTimestamp": {
+                                            "type": "boolean"
+                                        },
+                                        "sleepMilliSecs": {
+                                            "type": "integer"
+                                        },
+                                        "socketPort": {
+                                            "type": "integer"
+                                        },
+                                        "timeoutMilliSecs": {
+                                            "type": "integer"
+                                        },
+                                        "useFolderTimestamp": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "live": {
+                                    "properties": {
+                                        "baseHDFSDir": {
+                                            "type": "string"
+                                        },
+                                        "datawaveHome": {
+                                            "type": "string"
+                                        },
+                                        "distributorType": {
+                                            "type": "string"
+                                        },
+                                        "filePattern": {
+                                            "type": "string"
+                                        },
+                                        "flagFileDirectory": {
+                                            "type": "string"
+                                        },
+                                        "hdfs": {
+                                            "type": "string"
+                                        },
+                                        "setFlagFileTimestamp": {
+                                            "type": "boolean"
+                                        },
+                                        "socketPort": {
+                                            "type": "integer"
+                                        },
+                                        "timeoutMilliSecs": {
+                                            "type": "integer"
+                                        },
+                                        "useFolderTimestamp": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "types": {
+                    "items": {
+                        "properties": {
+                            "flagMakerConfig": {
+                                "properties": {
+                                    "bulkFolder": {
+                                        "type": "string"
+                                    },
+                                    "config": {
+                                        "properties": {
+                                            "distrubutionArgs": {
+                                                "type": "string"
+                                            },
+                                            "extraIngestArgs": {
+                                                "type": "string"
+                                            },
+                                            "inputFormat": {
+                                                "type": "string"
+                                            },
+                                            "lifo": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "liveFolder": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "properties": {
+                                "properties": {
+                                    "data.name": {
+                                        "type": "string"
+                                    },
+                                    "file.input.format": {
+                                        "type": "string"
+                                    },
+                                    "myjson.PREMIERED.data.field.type.class": {
+                                        "type": "string"
+                                    },
+                                    "myjson.RUNTIME.data.field.type.class": {
+                                        "type": "string"
+                                    },
+                                    "myjson.SUMMARY.data.field.marking": {
+                                        "type": "string"
+                                    },
+                                    "myjson.WEIGHT.data.field.type.class": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.date": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.date.formats": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.index": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.index.only": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.index.reverse": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.index.tokenize.allowlist": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.marking.default": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.token.fieldname.designator": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.category.uuid.fields": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.default.normalization.failure.policy": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.default.type.class": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.header": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.json.flattener.mode": {
+                                        "type": "string"
+                                    },
+                                    "myjson.data.process.extra.fields": {
+                                        "type": "boolean"
+                                    },
+                                    "myjson.data.separator": {
+                                        "type": "string"
+                                    },
+                                    "myjson.facet.category.name.network": {
+                                        "type": "string"
+                                    },
+                                    "myjson.handler.classes": {
+                                        "type": "string"
+                                    },
+                                    "myjson.ingest.helper.class": {
+                                        "type": "string"
+                                    },
+                                    "myjson.output.name": {
+                                        "type": "string"
+                                    },
+                                    "myjson.reader.class": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "zookeeper": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "deployment": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "datawaveVersion": {
+                    "type": "string"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "fullnameOverride": {
+            "type": "string"
+        },
+        "global": {
+            "properties": {
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "hadoop": {
+            "properties": {
+                "classpath": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "hadoopConfigMap": {
+            "type": "string"
+        },
+        "image": {
+            "properties": {
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "labels": {
+            "properties": {},
+            "type": "object"
+        },
+        "libs": {
+            "type": "string"
+        },
+        "nameOverride": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

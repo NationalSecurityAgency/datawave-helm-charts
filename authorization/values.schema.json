@@ -1,5 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
     "properties": {
         "authorizationDeployment": {
             "properties": {
@@ -22,6 +23,9 @@
                         "delaySeconds": {
                             "type": "integer"
                         },
+                        "failureThreshold": {
+                            "type": "integer"
+                        },
                         "periodSeconds": {
                             "type": "integer"
                         },
@@ -39,9 +43,6 @@
                 },
                 "meta": {
                     "properties": {
-                        "failureThreshold": {
-                            "type": "integer"
-                        },
                         "name": {
                             "type": "string"
                         }
@@ -96,14 +97,6 @@
         },
         "authorizationService": {
             "properties": {
-                "endpoints": {
-                    "properties": {
-                        "authorize": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
                 "meta": {
                     "properties": {
                         "name": {
@@ -173,6 +166,12 @@
                         }
                     },
                     "type": "object"
+                },
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
                 },
                 "volumes": {
                     "properties": {

@@ -1,0 +1,419 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+        "antiAffinity": {
+            "type": "string"
+        },
+        "cmds": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "config": {
+            "properties": {
+                "ec": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "postInstallCommands": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "postInstallCommands": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "global": {
+            "properties": {
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "hadoopVersion": {
+            "type": "string"
+        },
+        "hdfs": {
+            "properties": {
+                "dataNode": {
+                    "properties": {
+                        "pdbMinAvailable": {
+                            "type": "integer"
+                        },
+                        "replicas": {
+                            "type": "integer"
+                        },
+                        "resources": {
+                            "properties": {
+                                "limits": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "requests": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tolerations": {
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "nameNode": {
+                    "properties": {
+                        "ingress": {
+                            "properties": {
+                                "annotations": {
+                                    "type": "array"
+                                },
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "host": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "pdbMinAvailable": {
+                            "type": "integer"
+                        },
+                        "resources": {
+                            "properties": {
+                                "limits": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "requests": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tolerations": {
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "webhdfs": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "image": {
+            "properties": {
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "nameOverride": {
+            "type": "string"
+        },
+        "persistence": {
+            "properties": {
+                "dataNode": {
+                    "properties": {
+                        "definitions": {
+                            "items": {
+                                "properties": {
+                                    "metadata": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "spec": {
+                                        "properties": {
+                                            "accessModes": {
+                                                "type": "string"
+                                            },
+                                            "resources": {
+                                                "properties": {
+                                                    "requests": {
+                                                        "properties": {
+                                                            "storage": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "selector": {
+                                                "type": "null"
+                                            },
+                                            "storageClassName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "nameNode": {
+                    "properties": {
+                        "definitions": {
+                            "items": {
+                                "properties": {
+                                    "metadata": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "spec": {
+                                        "properties": {
+                                            "accessModes": {
+                                                "type": "string"
+                                            },
+                                            "resources": {
+                                                "properties": {
+                                                    "requests": {
+                                                        "properties": {
+                                                            "storage": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "selector": {
+                                                "type": "null"
+                                            },
+                                            "storageClassName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "yarn": {
+            "properties": {
+                "historyServer": {
+                    "properties": {
+                        "ingress": {
+                            "properties": {
+                                "annotations": {
+                                    "type": "array"
+                                },
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "host": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "nodeManager": {
+                    "properties": {
+                        "parallelCreate": {
+                            "type": "boolean"
+                        },
+                        "pdbMinAvailable": {
+                            "type": "integer"
+                        },
+                        "replicas": {
+                            "type": "integer"
+                        },
+                        "resources": {
+                            "properties": {
+                                "limits": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "requests": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tolerations": {
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "resourceManager": {
+                    "properties": {
+                        "ingress": {
+                            "properties": {
+                                "annotations": {
+                                    "type": "array"
+                                },
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "host": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "pdbMinAvailable": {
+                            "type": "integer"
+                        },
+                        "resources": {
+                            "properties": {
+                                "limits": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "requests": {
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string"
+                                        },
+                                        "memory": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tolerations": {
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

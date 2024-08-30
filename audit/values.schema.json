@@ -1,5 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
     "properties": {
         "auditDeployment": {
             "properties": {
@@ -120,6 +121,14 @@
             },
             "type": "object"
         },
+        "cacheService": {
+            "properties": {
+                "dnsName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "configurationService": {
             "properties": {
                 "dnsName": {
@@ -159,6 +168,12 @@
                         }
                     },
                     "type": "object"
+                },
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
                 },
                 "volumes": {
                     "properties": {
