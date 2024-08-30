@@ -1,0 +1,4 @@
+hazelcast:
+  server:
+    k8s:
+      service-dns-name: {{ .Values.cacheService.dsnName }}.{{ .Release.Namespace }}.svc.cluster.local

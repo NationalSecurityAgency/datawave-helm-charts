@@ -10,9 +10,9 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Values.rabbitmqService.meta.name }}"
+  name: "{{ .Values.configurationService.meta.name }}"
   labels:
-    application: "{{ .Values.rabbitmqService.meta.name }}"
+    application: "{{ .Values.configurationService.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +25,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Values.rabbitmqDeployment.meta.name }}"
+    application: "{{ .Values.configurationDeployment.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -33,10 +33,6 @@ spec:
 
   ports:
 
-    - name: amqp
-      port: {{ .Values.rabbitmqService.ports.amqp }}
-      targetPort: 5672
-
-    - name: mgmt
-      port: {{ .Values.rabbitmqService.ports.mgmt }}
-      targetPort: 15672
+    - name: default
+      port: {{ .Values.configurationService.ports.default }}
+      targetPort: 8888

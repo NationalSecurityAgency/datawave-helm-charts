@@ -86,8 +86,8 @@ spec:
             - containerPort: 15672
           resources: {}
           volumeMounts:
-            - name: "{{ .Values.volumes.rabbitmq.name }}"
-              mountPath: "{{ .Values.volumes.rabbitmq.destination }}"
+            - name: "{{ .Values.global.volumes.rabbitmq.name }}"
+              mountPath: "{{ .Values.global.volumes.rabbitmq.destination }}"
               readOnly: true
           {{- if .Values.rabbitmqDeployment.livenessProbe.enabled }}
           livenessProbe:
@@ -126,6 +126,6 @@ spec:
 
       volumes:
         
-        - name: "{{ .Values.volumes.rabbitmq.name }}"
+        - name: "{{ .Values.global.volumes.rabbitmq.name }}"
           configMap:
             name: "{{ .Values.rabbitmqConfigmap.meta.name }}"

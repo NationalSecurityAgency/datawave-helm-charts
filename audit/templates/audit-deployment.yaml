@@ -1,0 +1,134 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Values.auditDeployment.meta.name }}"
+  labels:
+    application: "{{ .Values.auditDeployment.meta.name }}"
+
+#####################################
+# Complete Deployment Specification #
+#####################################
+
+spec:
+
+  ######################################
+  # Replication / Update Configuration #
+  ######################################
+
+  replicas: {{ .Values.auditDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.auditDeployment.replication.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.auditDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.auditDeployment.replication.maxUnavailable }}
+
+  ###################################
+  # Resource Selector Configuration #
+  ###################################
+
+  selector:
+    matchLabels:
+      application: "{{ .Values.auditDeployment.meta.name }}"
+  
+  #####################################
+  # Deployment Template Configuration #
+  #####################################
+
+  template:
+
+    ##################################################
+    # Basic Metadata for this Deployment's Resources #
+    ##################################################
+
+    metadata:
+      labels:
+        application: "{{ .Values.auditDeployment.meta.name }}"
+
+    #######################################
+    # Deployment Resources Specifications #
+    #######################################
+
+    spec:
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      restartPolicy: "{{ .Values.auditDeployment.restartPolicy }}"
+
+      ##############################################
+      # Containers Associated with this Deployment #
+      ##############################################
+      securityContext:
+        runAsUser: 1000
+      containers:
+        - name: "{{ .Values.auditDeployment.meta.name }}"
+          args:
+            - "--spring.output.ansi.enabled=ALWAYS"
+            - "--spring.profiles.active=default,k8s"
+          env:
+            - name: CONFIG_SERVER_URL
+              value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.auditDeployment.image.name }}:{{ .Values.auditDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.auditDeployment.image.pullPolicy }}"
+          livenessProbe:
+            httpGet:
+              path: "{{ .Values.auditDeployment.livenessProbe.uri }}"
+              port: {{ .Values.auditDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.auditDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.auditDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.auditDeployment.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.auditDeployment.readinessProbe.uri }}"
+              port: {{ .Values.auditDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.auditDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.auditDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.auditDeployment.readinessProbe.periodSeconds }}
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          resources: {}
+          volumeMounts:
+            - name: "{{ .Values.global.volumes.certificates.name }}"
+              mountPath: "{{ .Values.global.volumes.certificates.destination }}"
+              readOnly: true
+
+      #############################################################
+      # Initialization Containers Associated with this Deployment #
+      #############################################################
+
+      initContainers:
+
+        - name: "{{ .Chart.Name }}-init-authorization"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.authorizationService.dnsNname }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.dnsName }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+      
+      ###########################################
+      # Volumes Associated with this Deployment #
+      ###########################################
+
+      volumes:
+        - name: "{{ .Values.global.volumes.certificates.name }}"
+          secret:
+            secretName: {{ .Values.global.certSecretName}}
+            optional: false

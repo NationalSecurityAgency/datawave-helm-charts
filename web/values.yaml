@@ -385,7 +385,7 @@ initialization:
 # Default Values for Messaging Deployment #
 ###########################################
 tolerations: []
-messagingDeployment:
+rabbitmqDeployment:
   image:
     name: rabbitmq
     pullPolicy: IfNotPresent
@@ -416,7 +416,7 @@ messagingDeployment:
 # Default Values for RabbitMQ Map #
 ###################################
 
-messagingMap:
+rabbitmqConfigmap:
   meta:
     name: messaging-map
 
@@ -424,7 +424,7 @@ messagingMap:
 # Default Values for Messaging Service #
 ########################################
 
-messagingService:
+rabbitmqService:
   meta:
     name: messaging
   ports:
@@ -455,7 +455,7 @@ scripts:
       until nslookup {{ .Values.configurationService.meta.name }}; 
       do echo 'Waiting for Configuration...'; sleep 2; done
     messaging: |
-      until nslookup {{ .Values.messagingService.meta.name }}; 
+      until nslookup {{ .Values.rabbitmqService.meta.name }}; 
       do echo 'Waiting for Messaging...'; sleep 2; done
 
 ##############################
@@ -492,7 +492,9 @@ volumes:
     name: microservice-config
     destination: /microservice-config
   
-  rabbitmq:
+  rabbitmq:  microserviceConfig:
+    name: microservice-config
+    destination: /microservice-config
     name: rabbitmq
     destination: /etc/rabbitmq
 

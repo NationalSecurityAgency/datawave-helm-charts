@@ -85,8 +85,8 @@ spec:
             - "--spring.profiles.active={{ .Values.authorizationDeployment.profiles }}"
           env:
             - name: CONFIG_SERVER_URL
-              value: "http://{{ .Values.configurationDeployment.meta.name }}:{{ .Values.configurationService.ports.default }}/configserver"
-          image: "{{ .Values.dockerRegistry.url }}/{{ .Values.authorizationDeployment.image.name }}:{{ .Values.authorizationDeployment.image.tag }}"
+              value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.authorizationDeployment.image.name }}:{{ .Values.authorizationDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.authorizationDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
@@ -108,8 +108,8 @@ spec:
             - containerPort: 8443
           resources: {}
           volumeMounts:
-            - name: "{{ .Values.volumes.certificates.name }}"
-              mountPath: "{{ .Values.volumes.certificates.destination }}"
+            - name: "{{ .Values.global.volumes.certificates.name }}"
+              mountPath: "{{ .Values.global.volumes.certificates.destination }}"
               readOnly: true
 
       #############################################################
@@ -121,14 +121,14 @@ spec:
           image: busybox:1.28
           command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
         - name: "{{ .Chart.Name }}-init-cache"
-          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Values.cacheService.meta.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Values.cacheService.dnsName }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-configuration"
-          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.meta.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.dnsName }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-messaging"
-          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup  {{ .Values.rabbitmqService.meta.name }}; do echo 'Waiting for Messaging...'; sleep 2; done" ]
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup  {{ .Values.rabbitmqService.dnsName }}; do echo 'Waiting for Messaging...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #
@@ -138,11 +138,7 @@ spec:
         - name: logs
           emptyDir:
             sizeLimit: 5G
-        - name: "{{ .Values.volumes.certificates.name }}"
+        - name: "{{ .Values.global.volumes.certificates.name }}"
           secret:
-            {{ if not .Values.certificates.externalSecret.enabled }}
-            secretName: "{{ .Values.certificatesSecret.meta.name }}"
-            {{ else }}
-            secretName: {{ .Values.certificates.externalSecret.name }}
-            {{ end }}
+            secretName: {{ .Values.global.certSecretName}}
             optional: false

@@ -4,7 +4,7 @@ datawave:
       subjectDnPattern: "(?:^|,)\\s*OU\\s*=\\s*.*\\s*(?:,|$)"
       npeOuList: "EXAMPLE_SERVER_OU1,EXAMPLE_SERVER_OU2"
   authorization:
-    uri: "https://{{ .Values.authorizationService.meta.name }}:{{ .Values.authorizationService.ports.https }}/{{ .Values.authorizationService.endpoints.authorize }}"
+    uri: "https://{{ .Values.authorizationService.dnsName }}:{{ .Values.authorizationService.port}}/{{ .Values.authorizationService.endpoint }}"
 logging:
   level:
     root: DEBUG
@@ -25,12 +25,12 @@ server:
   servlet.context-path: /${spring.application.name}
   ssl:
     client-auth: WANT
-    key-store: '{{ .Values.secrets.keystore.path }}'
-    key-store-password: '{{ .Values.secrets.keystore.password }}'
-    key-store-type: '{{ .Values.secrets.keystore.type }}'
-    trust-store: '{{ .Values.secrets.truststore.path }}'
-    trust-store-type: '{{ .Values.secrets.truststore.type }}'
-    trust-store-password: '{{ .Values.secrets.truststore.password }}'
+    key-store: '{{ .Values.global.secrets.keystore.path }}'
+    key-store-password: '{{ .Values.global.secrets.keystore.password }}'
+    key-store-type: '{{ .Values.global.secrets.keystore.type }}'
+    trust-store: '{{ .Values.global.secrets.truststore.path }}'
+    trust-store-type: '{{ .Values.global.secrets.truststore.type }}'
+    trust-store-password: '{{ .Values.global.secrets.truststore.password }}'
 spring:
   cloud:
     consul:
@@ -39,7 +39,7 @@ spring:
     discovery:
       enabled: false
       failFast: true
-    host: '{{ .Values.rabbitmqDeployment.meta.name }}'
+    host: '{{ .Values.rabbitmq.dnsName }}'
   security:
     datawave:
       enforce-allowed-callers: false

@@ -87,23 +87,23 @@ spec:
             - "--spring.profiles.active=native,open_actuator"
           env:
             - name: KEY_ALIAS
-              value: "{{ .Values.secrets.keystore.alias }}"
+              value: "{{ .Values.global.secrets.keystore.alias }}"
             - name: KEYSTORE_LOCATION
-              value: "{{ .Values.secrets.keystore.path }}"
+              value: "{{ .Values.global.secrets.keystore.path }}"
             - name: KEYSTORE_PASSWORD
-              value: "{{ .Values.secrets.keystore.password }}"
+              value: "{{ .Values.global.secrets.keystore.password }}"
             - name: MESSAGING_SERVER_HOSTNAME
-              value: "{{ .Values.rabbitmqService.meta.name }}"
-          image: "{{ .Values.dockerRegistry.url }}/{{ .Values.configurationDeployment.image.name }}:{{ .Values.configurationDeployment.image.tag }}"
+              value: "{{ .Values.rabbitmq.dnsName }}"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.configurationDeployment.image.name }}:{{ .Values.configurationDeployment.image.tag }}"
           imagePullPolicy: "{{ .Values.configurationDeployment.image.pullPolicy }}"
           ports:
             - containerPort: 8888
           resources: {}
           volumeMounts:
-            - name: "{{ .Values.volumes.certificates.name }}"
-              mountPath: "{{ .Values.volumes.certificates.destination }}"
-            - name: "{{ .Values.volumes.microserviceConfig.name }}"
-              mountPath: "{{ .Values.volumes.microserviceConfig.destination }}"
+            - name: "{{ .Values.global.volumes.certificates.name }}"
+              mountPath: "{{ .Values.global.volumes.certificates.destination }}"
+            - name: "{{ .Values.global.volumes.microserviceConfig.name }}"
+              mountPath: "{{ .Values.global.volumes.microserviceConfig.destination }}"
               readOnly: true
 
       #############################################################
@@ -114,8 +114,8 @@ spec:
 
 
         - name: "{{ .Chart.Name }}-init-messaging"
-          image: "{{ .Values.initialization.image.name }}:{{ .Values.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Values.rabbitmqService.meta.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Values.rabbitmq.dnsName }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
 
       ###########################################
       # Volumes Associated with this Deployment #
@@ -123,15 +123,15 @@ spec:
 
       volumes:
         
-        - name: "{{ .Values.volumes.certificates.name }}"
+        - name: "{{ .Values.global.volumes.certificates.name }}"
           secret:
-            {{ if not .Values.certificates.externalSecret.enabled }}
-            secretName: "{{ .Values.certificatesSecret.meta.name }}"
+            {{ if not .Values.global.certificates.externalSecret.enabled }}
+            secretName: "{{ .Values.global.certSecretName }}"
             {{ else }}
-            secretName: {{ .Values.certificates.externalSecret.name }}
+            secretName: {{ .Values.global.certificates.externalSecret.name }}
             {{ end }}
             optional: false
 
-        - name: "{{ .Values.volumes.microserviceConfig.name }}"
+        - name: "{{ .Values.global.volumes.microserviceConfig.name }}"
           configMap:
-            name: {{ if .Values.externalConfigMap.enabled }} {{ .Values.externalConfigMap.name }} {{ else }} {{ .Values.configurationMap.meta.name }} {{ end}}
+            name: {{ if .Values.global.externalConfigMap.enabled }} {{ .Values.global.externalConfigMap.name }} {{ else }} {{ .Values.configurationMap.meta.name }} {{ end}}

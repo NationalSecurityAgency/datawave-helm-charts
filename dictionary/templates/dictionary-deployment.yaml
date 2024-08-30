@@ -1,0 +1,139 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Values.dictionaryDeployment.meta.name }}"
+  labels:
+    application: "{{ .Values.dictionaryDeployment.meta.name }}"
+
+#####################################
+# Complete Deployment Specification #
+#####################################
+
+spec:
+
+  ######################################
+  # Replication / Update Configuration #
+  ######################################
+
+  replicas: {{ .Values.dictionaryDeployment.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.dictionaryDeployment.replication.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.dictionaryDeployment.replication.maxSurge }}
+      maxUnavailable: {{ .Values.dictionaryDeployment.replication.maxUnavailable }}
+
+  ###################################
+  # Resource Selector Configuration #
+  ###################################
+
+  selector:
+    matchLabels:
+      application: "{{ .Values.dictionaryDeployment.meta.name }}"
+  
+  #####################################
+  # Deployment Template Configuration #
+  #####################################
+
+  template:
+
+    ##################################################
+    # Basic Metadata for this Deployment's Resources #
+    ##################################################
+
+    metadata:
+      labels:
+        application: "{{ .Values.dictionaryDeployment.meta.name }}"
+
+    #######################################
+    # Deployment Resources Specifications #
+    #######################################
+
+    spec:
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+      restartPolicy: "{{ .Values.dictionaryDeployment.restartPolicy }}"
+
+      ##############################################
+      # Containers Associated with this Deployment #
+      ##############################################
+
+      containers:
+
+        - name: "{{ .Values.dictionaryDeployment.meta.name }}"
+          args:
+            - "--spring.output.ansi.enabled=ALWAYS"
+            - "--spring.profiles.active=default,k8s,remoteauth"
+          env:
+            - name: CONFIG_SERVER_URL
+              value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.dictionaryDeployment.image.name }}:{{ .Values.dictionaryDeployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.dictionaryDeployment.image.pullPolicy }}"
+          livenessProbe:
+            httpGet:
+              path: "{{ .Values.dictionaryDeployment.livenessProbe.uri }}"
+              port: {{ .Values.dictionaryDeployment.livenessProbe.port }}
+              scheme: "{{ .Values.dictionaryDeployment.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.dictionaryDeployment.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.dictionaryDeployment.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.dictionaryDeployment.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.dictionaryDeployment.readinessProbe.uri }}"
+              port: {{ .Values.dictionaryDeployment.readinessProbe.port }}
+              scheme: "{{ .Values.dictionaryDeployment.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.dictionaryDeployment.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.dictionaryDeployment.readinessProbe.periodSeconds }}
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          resources: {}
+          volumeMounts:
+            - name: "{{ .Values.global.volumes.certificates.name }}"
+              mountPath: "{{ .Values.global.volumes.certificates.destination }}"
+              readOnly: true
+
+      #############################################################
+      # Initialization Containers Associated with this Deployment #
+      #############################################################
+
+      initContainers:
+        - name: "{{ .Chart.Name }}-init-cache"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Values.cacheService.dnsName }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.dnsName }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-accumulo"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.accumuloManager.dnsName }}; do echo 'Waiting for Accumulo...'; sleep 2; done" ]
+
+      
+      ###########################################
+      # Volumes Associated with this Deployment #
+      ###########################################
+
+      volumes:
+        
+        - name: "{{ .Values.global.volumes.certificates.name }}"
+          secret:secretName: "{{ .Values.global.certSecretName }}"
+          optional: false

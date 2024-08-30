@@ -10,9 +10,12 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Values.rabbitmqService.meta.name }}"
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.19.0 (f63a961c)
+  name: "{{ .Values.dictionaryService.meta.name }}"
   labels:
-    application: "{{ .Values.rabbitmqService.meta.name }}"
+    application: "{{ .Values.dictionaryService.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +28,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Values.rabbitmqDeployment.meta.name }}"
+    application: "{{ .Values.dictionaryDeployment.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -33,10 +36,10 @@ spec:
 
   ports:
 
-    - name: amqp
-      port: {{ .Values.rabbitmqService.ports.amqp }}
-      targetPort: 5672
+    - name: http
+      port: {{ .Values.dictionaryService.ports.http }}
+      targetPort: 8080
 
-    - name: mgmt
-      port: {{ .Values.rabbitmqService.ports.mgmt }}
-      targetPort: 15672
+    - name: https
+      port: {{ .Values.dictionaryService.ports.https }}
+      targetPort: 8443

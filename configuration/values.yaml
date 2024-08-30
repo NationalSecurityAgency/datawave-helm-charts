@@ -1,0 +1,104 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+    microserviceConfig:
+      name: microservice-config
+      destination: /microservice-config
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  certificates:
+    externalSecret:
+      enabled: false
+      name: ""
+  keystorePassword: changeme
+  truststorePassword: changeme
+  externalConfigMap:
+    enabled: false
+    name: ""
+  secrets:
+    keystore:
+      alias: "1"
+      password: changeme
+      path: "file:///data/certs/keystore.p12"
+      type: PKCS12
+    truststore:
+      password: changeme
+      path: file:///data/certs/truststore.jks
+      type: JKS
+  accumulo:
+    instanceName: dev
+    password: ThisP@ssw0rd1sBANANAS
+    user: root
+  zookeeper:
+    quorum: zookeeper:2181
+
+
+
+configurationDeployment:
+  image:
+    name: datawave-configuration-service
+    pullPolicy: IfNotPresent
+    tag: 4.0.3
+  livenessProbe:
+    delaySeconds: 20
+    periodSeconds: 5
+    failureThreshold: 60
+    port: 8080
+    scheme: HTTP
+    uri: configserver/mgmt/health
+  meta:
+    name: configuration
+  readinessProbe:
+    delaySeconds: 24
+    periodSeconds: 5
+    port: 8080
+    scheme: HTTP
+    uri: configserver/mgmt/health
+  replication:
+    maxSurge: 2
+    maxUnavailable: 1
+    replicaCount: 1
+    revisionHistoryLimit: 10
+  restartPolicy: Always
+
+#########################################
+# Default Values for dictionary Service #
+#########################################
+
+configurationService:
+  meta:
+    name: configuration
+  ports:
+    http: 8888
+
+########################################
+# Default Values for Configuration Map #
+########################################
+
+configurationMap:
+  meta:
+    name: configuration-map
+
+#########################################
+# Inter Service commuunication defaults #
+#########################################
+
+cacheService:
+  dnsName: cache
+
+authorizationService:
+  dnsName: authorization
+  port: 8443
+  endpoint: authorization/v1/authorize
+
+rabbitmq:
+  dnsName: rabbitmq
+
+

@@ -1,0 +1,36 @@
+logging:
+  level:
+    datawave.microservice.authorization: DEBUG
+mock:
+  users:
+    global-roles-to-auths:
+      Administrator: DW_ADMIN
+      AuthorizedUser: AUTH_USER
+      JBossAdministrator: JBOSS_ADMIN
+      barRole: BAR
+      fooRole: FOO
+      privateRole: PRIVATE
+      PublicRole: PUBLIC
+    per-user-roles-to-auths:
+      '[cn=test a. user, ou=example developers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us>]':
+        Administrator: DW_ADMIN
+        AuthorizedUser: DW_USER
+        JBossAdministrator: JBOSS_ADMIN
+        PRivateRole: PRIVATE
+        PublicRole: PUBLIC
+      '[cn=testserver.example.com, ou=servers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us>]':
+        AuthorizedServer: DW_SERV
+        PublicRole: PUBLIC
+        PrivateRole: PRIVATE
+    server-DN-regex: '.*notused.*'
+server:
+  ssl:
+    client-auth: NEED
+spring:
+  security:
+    datawave:
+      use-trusted-subject-headers: true
+      oauth:
+        refreshTokenTtl: 86400
+        authCodeTtl: 86400
+        idTokenTtl: 86400
