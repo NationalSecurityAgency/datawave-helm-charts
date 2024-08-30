@@ -1,0 +1,39 @@
+#####################################
+# DataWave Helm Chart Configuration #
+#####################################
+
+apiVersion: v2
+name: datawave-monolith-umbrella
+type: application
+version: 1.0.0
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: 7.9.0
+description: Deploys The web stack of DataWave
+icon: https://code.nsa.gov/datawave/images/datawave-logo.png
+
+dependencies:
+  - name: dwv-audit
+    repository: file://../audit
+    version: 1.0.0
+  - name: dwv-configuration
+    repository: file://../configuration
+    version: 1.0.0
+  - name: dwv-cache
+    repository: file://../cache
+    version: 1.0.0
+  - name: dwv-dictionary
+    repository: file://../dictionary
+    version: 1.0.0
+  - name: dwv-rabbitmq
+    repository: file://../rabbitmq
+    version: 1.0.0
+  - name: dwv-authorization
+    repository: file://../authorization
+    version: 1.0.0
+  - name: dwv-web
+    repository: file://../datawave-monolith
+    version: 1.0.0
