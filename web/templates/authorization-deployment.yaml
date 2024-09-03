@@ -143,6 +143,6 @@ spec:
             {{ if not .Values.web.certificates.externalSecret.enabled }}
             secretName: "{{ .Chart.Name }}-{{ .Values.web.certificatesSecret.meta.name }}"
             {{ else }}
-            secretName: {{ .Values.web.certificates.exernalSecret.name }}
+            secretName: {{ .Values.web.certificates.externalSecret.name }}
             {{ end }}
             optional: false
