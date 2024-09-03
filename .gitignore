@@ -1,2 +1,4 @@
 ghcr-image-pull-secret.yaml
 **/*.tgz
+**/*.ps1
+umbrella/values-local.yaml
