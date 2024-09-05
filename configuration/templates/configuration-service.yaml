@@ -10,9 +10,9 @@ kind: Service
 ######################################
 
 metadata:
-  name: "{{ .Values.configurationService.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.configurationService.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -25,7 +25,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Values.configurationDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -34,5 +34,5 @@ spec:
   ports:
 
     - name: default
-      port: {{ .Values.configurationService.ports.default }}
+      port: {{ .Values.ports.default }}
       targetPort: 8888

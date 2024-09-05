@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Values.configurationDeployment.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.configurationDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.configurationDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.configurationDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.configurationDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.configurationDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.replication.maxSurge }}
+      maxUnavailable: {{ .Values.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Values.configurationDeployment.meta.name }}"
+      application: "{{ .Values.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Values.configurationDeployment.meta.name }}"
+        application: "{{ .Values.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -72,7 +72,7 @@ spec:
       
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.configurationDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -80,7 +80,7 @@ spec:
 
       containers:
 
-        - name: "{{ .Values.configurationDeployment.meta.name }}"
+        - name: "{{ .Values.meta.name }}"
           args:
             - "--spring.cloud.config.server.native.searchLocations=file:///microservice-config"
             - "--spring.output.ansi.enabled=ALWAYS"
@@ -94,8 +94,8 @@ spec:
               value: "{{ .Values.global.secrets.keystore.password }}"
             - name: MESSAGING_SERVER_HOSTNAME
               value: "{{ .Values.rabbitmq.dnsName }}"
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.configurationDeployment.image.name }}:{{ .Values.configurationDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.configurationDeployment.image.pullPolicy }}"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
             - containerPort: 8888
           resources: {}

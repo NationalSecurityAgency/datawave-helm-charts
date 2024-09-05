@@ -2,117 +2,6 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false,
     "properties": {
-        "auditDeployment": {
-            "properties": {
-                "image": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "pullPolicy": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
-                "livenessProbe": {
-                    "properties": {
-                        "delaySeconds": {
-                            "type": "integer"
-                        },
-                        "periodSeconds": {
-                            "type": "integer"
-                        },
-                        "port": {
-                            "type": "integer"
-                        },
-                        "scheme": {
-                            "type": "string"
-                        },
-                        "uri": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
-                "meta": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
-                "readinessProbe": {
-                    "properties": {
-                        "delaySeconds": {
-                            "type": "integer"
-                        },
-                        "periodSeconds": {
-                            "type": "integer"
-                        },
-                        "port": {
-                            "type": "integer"
-                        },
-                        "scheme": {
-                            "type": "string"
-                        },
-                        "uri": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
-                "replication": {
-                    "properties": {
-                        "maxSurge": {
-                            "type": "integer"
-                        },
-                        "maxUnavailable": {
-                            "type": "integer"
-                        },
-                        "replicaCount": {
-                            "type": "integer"
-                        },
-                        "revisionHistoryLimit": {
-                            "type": "integer"
-                        }
-                    },
-                    "type": "object"
-                },
-                "restartPolicy": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "auditService": {
-            "properties": {
-                "meta": {
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        }
-                    },
-                    "type": "object"
-                },
-                "ports": {
-                    "properties": {
-                        "http": {
-                            "type": "integer"
-                        },
-                        "https": {
-                            "type": "integer"
-                        }
-                    },
-                    "type": "object"
-                }
-            },
-            "type": "object"
-        },
         "authorizationService": {
             "properties": {
                 "dnsName": {
@@ -193,6 +82,99 @@
                 }
             },
             "type": "object"
+        },
+        "image": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "livenessProbe": {
+            "properties": {
+                "delaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "meta": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ports": {
+            "properties": {
+                "http": {
+                    "type": "integer"
+                },
+                "https": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "readinessProbe": {
+            "properties": {
+                "delaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "replication": {
+            "properties": {
+                "maxSurge": {
+                    "type": "integer"
+                },
+                "maxUnavailable": {
+                    "type": "integer"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "restartPolicy": {
+            "type": "string"
         }
     },
     "type": "object"

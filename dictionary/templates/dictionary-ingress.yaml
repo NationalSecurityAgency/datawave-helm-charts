@@ -38,8 +38,8 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: "{{ .Values.dictionaryService.meta.name }}"
+                name: "{{ .Values.meta.name }}"
                 port: 
-                  number: {{ .Values.dictionaryService.ports.https }}
+                  number: {{ .Values.ports.https }}
 {{- end }}
 

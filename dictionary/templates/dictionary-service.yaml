@@ -13,9 +13,9 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.19.0 (f63a961c)
-  name: "{{ .Values.dictionaryService.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.dictionaryService.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -28,7 +28,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Values.dictionaryDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -37,9 +37,9 @@ spec:
   ports:
 
     - name: http
-      port: {{ .Values.dictionaryService.ports.http }}
+      port: {{ .Values.ports.http }}
       targetPort: 8080
 
     - name: https
-      port: {{ .Values.dictionaryService.ports.https }}
+      port: {{ .Values.ports.https }}
       targetPort: 8443

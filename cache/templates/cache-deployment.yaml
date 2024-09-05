@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Values.cacheDeployment.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.cacheDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.cacheDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.cacheDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.cacheDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.cacheDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.replication.maxSurge }}
+      maxUnavailable: {{ .Values.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Values.cacheDeployment.meta.name }}"
+      application: "{{ .Values.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Values.cacheDeployment.meta.name }}"
+        application: "{{ .Values.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -71,7 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.cacheDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -79,7 +79,7 @@ spec:
 
       containers:
 
-        - name: "{{ .Values.cacheDeployment.meta.name }}"
+        - name: "{{ .Values.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
             - "--spring.profiles.active=default,k8s"
@@ -92,22 +92,22 @@ spec:
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.cacheDeployment.image.name }}:{{ .Values.cacheDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.cacheDeployment.image.pullPolicy }}"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.cacheDeployment.livenessProbe.uri }}"
-              port: {{ .Values.cacheDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.cacheDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.cacheDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.cacheDeployment.livenessProbe.periodSeconds }}
+              path: "{{ .Values.livenessProbe.uri }}"
+              port: {{ .Values.livenessProbe.port }}
+              scheme: "{{ .Values.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.cacheDeployment.readinessProbe.uri }}"
-              port: {{ .Values.cacheDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.cacheDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.cacheDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.cacheDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.readinessProbe.uri }}"
+              port: {{ .Values.readinessProbe.port }}
+              scheme: "{{ .Values.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 5701
             - containerPort: 5702
