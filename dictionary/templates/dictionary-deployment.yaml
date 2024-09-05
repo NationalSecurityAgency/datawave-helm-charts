@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Values.dictionaryDeployment.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.dictionaryDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.dictionaryDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.dictionaryDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.dictionaryDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.dictionaryDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.replication.maxSurge }}
+      maxUnavailable: {{ .Values.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Values.dictionaryDeployment.meta.name }}"
+      application: "{{ .Values.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Values.dictionaryDeployment.meta.name }}"
+        application: "{{ .Values.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -71,7 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.dictionaryDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -79,30 +79,30 @@ spec:
 
       containers:
 
-        - name: "{{ .Values.dictionaryDeployment.meta.name }}"
+        - name: "{{ .Values.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
             - "--spring.profiles.active=default,k8s,remoteauth"
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.dictionaryDeployment.image.name }}:{{ .Values.dictionaryDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.dictionaryDeployment.image.pullPolicy }}"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.dictionaryDeployment.livenessProbe.uri }}"
-              port: {{ .Values.dictionaryDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.dictionaryDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.dictionaryDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.dictionaryDeployment.livenessProbe.periodSeconds }}
-            failureThreshold: {{ .Values.dictionaryDeployment.livenessProbe.failureThreshold }}
+              path: "{{ .Values.livenessProbe.uri }}"
+              port: {{ .Values.livenessProbe.port }}
+              scheme: "{{ .Values.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.dictionaryDeployment.readinessProbe.uri }}"
-              port: {{ .Values.dictionaryDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.dictionaryDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.dictionaryDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.dictionaryDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.readinessProbe.uri }}"
+              port: {{ .Values.readinessProbe.port }}
+              scheme: "{{ .Values.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443

@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Values.authorizationDeployment.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.authorizationDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.authorizationDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.authorizationDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.authorizationDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.authorizationDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.replication.maxSurge }}
+      maxUnavailable: {{ .Values.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Values.authorizationDeployment.meta.name }}"
+      application: "{{ .Values.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Values.authorizationDeployment.meta.name }}"
+        application: "{{ .Values.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -71,7 +71,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.authorizationDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.restartPolicy }}"
 
       ##############################################
       # Containers Associated with this Deployment #
@@ -79,30 +79,30 @@ spec:
 
       containers:
 
-        - name: "{{ .Values.authorizationDeployment.meta.name }}"
+        - name: "{{ .Values.meta.name }}"
           args:
             - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active={{ .Values.authorizationDeployment.profiles }}"
+            - "--spring.profiles.active={{ .Values.profiles }}"
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.authorizationDeployment.image.name }}:{{ .Values.authorizationDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.authorizationDeployment.image.pullPolicy }}"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
             httpGet:
-              path: "{{ .Values.authorizationDeployment.livenessProbe.uri }}"
-              port: {{ .Values.authorizationDeployment.livenessProbe.port }}
-              scheme: "{{ .Values.authorizationDeployment.livenessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.authorizationDeployment.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.authorizationDeployment.livenessProbe.periodSeconds }}
-            failureThreshold: {{ .Values.authorizationDeployment.livenessProbe.failureThreshold }}
+              path: "{{ .Values.livenessProbe.uri }}"
+              port: {{ .Values.livenessProbe.port }}
+              scheme: "{{ .Values.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
-              path: "{{ .Values.authorizationDeployment.readinessProbe.uri }}"
-              port: {{ .Values.authorizationDeployment.readinessProbe.port }}
-              scheme: "{{ .Values.authorizationDeployment.readinessProbe.scheme }}"
-            initialDelaySeconds: {{ .Values.authorizationDeployment.readinessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.authorizationDeployment.readinessProbe.periodSeconds }}
+              path: "{{ .Values.readinessProbe.uri }}"
+              port: {{ .Values.readinessProbe.port }}
+              scheme: "{{ .Values.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8080
             - containerPort: 8443

@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the Hadoop chart and th
 
 | Parameter                                         | Description                                                                        | Default                                                          |
 | ------------------------------------------------- | -------------------------------                                                    | ---------------------------------------------------------------- |
-| `image.repository`                                | Hadoop image ([source](https://github.com/Comcast/kube-yarn/tree/manager/image))    | `danisla/hadoop`                                                 |
+| `image.repository`                                | Hadoop image ([source](https://github.com/Comcast/kube-yarn/tree/master/image))    | `danisla/hadoop`                                                 |
 | `image.tag`                                       | Hadoop image tag                                                                   | `2.9.0`                                                          |
 | `imagee.pullPolicy`                               | Pull policy for the images                                                         | `IfNotPresent`                                                   |
 | `hadoopVersion`                                   | Version of hadoop libraries being used                                             | `2.9.0`                                                          |
@@ -76,7 +76,7 @@ The following table lists the configurable parameters of the Hadoop chart and th
 
 ## Related charts
 
-The [Zeppelin Notebook](https://github.com/kubernetes/charts/tree/manager/stable/zeppelin) chart can use the hadoop config for the hadoop cluster and use the YARN executor:
+The [Zeppelin Notebook](https://github.com/kubernetes/charts/tree/master/stable/zeppelin) chart can use the hadoop config for the hadoop cluster and use the YARN executor:
 
 ```
 helm install --set hadoop.useConfigMap=true stable/zeppelin

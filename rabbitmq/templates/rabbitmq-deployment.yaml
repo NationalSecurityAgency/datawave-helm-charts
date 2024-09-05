@@ -10,9 +10,9 @@ kind: Deployment
 ######################################
 
 metadata:
-  name: "{{ .Values.rabbitmqDeployment.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.rabbitmqDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 #####################################
 # Complete Deployment Specification #
@@ -24,13 +24,13 @@ spec:
   # Replication / Update Configuration #
   ######################################
 
-  replicas: {{ .Values.rabbitmqDeployment.replication.replicaCount }}
-  revisionHistoryLimit: {{ .Values.rabbitmqDeployment.replication.revisionHistoryLimit }}
+  replicas: {{ .Values.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.replication.revisionHistoryLimit }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ .Values.rabbitmqDeployment.replication.maxSurge }}
-      maxUnavailable: {{ .Values.rabbitmqDeployment.replication.maxUnavailable }}
+      maxSurge: {{ .Values.replication.maxSurge }}
+      maxUnavailable: {{ .Values.replication.maxUnavailable }}
 
   ###################################
   # Resource Selector Configuration #
@@ -38,7 +38,7 @@ spec:
 
   selector:
     matchLabels:
-      application: "{{ .Values.rabbitmqDeployment.meta.name }}"
+      application: "{{ .Values.meta.name }}"
   
   #####################################
   # Deployment Template Configuration #
@@ -52,7 +52,7 @@ spec:
 
     metadata:
       labels:
-        application: "{{ .Values.rabbitmqDeployment.meta.name }}"
+        application: "{{ .Values.meta.name }}"
 
     #######################################
     # Deployment Resources Specifications #
@@ -71,16 +71,16 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 1000
-      restartPolicy: "{{ .Values.rabbitmqDeployment.restartPolicy }}"
+      restartPolicy: "{{ .Values.restartPolicy }}"
       ##############################################
       # Containers Associated with this Deployment #
       ##############################################
 
       containers:
 
-        - name: "{{ .Values.rabbitmqDeployment.meta.name }}"
-          image: "{{ .Values.rabbitmqDeployment.image.name }}:{{ .Values.rabbitmqDeployment.image.tag }}"
-          imagePullPolicy: "{{ .Values.rabbitmqDeployment.image.pullPolicy }}"
+        - name: "{{ .Values.meta.name }}"
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
             - containerPort: 5672
             - containerPort: 15672
@@ -89,33 +89,33 @@ spec:
             - name: "{{ .Values.global.volumes.rabbitmq.name }}"
               mountPath: "{{ .Values.global.volumes.rabbitmq.destination }}"
               readOnly: true
-          {{- if .Values.rabbitmqDeployment.livenessProbe.enabled }}
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
                 - /bin/bash
                 - -ec
                 - rabbitmq-diagnostics -q check_running
-            initialDelaySeconds: {{ .Values.rabbitmqDeployment.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.rabbitmqDeployment.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.rabbitmqDeployment.livenessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.rabbitmqDeployment.livenessProbe.successThreshold }}
-            failureThreshold: {{ .Values.rabbitmqDeployment.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- else if .Values.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customLivenessProbe "context" $) | nindent 12 }}
           {{- end }}
-          {{- if .Values.rabbitmqDeployment.readinessProbe.enabled }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             exec:
               command:
                 - /bin/bash
                 - -ec
                 - rabbitmq-diagnostics -q check_running
-            initialDelaySeconds: {{ .Values.rabbitmqDeployment.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.rabbitmqDeployment.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.rabbitmqDeployment.readinessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.rabbitmqDeployment.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.rabbitmqDeployment.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- else if .Values.customReadinessProbe }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customReadinessProbe "context" $) | nindent 12 }}
           {{- end }}
@@ -128,4 +128,4 @@ spec:
         
         - name: "{{ .Values.global.volumes.rabbitmq.name }}"
           configMap:
-            name: "{{ .Values.rabbitmqConfigmap.meta.name }}"
+            name: "{{ .Values.configMap.meta.name }}"

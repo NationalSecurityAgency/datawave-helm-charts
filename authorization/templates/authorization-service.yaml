@@ -13,9 +13,9 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.19.0 (f63a961c)
-  name: "{{ .Values.authorizationService.meta.name }}"
+  name: "{{ .Values.meta.name }}"
   labels:
-    application: "{{ .Values.authorizationService.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
 ##################################
 # Complete Service Specification #
@@ -28,7 +28,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Values.authorizationDeployment.meta.name }}"
+    application: "{{ .Values.meta.name }}"
 
   ##############################
   # Service Port Configuration #
@@ -37,58 +37,9 @@ spec:
   ports:
 
     - name: http
-      port: {{ .Values.authorizationService.ports.http }}
+      port: {{ .Values.ports.http }}
       targetPort: 8080
 
     - name: https
-      port: {{ .Values.authorizationService.ports.https }}
-      targetPort: 8443
-
-
----
-    #TODO: This is tied to a value in the datawave image. Make it configurable at runtime with runtime-config, and then remove
-####################################
-# Core Helm Template Configuration #
-####################################
-
-apiVersion: v1
-kind: Service
-
-######################################
-# Basic Metadata for this Deployment #
-######################################
-
-metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.19.0 (f63a961c)
-  name: dwv-web-{{ .Values.authorizationService.meta.name }}-old
-  labels:
-    application: "{{ .Values.authorizationService.meta.name }}"
-
-##################################
-# Complete Service Specification #
-##################################
-
-spec:
-
-  ###############################
-  # Pod Selection Configuration #
-  ###############################
-
-  selector:
-    application: "{{ .Values.authorizationDeployment.meta.name }}"
-
-  ##############################
-  # Service Port Configuration #
-  ##############################
-
-  ports:
-
-    - name: http
-      port: {{ .Values.authorizationService.ports.http }}
-      targetPort: 8080
-
-    - name: https
-      port: {{ .Values.authorizationService.ports.https }}
+      port: {{ .Values.ports.https }}
       targetPort: 8443

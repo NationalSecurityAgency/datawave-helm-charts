@@ -10,9 +10,9 @@ kind: ConfigMap
 ######################################
 
 metadata:
-  name: "{{ .Values.rabbitmqConfigmap.meta.name }}"
+  name: "{{ .Values.configMap.meta.name }}"
   labels:
-    application: "{{ .Values.rabbitmqConfigmap.meta.name }}"
+    application: "{{ .Values.configMap.meta.name }}"
 
 ##########################
 # Configuration Map Data #
