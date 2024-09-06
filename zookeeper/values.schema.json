@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
         "affinity": {
             "properties": {},
@@ -141,7 +141,7 @@
             "properties": {
                 "args": {
                     "items": {
-                        "type": "number"
+                        "type": "string"
                     },
                     "type": "array"
                 },
