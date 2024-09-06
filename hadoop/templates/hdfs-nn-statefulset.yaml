@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-hdfs-nn
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
@@ -32,7 +30,7 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup zookeeper; do echo waiting for zookeeper; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup zookeeper 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for zookeeper; sleep 2; done"]
       affinity:
         podAntiAffinity:
         {{- if eq .Values.antiAffinity "hard" }}
@@ -97,7 +95,7 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ include "hadoop.fullname" . }}
+          name: {{ .Values.global.hadoopConfigMap }}
   {{- if .Values.persistence.nameNode.enabled }}
   {{- with .Values.persistence.nameNode.definitions }}
   volumeClaimTemplates:

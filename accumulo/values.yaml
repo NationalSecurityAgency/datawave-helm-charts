@@ -1,13 +1,13 @@
 global:
   pullSecrets: 
   - dockerconfigjson-ghcr
-
+  hadoopConfigMap: hadoop-config
+  accumuloConfigMap: accumulo-config
 logging:
   shellRootLevel: debug
   shellAccumuloLevel: trace
   serviceAccumuloLevel: debug
   serviceRootLevel: debug  
-hadoopConfigMap: dwv-hadoop
 nameOverride: ""
 fullnameOverride: "accumulo"
 labels: {}

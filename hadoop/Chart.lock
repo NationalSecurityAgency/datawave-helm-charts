@@ -1,0 +1,6 @@
+dependencies:
+- name: dwv-hadoop-config
+  repository: file://../hadoop-config
+  version: 3.3.6-2
+digest: sha256:c6ce7ab29f55369a238d875afb872cd5a639c2f62823257cc0f57fdec844d1af
+generated: "2024-09-13T15:08:15.091919102-04:00"

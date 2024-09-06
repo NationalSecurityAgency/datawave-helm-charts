@@ -1,0 +1,1 @@
+this is just the hadoop config since multiple charts use it

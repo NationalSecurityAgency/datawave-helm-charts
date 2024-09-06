@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: dwv-ingest
 version: 1.0.0
 appVersion: 7.5.0-SNAPSHOT

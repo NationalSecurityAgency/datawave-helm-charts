@@ -1,5 +1,5 @@
 
-{{- if or .Values.config.userManagement.users .Values.config.postInstallCommands }}
+{{- if or .Values.accumulo.config.userManagement.users .Values.accumulo.config.postInstallCommands }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,7 +20,7 @@ spec:
       securityContext:
         runAsUser: 1001
       image: busybox:1.28
-      command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
+      command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
   containers:
   - name: cmds
     image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -46,10 +46,10 @@ spec:
   volumes:
   - name: hadoop-config
     configMap:
-      name: {{ .Values.hadoopConfigMap }}
+      name: {{ .Values.global.hadoopConfigMap }}
   - name: config
     configMap:
-      name: accumulo-config
+      name: {{ .Values.global.accumuloConfigMap }}
   - name: cmds
     secret:
       secretName: {{ include "accumulo.fullname" . }}-cmds

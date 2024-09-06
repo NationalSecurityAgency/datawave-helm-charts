@@ -1,5 +1,6 @@
-#Values overrides file. See umbrella/values-testing.yaml
-VALUES_FILE=${1:-values-testing.yaml}
+VALUES_FILE=${1:-values.yaml}
+USE_LOCAL_ZOOKEEPER=${USE_LOCAL_ZOOKEEPER:-true}
+USE_LOCAL_HADOOP=${USE_LOCAL_HADOOP:-true}
 
 # Cache images and reset minikube. Then Setup minikube ingress.
 docker pull rabbitmq:3.11.4-alpine && \
@@ -12,18 +13,48 @@ minikube image load mysql:8.0.32 && \
 minikube addons enable ingress && \
 minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
 minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
-sudo sed -i "s/.*datawave\.org.*//g" /etc/hosts
-echo "$(minikube ip) namenode.datawave.org" | sudo tee -a /etc/hosts  && \
-echo "$(minikube ip) resourcemanager.datawave.org" | sudo tee -a /etc/hosts  && \
-echo "$(minikube ip) historyserver.datawave.org" | sudo tee -a /etc/hosts  && \
-echo "$(minikube ip) accumulo.datawave.org" | sudo tee -a /etc/hosts  && \
-echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts && \
-echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts && \
-
+sudo sed -i "/^$/d" /etc/hosts
+sudo sed -i "/.*datawave\.org.*/d" /etc/hosts
+sudo sed -i "/.*zookeeper.*/d" /etc/hosts
+sudo sed -i "/.*hdfs.*/d" /etc/hosts
+sudo sed -i "/.*yarn.*/d" /etc/hosts
+echo "$(minikube ip) accumulo.datawave.org" | sudo tee -a /etc/hosts
+echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts
+echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts
 
 #Apply GHCR credendials
 if test -f ./ghcr-image-pull-secret.yaml; then
   minikube kubectl -- apply -f ./ghcr-image-pull-secret.yaml
+fi
+
+if ${USE_LOCAL_ZOOKEEPER}; then
+  ./startZookeeper.sh
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 zookeeper" | sudo tee -a /etc/hosts
+fi
+if ${USE_LOCAL_HADOOP}; then
+  ./startHadoop.sh
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 hdfs-nn" | sudo tee -a /etc/hosts
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 hdfs-dn" | sudo tee -a /etc/hosts
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 yarn-rn" | sudo tee -a /etc/hosts
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 yarn-nm" | sudo tee -a /etc/hosts
+
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 namenode.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 resourcemanager.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip | cut -f1,2,3 -d .).1 historyserver.datawave.org" | sudo tee -a /etc/hosts
+else
+  echo "$(minikube ip) namenode.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) resourcemanager.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) historyserver.datawave.org" | sudo tee -a /etc/hosts
+fi
+
+if ${USE_LOCAL_ZOOKEEPER} && ${USE_LOCAL_HADOOP}; then
+  ./updateCorefile.sh coredns.corefile-both.template
+elif ${USE_LOCAL_ZOOKEEPER}; then
+  ./updateCorefile.sh coredns.corefile-zookeeper.template
+elif ${USE_LOCAL_HADOOP}; then
+  ./updateCorefile.sh coredns.corefile-hadoop.template
+else
+  ./updateCorefile.sh coredns.corefile-default.template
 fi
 
 #Package charts

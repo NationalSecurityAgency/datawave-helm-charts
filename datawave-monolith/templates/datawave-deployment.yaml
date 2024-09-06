@@ -140,7 +140,7 @@ spec:
             optional: false
         - name: hadoop-config
           configMap:
-            name: "{{ .Values.global.hadoop.configMapName }}"
+            name: "{{ .Values.global.hadoopConfigMap }}"
         - name: "{{ .Chart.Name }}-web-runtime-config"
           configMap:
             name: "{{ .Chart.Name }}-web-runtime-config"

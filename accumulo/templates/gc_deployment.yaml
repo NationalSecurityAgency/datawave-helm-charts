@@ -24,14 +24,14 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup accumulo-manager 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for accumulo; sleep 2; done"]
       volumes:
         - name: hadoop-config
           configMap:
-            name: {{ .Values.hadoopConfigMap }}
+            name: {{ .Values.global.hadoopConfigMap }}
         - name: config
           configMap:
-            name: accumulo-config
+            name: {{ .Values.global.accumuloConfigMap }}
       hostname: accumulo-gc
       containers:
       - name: accumulo-gc

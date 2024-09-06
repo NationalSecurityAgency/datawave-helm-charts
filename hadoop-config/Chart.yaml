@@ -1,4 +1,4 @@
 apiVersion: v2
 appVersion: 3.3.6-2
-name: dwv-hadoop
+name: dwv-hadoop-config
 version: 1.0.0

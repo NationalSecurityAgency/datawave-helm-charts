@@ -2,5 +2,27 @@
 # Default Values for Docker Registry #
 ######################################
 
+global:
+  hadoopConfigMap: dwv-hadoop-config
+  accumuloConfigMap: dwv-accumulo-config
+  hdfsWebhdfsEnabled: false
+
 dockerRegistry:
   url: ghcr.io/nationalsecurityagency/
+charts:
+  zookeeper:
+    enabled: false
+  hadoop:
+    enabled: false
+external:
+  zookeeper:
+    hosts:
+      - zookeeper
+  hdfs:
+    hosts:
+      - hdfs-nn
+      - hdfs-dn
+  yarn:
+    hosts:
+      - yarn-rm
+      - yarn-nm

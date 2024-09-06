@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: accumulo-config
+  name: {{ .Values.global.accumuloConfigMap }}
   labels:
     app: accumulo
     chart: accumulo

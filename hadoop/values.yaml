@@ -1,6 +1,7 @@
 global:
   pullSecrets:
   - dockerconfigjson-ghcr
+  hadoopConfigMap: hadoop-config
 
 nameOverride: hadoop
 
