@@ -13,7 +13,11 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.19.0 (f63a961c)
-  name: "{{ .Values.meta.name }}"
+  name: {{ if and (hasKey .Values "service") (hasKey .Values.service "name") }}
+            {{ .Values.service.name }}
+         {{ else }}
+            {{ .Values.meta.name }}
+         {{ end }}
   labels:
     application: "{{ .Values.meta.name }}"
 
