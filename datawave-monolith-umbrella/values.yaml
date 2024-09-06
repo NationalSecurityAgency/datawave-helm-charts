@@ -6,6 +6,7 @@ global:
       name: authorization
     cache:
       name: cache
+      port: 8080
     configuration:
       name: configuration
       port: 8888
