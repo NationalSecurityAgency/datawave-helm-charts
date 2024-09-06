@@ -40,6 +40,15 @@ global:
     quorum: zookeeper:2181
   pullSecrets:
     - dockerconfigjson-ghcr
+  serviceDns:
+    cache:
+      name: cache
+    authorization:
+      name: authorization
+      port: 8443
+      endpoint: authorization/v1/authorize
+    rabbitmq:
+      name: rabbitmq
 
 image:
   name: datawave-config-service
@@ -79,20 +88,4 @@ ports:
 configurationMap:
   meta:
     name: configuration-map
-
-#########################################
-# Inter Service commuunication defaults #
-#########################################
-
-cacheService:
-  dnsName: cache
-
-authorizationService:
-  dnsName: authorization
-  port: 8443
-  endpoint: authorization/v1/authorize
-
-rabbitmq:
-  dnsName: rabbitmq
-
 

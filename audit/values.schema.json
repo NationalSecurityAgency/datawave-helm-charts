@@ -2,33 +2,6 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false,
     "properties": {
-        "authorizationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "cacheService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "configurationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
-        },
         "global": {
             "properties": {
                 "certSecretName": {
@@ -63,6 +36,38 @@
                         "type": "string"
                     },
                     "type": "array"
+                },
+                "serviceDns": {
+                    "properties": {
+                        "authorization": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "cache": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "configuration": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 },
                 "volumes": {
                     "properties": {

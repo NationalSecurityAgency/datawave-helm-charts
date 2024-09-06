@@ -12,6 +12,14 @@ global:
   certSecretName: certificates-secret
   pullSecrets:
     - dockerconfigjson-ghcr
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    accumuloManager:
+      name: accumulo-manager
+    cache:
+      name: cache
 image:
   name: datawave-dictionary-service
   pullPolicy: IfNotPresent
@@ -54,19 +62,3 @@ ingress:
   ingressClassName: nginx
   dictionary:
     domain: "dictionary.datawave.org"
-
-
-
-#########################################
-# Inter Service commuunication defaults #
-#########################################
-
-configurationService:
-  dnsName: configuration
-  port: 8888
-
-accumuloManager:
-  dnsName: accumulo-manager
-
-cacheService:
-  dnsName: cache

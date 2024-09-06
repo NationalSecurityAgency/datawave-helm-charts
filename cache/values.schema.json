@@ -2,17 +2,6 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false,
     "properties": {
-        "configurationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
-        },
         "global": {
             "properties": {
                 "certSecretName": {
@@ -47,6 +36,22 @@
                         "type": "string"
                     },
                     "type": "array"
+                },
+                "serviceDns": {
+                    "properties": {
+                        "configuration": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 },
                 "volumes": {
                     "properties": {

@@ -2,28 +2,6 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false,
     "properties": {
-        "authorizationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                },
-                "endpoint": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
-        },
-        "cacheService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "configurationMap": {
             "properties": {
                 "meta": {
@@ -152,6 +130,41 @@
                     },
                     "type": "object"
                 },
+                "serviceDns": {
+                    "properties": {
+                        "authorization": {
+                            "properties": {
+                                "endpoint": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "cache": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "rabbitmq": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
                 "truststorePassword": {
                     "type": "string"
                 },
@@ -242,14 +255,6 @@
             "properties": {
                 "default": {
                     "type": "integer"
-                }
-            },
-            "type": "object"
-        },
-        "rabbitmq": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
                 }
             },
             "type": "object"

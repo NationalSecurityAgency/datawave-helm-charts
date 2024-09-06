@@ -12,7 +12,14 @@ global:
   certSecretName: certificates-secret
   pullSecrets:
     - dockerconfigjson-ghcr
-
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    authorization:
+      name: authorization
+    cache:
+      name: cache
 
 
 #######################################
@@ -50,15 +57,3 @@ restartPolicy: Always
 ports:
   http: 8080
   https: 8443
-
-#########################################
-# Inter Service commuunication defaults #
-#########################################
-
-configurationService:
-  dnsName: configuration
-  port: 8888
-authorizationService:
-  dnsName: authorization
-cacheService:
-  dnsName: cache

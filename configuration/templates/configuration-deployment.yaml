@@ -93,7 +93,7 @@ spec:
             - name: KEYSTORE_PASSWORD
               value: "{{ .Values.global.secrets.keystore.password }}"
             - name: MESSAGING_SERVER_HOSTNAME
-              value: "{{ .Values.rabbitmq.dnsName }}"
+              value: "{{ .Values.global.serviceDns.rabbitmq.name }}"
           image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -113,9 +113,9 @@ spec:
       initContainers:
 
 
-        - name: "{{ .Chart.Name }}-init-messaging"
+        - name: "{{ .Chart.Name }}-init-rabbitmq"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Values.rabbitmq.dnsName }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.rabbitmq.name }}; do echo 'Waiting for RabbitMQ...'; sleep 2; done" ]
 
       ###########################################
       # Volumes Associated with this Deployment #

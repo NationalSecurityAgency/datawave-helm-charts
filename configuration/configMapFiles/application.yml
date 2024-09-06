@@ -4,7 +4,7 @@ datawave:
       subjectDnPattern: "(?:^|,)\\s*OU\\s*=\\s*.*\\s*(?:,|$)"
       npeOuList: "EXAMPLE_SERVER_OU1,EXAMPLE_SERVER_OU2"
   authorization:
-    uri: "https://{{ .Values.authorizationService.dnsName }}:{{ .Values.authorizationService.port}}/{{ .Values.authorizationService.endpoint }}"
+    uri: "https://{{ .Values.global.serviceDns.authorization.name }}:{{ .Values.global.serviceDns.authorization.port}}/{{ .Values.global.serviceDns.authorization.endpoint }}"
 logging:
   level:
     root: DEBUG
@@ -39,7 +39,7 @@ spring:
     discovery:
       enabled: false
       failFast: true
-    host: '{{ .Values.rabbitmq.dnsName }}'
+    host: '{{ .Values.global.serviceDns.rabbitmq.name }}'
   security:
     datawave:
       enforce-allowed-callers: false

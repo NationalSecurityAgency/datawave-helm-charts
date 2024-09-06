@@ -83,7 +83,7 @@ spec:
             - "--spring.profiles.active=default,k8s"
           env:
             - name: CONFIG_SERVER_URL
-              value: "http://{{ .Values.configurationService.dnsName }}:{{ .Values.configurationService.port }}/configserver"
+              value: "http://{{ .Values.global.serviceDns.configuration.name }}:{{ .Values.global.serviceDns.configuration.port }}/configserver"
           image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
@@ -117,15 +117,15 @@ spec:
 
         - name: "{{ .Chart.Name }}-init-authorization"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.authorizationService.dnsName }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.authorization.name }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
         
         - name: "{{ .Chart.Name }}-init-cache"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.cacheService.dnsName }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.cache.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
 
         - name: "{{ .Chart.Name }}-init-configuration"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.configurationService.dnsName }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #
