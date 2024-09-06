@@ -305,9 +305,6 @@
                     "properties": {},
                     "type": "object"
                 },
-                "datawaveVersion": {
-                    "type": "string"
-                },
                 "nodeSelector": {
                     "properties": {},
                     "type": "object"

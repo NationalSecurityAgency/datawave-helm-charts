@@ -8,7 +8,7 @@ fullnameOverride: "datawave-ingest"
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-  tag: nn2
+  tag: 7.5.0-SNAPSHOT
   pullPolicy: IfNotPresent
 deployment:
   replicaCount: 1
@@ -16,7 +16,6 @@ deployment:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-  datawaveVersion: 5.4.0-SNAPSHOT
 libs: "/lib/hadoop-mapreduce/hadoop-mapreduce-client-core.jar:/lib/hadoop-hdfs/hadoop-hdfs-client.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-yarn/hadoop-yarn-client.jar:/lib/hadoop-yarn/hadoop-yarn-common.jar:/lib/hadoop-yarn/hadoop-yarn-api.jar:/lib/hadoop-yarn/lib/websocket-api-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-client-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-common-9.4.48.v20220622.jar"
 hadoop:
   classpath:

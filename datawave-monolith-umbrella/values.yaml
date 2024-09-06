@@ -1,3 +1,18 @@
+global:
+  serviceDns:
+    accumuloManager:
+      name: accumulo-manager
+    authorization:
+      name: authorization
+    cache:
+      name: cache
+    configuration:
+      name: configuration
+      port: 8888
+    rabbitmq:
+      name: rabbitmq
+  
+
 ######################################
 # Default Values for Docker Registry #
 ######################################

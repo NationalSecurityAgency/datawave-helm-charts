@@ -74,8 +74,6 @@ spec:
       ##############################################
       # Containers Associated with this Deployment #
       ##############################################
-      securityContext:
-        runAsUser: 999
       initContainers:
         - name: init-authorization
           securityContext:
