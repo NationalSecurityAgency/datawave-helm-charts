@@ -129,7 +129,7 @@ spec:
           optional: false
       - name: init-container-cmds
         secret:
-          secretName: {{ include "datawave.fullname" . }}-initconatiner-cmds
+          secretName: {{ include "datawave.fullname" . }}-initcontainer-cmds
           optional: false
       {{- with .Values.deployment.affinity }}
       affinity:
