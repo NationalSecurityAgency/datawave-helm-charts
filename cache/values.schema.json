@@ -1,0 +1,179 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+        "global": {
+            "properties": {
+                "certSecretName": {
+                    "type": "string"
+                },
+                "dockerRegistry": {
+                    "properties": {
+                        "url": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "initialization": {
+                    "properties": {
+                        "image": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "tag": {
+                                    "type": "number"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "serviceDns": {
+                    "properties": {
+                        "configuration": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "volumes": {
+                    "properties": {
+                        "certificates": {
+                            "properties": {
+                                "destination": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "image": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "livenessProbe": {
+            "properties": {
+                "delaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "meta": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ports": {
+            "properties": {
+                "hazelcast1": {
+                    "type": "integer"
+                },
+                "hazelcast2": {
+                    "type": "integer"
+                },
+                "hazelcast3": {
+                    "type": "integer"
+                },
+                "http": {
+                    "type": "integer"
+                },
+                "https": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "readinessProbe": {
+            "properties": {
+                "delaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "replication": {
+            "properties": {
+                "maxSurge": {
+                    "type": "integer"
+                },
+                "maxUnavailable": {
+                    "type": "integer"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "restartPolicy": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

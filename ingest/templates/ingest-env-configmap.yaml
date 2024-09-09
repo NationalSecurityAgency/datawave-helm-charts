@@ -26,7 +26,7 @@ data:
     #!/bin/bash
     
     #Directory in which to place the lock files
-    export LOCK_FILE_DIR={{ .Values.ingest.config.lockFileDir}}
+    export LOCK_FILE_DIR={{ .Values.config.lockFileDir}}
     
     if [[ ! -d ${LOCK_FILE_DIR} || ! -w ${LOCK_FILE_DIR} ]]; then
       "Lock file directory ${LOCK_FILE_DIR} does not exist or is not writable. Exiting..."
@@ -101,22 +101,22 @@ data:
     RCPT_TO="hadoop@localhost"
     SEND_JOB_EMAIL_DISABLED="${SEND_JOB_EMAIL_DISABLED}"
     
-    HADOOP_HOME="{{ .Values.ingest.config.hadoopHome }}"
-    MAPRED_HOME="{{ .Values.ingest.config.mapredHome }}"
+    HADOOP_HOME="{{ .Values.config.hadoopHome }}"
+    MAPRED_HOME="{{ .Values.config.mapredHome }}"
     MAPRED_HOME="${MAPRED_HOME:-$HADOOP_HOME}"
     HADOOP_CONF_DIR="/usr/local/hadoop/conf"
-    USERNAME="{{ .Values.ingest.config.accumuloUser }}"
+    USERNAME="{{ .Values.config.accumuloUser }}"
     
-    WAREHOUSE_ACCUMULO_HOME="{{ .Values.ingest.config.accumuloDir }}"
+    WAREHOUSE_ACCUMULO_HOME="{{ .Values.config.accumuloDir }}"
     WAREHOUSE_ACCUMULO_LIB=""
     WAREHOUSE_ACCUMULO_BIN=""
     WAREHOUSE_ACCUMULO_LIB="${WAREHOUSE_ACCUMULO_LIB:-$WAREHOUSE_ACCUMULO_HOME/lib}"
     WAREHOUSE_ACCUMULO_BIN="${WAREHOUSE_ACCUMULO_BIN:-$WAREHOUSE_ACCUMULO_HOME/bin}"
-    WAREHOUSE_HDFS_NAME_NODE="{{ .Values.ingest.config.hdfsNamenode }}"
+    WAREHOUSE_HDFS_NAME_NODE="{{ .Values.config.hdfsNamenode }}"
     WAREHOUSE_NAME_BASE_DIR="${WAREHOUSE_NAME_BASE_DIR}"
-    WAREHOUSE_JOBTRACKER_NODE="{{ .Values.ingest.config.jobTracker }}"
-    WAREHOUSE_ZOOKEEPERS="{{ .Values.ingest.config.zookeeper }}"
-    WAREHOUSE_INSTANCE_NAME="{{ .Values.ingest.config.instanceName }}"
+    WAREHOUSE_JOBTRACKER_NODE="{{ .Values.config.jobTracker }}"
+    WAREHOUSE_ZOOKEEPERS="{{ .Values.config.zookeeper }}"
+    WAREHOUSE_INSTANCE_NAME="{{ .Values.config.instanceName }}"
     # setting these two times may seem unnecessary, but the first one is required if
     # the property is set in the assembly properties (see datawave_deploy).  The second
     # one is needed if it is not set explicitly but HADOOP_HOME is.
@@ -124,14 +124,14 @@ data:
     WAREHOUSE_HADOOP_HOME="${WAREHOUSE_HADOOP_HOME:-$HADOOP_HOME}"
     WAREHOUSE_MAPRED_HOME="${WAREHOUSE_MAPRED_HOME}"
     WAREHOUSE_MAPRED_HOME="${WAREHOUSE_MAPRED_HOME:-$MAPRED_HOME}"
-    WAREHOUSE_HADOOP_CONF="{{ .Values.ingest.config.hadoopConfDif }}"
+    WAREHOUSE_HADOOP_CONF="{{ .Values.config.hadoopConfDif }}"
     WAREHOUSE_HADOOP_CONF="${WAREHOUSE_HADOOP_CONF:-$WAREHOUSE_HADOOP_HOME/conf}"
     
-    INGEST_ACCUMULO_HOME="{{ .Values.ingest.config.accumuloDir }}"
-    INGEST_HDFS_NAME_NODE="{{ .Values.ingest.config.hdfsNamenode }}"
-    INGEST_JOBTRACKER_NODE="{{ .Values.ingest.config.jobTracker }}"
-    INGEST_ZOOKEEPERS="{{ .Values.ingest.config.zookeeper }}"
-    INGEST_INSTANCE_NAME="{{ .Values.ingest.config.instanceName }}"
+    INGEST_ACCUMULO_HOME="{{ .Values.config.accumuloDir }}"
+    INGEST_HDFS_NAME_NODE="{{ .Values.config.hdfsNamenode }}"
+    INGEST_JOBTRACKER_NODE="{{ .Values.config.jobTracker }}"
+    INGEST_ZOOKEEPERS="{{ .Values.config.zookeeper }}"
+    INGEST_INSTANCE_NAME="{{ .Values.config.instanceName }}"
     # setting these two times may seem unnecessary, but the first one is required if
     # the property is set in the assembly properties (see datawave_deploy).  The second
     # one is needed if it is not set explicitly but HADOOP_HOME is.
@@ -139,13 +139,13 @@ data:
     INGEST_HADOOP_HOME="${INGEST_HADOOP_HOME:-$HADOOP_HOME}"
     INGEST_MAPRED_HOME="${INGEST_MAPRED_HOME}"
     INGEST_MAPRED_HOME="${INGEST_MAPRED_HOME:-$MAPRED_HOME}"
-    INGEST_HADOOP_CONF="{{ .Values.ingest.config.hadoopConfDif }}"
+    INGEST_HADOOP_CONF="{{ .Values.config.hadoopConfDif }}"
     INGEST_HADOOP_CONF="${INGEST_HADOOP_CONF:-$INGEST_HADOOP_HOME/conf}"
     
     # STAGING_HOSTS is a comma delimited list of hosts
     STAGING_HOSTS="`nodeattr -c staging`"
-    INGEST_HOST="ingestmaster"
-    ROLLUP_HOST="ingestmaster"
+    INGEST_HOST="ingestmanager"
+    ROLLUP_HOST="ingestmanager"
     
     # hadoop and child opts for ingest
     MAPRED_INGEST_OPTS="-useInlineCombiner"
@@ -184,8 +184,8 @@ data:
     LIVE_MAP_OUTPUT_COMPRESSION_TYPE=${LIVE_MAP_OUTPUT_COMPRESSION_TYPE}
     LIVE_MAP_OUTPUT_COMPRESSION_TYPE=${LIVE_MAP_OUTPUT_COMPRESSION_TYPE:-RECORD}
     
-    BULK_INGEST_DATA_TYPES="{{ .Values.ingest.config.bulkDataTypes }}"
-    LIVE_INGEST_DATA_TYPES="{{ .Values.ingest.config.liveDataTypes  }}"
+    BULK_INGEST_DATA_TYPES="{{ .Values.config.bulkDataTypes }}"
+    LIVE_INGEST_DATA_TYPES="{{ .Values.config.liveDataTypes  }}"
     MISSION_MGMT_DATA_TYPES="${MISSION_MGMT_DATA_TYPES}"
     
     BULK_INGEST_REDUCERS="10"

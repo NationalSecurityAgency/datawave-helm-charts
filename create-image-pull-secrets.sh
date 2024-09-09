@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 USERNAME=$1
 PAT=$2
 

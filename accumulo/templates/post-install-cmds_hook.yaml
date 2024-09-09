@@ -1,5 +1,5 @@
 
-{{- if or .Values.accumulo.config.userManagement.users .Values.accumulo.config.postInstallCommands }}
+{{- if or .Values.config.userManagement.users .Values.config.postInstallCommands }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,11 +20,11 @@ spec:
       securityContext:
         runAsUser: 1001
       image: busybox:1.28
-      command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
+      command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
   containers:
   - name: cmds
-    image: {{ .Values.accumulo.image.repository }}:{{ .Values.accumulo.image.tag }}
-    imagePullPolicy: {{ .Values.accumulo.image.pullPolicy }}
+    image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+    imagePullPolicy: {{ .Values.image.pullPolicy }}
     command: ["/bin/bash", "/cmds/run.sh"]
     volumeMounts:
     - name: hadoop-config
@@ -36,17 +36,17 @@ spec:
       readOnly: true
     env:
     - name: HADOOP_CLASSPATH
-      value: {{ .Values.accumulo.hadoop.classpath }}
+      value: {{ .Values.hadoop.classpath }}
     - name: HADOOP_CONF_DIR
       value: /opt/hadoop/conf
     - name: ACCUMULO_CONF_DIR
-      value: {{ .Values.accumulo.config.path }}
+      value: {{ .Values.config.path }}
     resources:
-      {{- toYaml .Values.accumulo.cmds.resources | nindent 6 }}
+      {{- toYaml .Values.cmds.resources | nindent 6 }}
   volumes:
   - name: hadoop-config
     configMap:
-      name: {{ .Values.accumulo.hadoopConfigMap }}
+      name: {{ .Values.hadoopConfigMap }}
   - name: config
     configMap:
       name: accumulo-config
@@ -54,19 +54,19 @@ spec:
     secret:
       secretName: {{ include "accumulo.fullname" . }}-cmds
       optional: false
-  {{- with .Values.accumulo.cmds.affinity }}
+  {{- with .Values.cmds.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.accumulo.cmds.nodeSelector }}
+  {{- with .Values.cmds.nodeSelector }}
   nodeSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.accumulo.cmds.tolerations }}
+  {{- with .Values.cmds.tolerations }}
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.accumulo.image.pullSecrets }}
+  {{- with .Values.global.pullSecrets }}
   imagePullSecrets:
   {{- range . }}
   - name: {{ . }}

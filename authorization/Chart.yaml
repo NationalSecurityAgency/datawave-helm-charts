@@ -1,0 +1,17 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
+apiVersion: v2
+name: dwv-authorization
+type: application
+version: 1.0.0
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: 4.0.2
+description: Deploys a datawave authorization service
+icon: https://code.nsa.gov/datawave/images/datawave-logo.png
+

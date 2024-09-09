@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Chart.Name }}-web-runtime-config"
+data:
+  runtime-config.cli: |- 
+    # Start processing batch commands (MUST BE FIRST)
+    batch
+    # Run an embedded server to perform the configuration
+    embed-server --server-config=standalone-full.xml
+    /system-property=dw.remoteDatawaveUserService.host:remove
+
+    /system-property=dw.warehouse.accumulo.password:remove
+    /system-property=dw.metrics.accumulo.password:remove
+    /system-property=dw.uuid.accumulo.password:remove
+
+    /system-property=dw.warehouse.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
+    /system-property=dw.metrics.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
+    /system-property=dw.uuid.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
+
+    /system-property=dw.mapreduce.securitydomain.keyStoreURL:remove
+    /system-property=dw.mapreduce.securitydomain.keyStoreType:remove
+    /system-property=dw.mapreduce.securitydomain.keyStorePassword:remove
+    /system-property=dw.mapreduce.securitydomain.trustStoreURL:remove
+    /system-property=dw.mapreduce.securitydomain.trustStoreType:remove
+    /system-property=dw.mapreduce.securitydomain.trustStorePassword:remove
+    
+    /system-property=dw.mapreduce.securitydomain.keyStoreURL:add(value=file://${env.KEYSTORE})
+    /system-property=dw.mapreduce.securitydomain.keyStoreType:add(value="${env.KEYSTORE_TYPE}")
+    /system-property=dw.mapreduce.securitydomain.keyStorePassword:add(value="${env.KEYSTORE_PASSWORD}")
+    /system-property=dw.mapreduce.securitydomain.trustStoreURL:add(value=file://${env.TRUSTSTORE})
+    /system-property=dw.mapreduce.securitydomain.trustStoreType:add(value="${env.TRUSTSTORE_TYPE}")
+    /system-property=dw.mapreduce.securitydomain.trustStorePassword:add(value="${env.TRUSTSTORE_PASSWORD}")
+    
+
+    # /core-service=management/security-realm=SSLRealm/server-identity=ssl/:remove
+    # /core-service=management/security-realm=SSLRealm/authentication=truststore/:remove
+    # /subsystem=security/security-domain=datawave/jsse=classic:remove
+    
+    # /core-service=management/security-realm=SSLRealm/server-identity=ssl/:add(enabled-protocols=["TLSv1.1","TLSv1.2"],keystore-path=${env.KEYSTORE},keystore-provider=${env.KEYSTORE_TYPE},keystore-password="${env.KEYSTORE_PASSWORD}")
+    # /core-service=management/security-realm=SSLRealm/authentication=truststore/:add(keystore-path=${env.TRUSTSTORE},keystore-provider=${env.TRUSTSTORE_TYPE},keystore-password="${env.TRUSTSTORE_PASSWORD}")
+    # /subsystem=security/security-domain=datawave/jsse=classic:add(keystore={type="${env.KEYSTORE_TYPE}",password="${env.KEYSTORE_PASSWORD}",url="file://${env.KEYSTORE}"},truststore={type="${env.TRUSTSTORE_TYPE}",password="${env.TRUSTSTORE_PASSWORD}",url="file://${env.TRUSTSTORE}"})
+
+    /system-property=dw.remoteDatawaveUserService.host:add(value={{ .Values.authorizationService.dnsName }})
+    {{ .Values.datawaveRuntimeConfig.additions}}
+
+    # Run the batch commands (MUST BE LAST)
+    run-batch
+
+    

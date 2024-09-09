@@ -17,7 +17,7 @@ metadata:
 ##########################
 
 data: 
-{{ range .Values.ingest.config.types}}
+{{ range .Values.config.types}}
   {{ .name }}-ingest-config.xml: 
     <?xml version="1.0" encoding="UTF-8" standalone="no"?><?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>

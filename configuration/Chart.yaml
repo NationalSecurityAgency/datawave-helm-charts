@@ -1,0 +1,17 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
+apiVersion: v2
+name: dwv-configuration
+type: application
+version: 1.0.0
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: 4.0.1
+description: Deploys DataWave Dictionary Service
+icon: https://code.nsa.gov/datawave/images/datawave-logo.png
+

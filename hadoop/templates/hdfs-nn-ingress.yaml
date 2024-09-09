@@ -1,11 +1,11 @@
-{{- if .Values.hadoop.hdfs.nameNode.ingress.enabled }}
+{{- if .Values.hdfs.nameNode.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "hadoop.fullname" . }}-nn-ingress
   labels:
     app.kubernetes.io/component: monitor
-  {{- with .Values.hadoop.hdfs.nameNode.ingress.annotations }}
+  {{- with .Values.hdfs.nameNode.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -26,7 +26,7 @@ spec:
           serviceName: hdfs-nn
           servicePort: webhdfs
 {{- end }}
-    {{- if ne .Values.hadoop.hdfs.nameNode.ingress.host "" }}
-    host: {{ .Values.hadoop.hdfs.nameNode.ingress.host }}
+    {{- if ne .Values.hdfs.nameNode.ingress.host "" }}
+    host: {{ .Values.hdfs.nameNode.ingress.host }}
     {{- end }}
 {{- end }}

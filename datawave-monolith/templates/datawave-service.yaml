@@ -1,0 +1,38 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: Service
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Values.datawaveService.meta.name }}"
+  labels:
+    application: "{{ .Values.datawaveService.meta.name }}"
+
+##################################
+# Complete Service Specification #
+##################################
+
+spec:
+
+  ###############################
+  # Pod Selection Configuration #
+  ###############################
+
+  selector:
+    application: "{{ .Values.datawaveDeployment.meta.name }}"
+
+  ##############################
+  # Service Port Configuration #
+  ##############################
+
+  ports:
+
+    - name: https
+      port: {{ .Values.datawaveService.ports.https }}
+      targetPort: 8443

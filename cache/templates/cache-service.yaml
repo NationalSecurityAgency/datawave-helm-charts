@@ -1,0 +1,61 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: Service
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.19.0 (f63a961c)
+  name: {{ if and (hasKey .Values "service") (hasKey .Values.service "name") }}
+            {{ .Values.service.name }}
+         {{ else }}
+            {{ .Values.meta.name }}
+         {{ end }}
+  labels:
+    application: "{{ .Values.meta.name }}"
+
+##################################
+# Complete Service Specification #
+##################################
+
+spec:
+
+  ###############################
+  # Pod Selection Configuration #
+  ###############################
+
+  selector:
+    application: "{{ .Values.meta.name }}"
+
+  ##############################
+  # Service Port Configuration #
+  ##############################
+
+  ports:
+
+    - name: hazelcast1
+      port: {{ .Values.ports.hazelcast1 }}
+      targetPort: 5701
+
+    - name: hazelcast2
+      port: {{ .Values.ports.hazelcast2 }}
+      targetPort: 5702
+
+    - name: hazelcast3
+      port: {{ .Values.ports.hazelcast3 }}
+      targetPort: 5703
+
+    - name: http
+      port: {{ .Values.ports.http }}
+      targetPort: 8080
+
+    - name: https
+      port: {{ .Values.ports.https }}
+      targetPort: 8443
