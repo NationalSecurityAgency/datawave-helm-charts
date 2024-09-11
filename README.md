@@ -214,3 +214,41 @@ The following is a list of common errors and their usual cause
 **Log:** *$WILDFLY_HOME/standalone/log/*
   * Query.log - logs the query and the steps preformed for it
   * Security.log - logs any security requests made through the Datawave app
+
+## Creating and updating Certificates within Datawave
+Using Datawave with self-signed certificates takes a bit of setup to accomplish. You have to create the Certificate Authority to sign the certificates with. For our demo we utilized self-signed certificates create by the NSA tool MADCert. The documentation for creating the new certificates are straight forward within the [MADCert documentation](https://github.com/NationalSecurityAgency/MADCert) , so it is not covered here. 
+
+### Updating Datawave to use new certificates
+After the server certificates are created for datawave, the following steps will ensure you get them within Datawave to be utilized.
+
+1) Switch the `web.certificates.externalsecret.enabled` from false to true within `web->values.yaml`.
+1) add the `web.certificates.externalsecret.name` value within `web->values.yaml`.
+1) create a new file under `web->templates` and fill it with the following information:
+    <details>
+    <summary>New File Content</summary>
+
+    ```yaml
+    {{ if .Values.web.certificates.externalSecret.enabled }}
+    apiVersion: v1
+    kind: Secret
+
+    metadata:
+        name: {{ .Values.web.certificates.externalSecret.name }}
+    type: Opaque
+
+    data:
+        keystore.p12: |-
+            <fill me in>
+        truststore.jks: |-
+            <fill me in>
+    {{ end }}
+    ```
+
+    </details>
+
+1) use the following command to create/update the truststore.jks
+    ```
+    keytool -import -alias abacus-intermediate -file <certificate to add> -keystore <name of the truststore>
+    ```
+1) Use `base64` to encode both the server pkcs12 file and the truststore created. Fill in the output within the yaml file created above.
+1) Deploy the changes.
