@@ -42,9 +42,9 @@ This will package all the helm charts from the local directories, and launch the
   - what fields are unique identifiers
 
 ### Steps for Adding a new Datatype
-1) Open the umbrella/values.yaml or your own values.yaml.
-1) Add the datatype name to the  `dwv-ingest->ingest->config->liveDataTypes` value.
-1) Add a new section under the `dwv-ingest->ingest->config->types`.
+1) Open the datawave-stack/values.yaml or your own values.yaml.
+1) Add the datatype name to the  `dwv-ingest->config->liveDataTypes` value.
+1) Add a new section under the `dwv-ingest->config->types`.
 1) Fill in all the sections within the YAML. See [New Datatype Configuration](#new-datatype-configuration-help) for additional details.
 1) Deploy using the [DataWave Deployment](#datawave-deployment) section
 
@@ -159,7 +159,7 @@ Python's request library (at least the version we have) does not work with non-p
 
 If you can authorize but not getting what you'd expect you can try hitting the `whoami` endpoint either in the browser or by using `datawave authorization` from the Datawave CLI python library we have written. This will tell you what auths the user is getting as well as the roles they have for datawave. Datawave users need to have AuthorizedUser at the minimum to be able to make queries.
 
-Datawave caches users and this has caused problems for us before. So if you have updated a user and are not seeing the updates you may need to clear the cache. This can be done from an admin user with the evict endpoints of the authorization end point. `dwv-authorization.***/authorization/v2/admin/evictAll` or `/evictUser`.
+Datawave may cache users and this has caused problems for us before. So if you have updated a user and are not seeing the updates you may need to clear the cache. This can be done from an admin user with the evict endpoints of the authorization end point. `dwv-authorization.***/authorization/v2/admin/evictAll` or `/evictUser`.
 
 #### Logs
 **Pod:** dwv-web-authorization-*
