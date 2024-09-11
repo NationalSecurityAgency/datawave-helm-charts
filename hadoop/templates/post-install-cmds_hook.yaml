@@ -1,5 +1,5 @@
 
-{{- if .Values.hadoop.config.postInstallCommands }}
+{{- if .Values.config.postInstallCommands }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -19,8 +19,8 @@ spec:
 
   containers:
   - name: cmds
-    image: {{ .Values.hadoop.image.repository }}:{{ .Values.hadoop.image.tag }}
-    imagePullPolicy: {{ .Values.hadoop.image.pullPolicy }}
+    image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+    imagePullPolicy: {{ .Values.image.pullPolicy }}
     command: ["/bin/bash", "/cmds/run.sh"]
     volumeMounts:
     - name: cmds
@@ -29,7 +29,7 @@ spec:
     - name: hadoop-config
       mountPath: /tmp/hadoop-config
     resources:
-      {{- toYaml .Values.hadoop.cmds.resources | nindent 6 }}
+      {{- toYaml .Values.cmds.resources | nindent 6 }}
   volumes:
   - name: cmds
     secret:
@@ -39,19 +39,19 @@ spec:
     configMap:
       name: {{ include "hadoop.fullname" . }}
      
-  {{- with .Values.hadoop.cmds.affinity }}
+  {{- with .Values.cmds.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.hadoop.cmds.nodeSelector }}
+  {{- with .Values.cmds.nodeSelector }}
   nodeSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.hadoop.cmds.tolerations }}
+  {{- with .Values.cmds.tolerations }}
   tolerations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.hadoop.image.pullSecrets }}
+  {{- with .Values.global.pullSecrets }}
   imagePullSecrets:
   {{- range . }}
   - name: {{ . }}

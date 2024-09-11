@@ -1,0 +1,87 @@
+global: 
+  ingress:
+    enabled: true 
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    ingressClassName: nginx
+    domain: "web.datawave.org"
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  certSecretName: certificates-secret
+  certificates:
+    keystore:
+      password: changeme
+  accumulo:
+    password: ThisP@ssw0rd1sBANANAS
+  zookeeper:
+    quorum: zookeeper:2181
+  hadoop:
+    configMapName: dwv-hadoop
+  pullSecrets:
+    - dockerconfigjson-ghcr
+
+##########################################
+# Default Values for DataWave Deployment #
+##########################################
+
+datawaveDeployment:
+  image:
+    name: datawave/webservice-kubernetes
+    pullPolicy: Always
+    tag: 7.5.0-SNAPSHOT
+  livenessProbe:
+    delaySeconds: 60
+    periodSeconds: 5
+    port: 8080
+    scheme: HTTP
+    uri: DataWave/Common/Health/health
+  readinessProbe:
+    delaySeconds: 60
+    periodSeconds: 5
+    port: 8080
+    scheme: HTTP
+    uri: DataWave/Common/Health/health
+  meta:
+    name: datawave-monolith
+  replication:
+    maxSurge: 2
+    maxUnavailable: 1
+    replicaCount: 1
+    revisionHistoryLimit: 10
+  restartPolicy: Always
+datawaveRuntimeConfig:
+    additions: ""
+
+#######################################
+# Default Values for DataWave Service #
+#######################################
+
+datawaveService:
+  meta:
+    name: web-datawave
+  ports:
+    https: 8443
+    http: 8080
+
+
+#########################################
+# Inter Service commuunication defaults #
+#########################################
+
+configurationService:
+  dnsName: configuration
+  port: 8888
+cacheService:
+  dnsName: cache
+rabbitmqService:
+  dnsName: rabbitmq
+authorizationService:
+  dnsName: authorization
+
+hadoop:
+  classpath:
+    "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"

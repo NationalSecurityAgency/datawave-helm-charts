@@ -1,117 +1,119 @@
-accumulo:
-  logging:
-    shellRootLevel: debug
-    shellAccumuloLevel: trace
-    serviceAccumuloLevel: debug
-    serviceRootLevel: debug
-  hadoopConfigMap: dwv-dwv-hadoop
-  nameOverride: ""
-  fullnameOverride: ""
-  labels: {}
-  hadoop:
-    classpath:
-      "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
-  hdfs:
-    volumes:
-      - /accumulo
-    namenode:
-      hostname: "hdfs-nn"
-      ports:
-        clientRpc: 9000
-    postInstallCommands:
-      - hadoop fs -mkdir -p /accumulo
-      - hadoop fs -chown accumulo /accumulo
-      - hadoop fs -chmod 700 /accumulo
-      - hadoop fs -ls /
-  zookeeper:
-    externalHosts: "zookeeper"
-  instanceId: dev
-  config:
-    auths: "JBOSS_ADMIN,DW_ADMIN,AUTH_USER,BAR,FOO,PRIVATE,PUBLIC"
-    path: /opt/accumulo/conf
-    files: {}
-    accumuloSite:
-      instance.secret: "DEFAULT"
-      tserver.memory.maps.native.enabled: true
-      tserver.memory.maps.max: 128M
-      tserver.cache.data.size: 15M
-      tserver.cache.index.size: 40M
-      tserver.total.mutation.queue.max: 16M
-      tserver.sort.buffer.size: 50M
-      tserver.walog.max.size: 128M
-    userManagement:
-      rootPassword: "ThisP@ssw0rd1sBANANAS"
-      # If accumulo.config.userManagement.revoke.enabled is:
-      # true - Any users or permissions not specified below will be removed
-      # false - Only missing users and permissions will be added
-      revoke:
-        enabled: false
-      users:
-        tracer:
-          password: "tracer"
-          permissions:
-            system:
-              - CREATE_TABLE
-            table:
-              trace:
-                - READ
-                - WRITE
-    postInstallCommands: []
-  initContainer:
-    image: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-    tag: 3.3.6
-  image:
-    repository: ghcr.io/nationalsecurityagency/datawave-stack-accumulo
-    tag: 2.1.3
-    pullPolicy: IfNotPresent
-    pullSecrets: 
-    - dockerconfigjson-ghcr
-  master:
-    resources: {}
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-  tabletServers:
-    replicaCount: 5
-    resources: {}
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-  scanServers:
-    resourceGroups:
-    - resourceGroupName: group1
-      replicaCount: 1
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
-    - resourceGroupName: default
-      replicaCount: 1
-      resources: {}
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
-  gc:
+global:
+  pullSecrets: 
+  - dockerconfigjson-ghcr
+
+logging:
+  shellRootLevel: debug
+  shellAccumuloLevel: trace
+  serviceAccumuloLevel: debug
+  serviceRootLevel: debug  
+hadoopConfigMap: dwv-hadoop
+nameOverride: ""
+fullnameOverride: "accumulo"
+labels: {}
+hadoop:
+  classpath:
+    "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
+hdfs:
+  volumes:
+    - /accumulo
+  namenode:
+    hostname: "hdfs-nn"
+    ports:
+      clientRpc: 9000
+  postInstallCommands:
+    - hadoop fs -mkdir -p /accumulo
+    - hadoop fs -chown accumulo /accumulo
+    - hadoop fs -chmod 700 /accumulo
+    - hadoop fs -ls /
+zookeeper:
+  externalHosts: "zookeeper"
+instanceId: dev
+config:
+  auths: "JBOSS_ADMIN,DW_ADMIN,AUTH_USER,BAR,FOO,PRIVATE,PUBLIC"
+  path: /opt/accumulo/conf
+  files: {}
+  accumuloSite:
+    instance.secret: "DEFAULT"
+    tserver.memory.maps.native.enabled: true
+    tserver.memory.maps.max: 128M
+    tserver.cache.data.size: 15M
+    tserver.cache.index.size: 40M
+    tserver.total.mutation.queue.max: 16M
+    tserver.sort.buffer.size: 50M
+    tserver.walog.max.size: 128M
+  userManagement:
+    rootPassword: "ThisP@ssw0rd1sBANANAS"
+    # If accumulo.config.userManagement.revoke.enabled is:
+    # true - Any users or permissions not specified below will be removed
+    # false - Only missing users and permissions will be added
+    revoke:
+      enabled: false
+    users:
+      tracer:
+        password: "tracer"
+        permissions:
+          system:
+            - CREATE_TABLE
+          table:
+            trace:
+              - READ
+              - WRITE
+  postInstallCommands: []
+initContainer:
+  image: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
+  tag: 3.3.6
+image:
+  repository: ghcr.io/nationalsecurityagency/datawave-stack-accumulo
+  tag: 2.1.3
+  
+  pullPolicy: IfNotPresent
+manager:
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+tabletServers:
+  replicaCount: 5
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+scanServers:
+  resourceGroups:
+  - resourceGroupName: group1
     replicaCount: 1
     resources: {}
     nodeSelector: {}
     tolerations: []
     affinity: {}
-  cmds:
-    resources: {}
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-  monitor:
+  - resourceGroupName: default
     replicaCount: 1
     resources: {}
     nodeSelector: {}
     tolerations: []
     affinity: {}
-    ingress:
-      enabled: true
-      annotations: []
-      host: "accumulo.datawave.org"
-      # For Traefik:
-      #pathPrefix: /accumulo/
-      # For Nginx:
+gc:
+  replicaCount: 1
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+cmds:
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+monitor:
+  replicaCount: 1
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  ingress:
+    enabled: true
+    annotations: []
+    host: "accumulo.datawave.org"
+    # For Traefik:
+    #pathPrefix: /accumulo/
+    # For Nginx:

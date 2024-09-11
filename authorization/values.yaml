@@ -1,0 +1,60 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    rabbitmq:
+      name: rabbitmq
+    cache:
+      name: cache
+
+
+###############################################
+# Default Values for Authorization Deployment #
+###############################################
+profiles: "default,mock,k8s"
+image:
+  name: datawave-authorization-service
+  pullPolicy: IfNotPresent
+  tag: 4.0.3
+livenessProbe:
+  delaySeconds: 60
+  periodSeconds: 5
+  failureThreshold: 20
+  port: 8080
+  scheme: HTTP
+  uri: authorization/mgmt/health
+meta:
+  name: authorization
+readinessProbe:
+  delaySeconds: 60
+  periodSeconds: 5
+  port: 8080
+  scheme: HTTP
+  uri: authorization/mgmt/health
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+
+############################################
+# Default Values for Authorization Service #
+############################################
+ports:
+  http: 8080
+  https: 8443

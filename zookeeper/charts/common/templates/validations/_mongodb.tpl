@@ -3,16 +3,16 @@
 Validate MongoDB&reg; required passwords are not empty.
 
 Usage:
-{{ include "common.validations.Values.zookeeper.mongodb.passwords" (dict "secret" "secretName" "subchart" false "context" $) }}
+{{ include "common.validations.Values.mongodb.passwords" (dict "secret" "secretName" "subchart" false "context" $) }}
 Params:
   - secret - String - Required. Name of the secret where MongoDB&reg; values are stored, e.g: "mongodb-passwords-secret"
   - subchart - Boolean - Optional. Whether MongoDB&reg; is used as subchart or not. Default: false
 */}}
-{{- define "common.validations.Values.zookeeper.mongodb.passwords" -}}
-  {{- $existingSecret := include "common.mongodb.Values.zookeeper.auth.existingSecret" . -}}
-  {{- $enabled := include "common.mongodb.Values.zookeeper.enabled" . -}}
-  {{- $authPrefix := include "common.mongodb.Values.zookeeper.key.auth" . -}}
-  {{- $architecture := include "common.mongodb.Values.zookeeper.architecture" . -}}
+{{- define "common.validations.Values.mongodb.passwords" -}}
+  {{- $existingSecret := include "common.mongodb.Values.auth.existingSecret" . -}}
+  {{- $enabled := include "common.mongodb.Values.enabled" . -}}
+  {{- $authPrefix := include "common.mongodb.Values.key.auth" . -}}
+  {{- $architecture := include "common.mongodb.Values.architecture" . -}}
   {{- $valueKeyRootPassword := printf "%s.rootPassword" $authPrefix -}}
   {{- $valueKeyUsername := printf "%s.username" $authPrefix -}}
   {{- $valueKeyDatabase := printf "%s.database" $authPrefix -}}
@@ -40,7 +40,7 @@ Params:
         {{- $requiredPasswords = append $requiredPasswords $requiredReplicaSetKey -}}
     {{- end -}}
 
-    {{- include "common.validations.Values.zookeeper.multiple.empty" (dict "required" $requiredPasswords "context" .context) -}}
+    {{- include "common.validations.Values.multiple.empty" (dict "required" $requiredPasswords "context" .context) -}}
 
   {{- end -}}
 {{- end -}}
@@ -49,15 +49,15 @@ Params:
 Auxiliary function to get the right value for existingSecret.
 
 Usage:
-{{ include "common.mongodb.Values.zookeeper.auth.existingSecret" (dict "context" $) }}
+{{ include "common.mongodb.Values.auth.existingSecret" (dict "context" $) }}
 Params:
   - subchart - Boolean - Optional. Whether MongoDb is used as subchart or not. Default: false
 */}}
-{{- define "common.mongodb.Values.zookeeper.auth.existingSecret" -}}
+{{- define "common.mongodb.Values.auth.existingSecret" -}}
   {{- if .subchart -}}
-    {{- .context.Values.zookeeper.mongodb.auth.existingSecret | quote -}}
+    {{- .context.Values.mongodb.auth.existingSecret | quote -}}
   {{- else -}}
-    {{- .context.Values.zookeeper.auth.existingSecret | quote -}}
+    {{- .context.Values.auth.existingSecret | quote -}}
   {{- end -}}
 {{- end -}}
 
@@ -65,13 +65,13 @@ Params:
 Auxiliary function to get the right value for enabled mongodb.
 
 Usage:
-{{ include "common.mongodb.Values.zookeeper.enabled" (dict "context" $) }}
+{{ include "common.mongodb.Values.enabled" (dict "context" $) }}
 */}}
-{{- define "common.mongodb.Values.zookeeper.enabled" -}}
+{{- define "common.mongodb.Values.enabled" -}}
   {{- if .subchart -}}
-    {{- printf "%v" .context.Values.zookeeper.mongodb.enabled -}}
+    {{- printf "%v" .context.Values.mongodb.enabled -}}
   {{- else -}}
-    {{- printf "%v" (not .context.Values.zookeeper.enabled) -}}
+    {{- printf "%v" (not .context.Values.enabled) -}}
   {{- end -}}
 {{- end -}}
 
@@ -79,11 +79,11 @@ Usage:
 Auxiliary function to get the right value for the key auth
 
 Usage:
-{{ include "common.mongodb.Values.zookeeper.key.auth" (dict "subchart" "true" "context" $) }}
+{{ include "common.mongodb.Values.key.auth" (dict "subchart" "true" "context" $) }}
 Params:
   - subchart - Boolean - Optional. Whether MongoDB&reg; is used as subchart or not. Default: false
 */}}
-{{- define "common.mongodb.Values.zookeeper.key.auth" -}}
+{{- define "common.mongodb.Values.key.auth" -}}
   {{- if .subchart -}}
     mongodb.auth
   {{- else -}}
@@ -95,14 +95,14 @@ Params:
 Auxiliary function to get the right value for architecture
 
 Usage:
-{{ include "common.mongodb.Values.zookeeper.architecture" (dict "subchart" "true" "context" $) }}
+{{ include "common.mongodb.Values.architecture" (dict "subchart" "true" "context" $) }}
 Params:
   - subchart - Boolean - Optional. Whether MongoDB&reg; is used as subchart or not. Default: false
 */}}
-{{- define "common.mongodb.Values.zookeeper.architecture" -}}
+{{- define "common.mongodb.Values.architecture" -}}
   {{- if .subchart -}}
-    {{- .context.Values.zookeeper.mongodb.architecture -}}
+    {{- .context.Values.mongodb.architecture -}}
   {{- else -}}
-    {{- .context.Values.zookeeper.architecture -}}
+    {{- .context.Values.architecture -}}
   {{- end -}}
 {{- end -}}

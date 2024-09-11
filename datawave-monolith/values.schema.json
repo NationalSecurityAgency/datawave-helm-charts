@@ -1,0 +1,266 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+        "authorizationService": {
+            "properties": {
+                "dnsName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "cacheService": {
+            "properties": {
+                "dnsName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "configurationService": {
+            "properties": {
+                "dnsName": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "datawaveDeployment": {
+            "properties": {
+                "image": {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "pullPolicy": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "livenessProbe": {
+                    "properties": {
+                        "delaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        },
+                        "port": {
+                            "type": "integer"
+                        },
+                        "scheme": {
+                            "type": "string"
+                        },
+                        "uri": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "meta": {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "readinessProbe": {
+                    "properties": {
+                        "delaySeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        },
+                        "port": {
+                            "type": "integer"
+                        },
+                        "scheme": {
+                            "type": "string"
+                        },
+                        "uri": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "replication": {
+                    "properties": {
+                        "maxSurge": {
+                            "type": "integer"
+                        },
+                        "maxUnavailable": {
+                            "type": "integer"
+                        },
+                        "replicaCount": {
+                            "type": "integer"
+                        },
+                        "revisionHistoryLimit": {
+                            "type": "integer"
+                        }
+                    },
+                    "type": "object"
+                },
+                "restartPolicy": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "datawaveRuntimeConfig": {
+            "properties": {
+                "additions": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "datawaveService": {
+            "properties": {
+                "meta": {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "ports": {
+                    "properties": {
+                        "http": {
+                            "type": "integer"
+                        },
+                        "https": {
+                            "type": "integer"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "global": {
+            "properties": {
+                "accumulo": {
+                    "properties": {
+                        "password": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "certSecretName": {
+                    "type": "string"
+                },
+                "certificates": {
+                    "properties": {
+                        "keystore": {
+                            "properties": {
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "dockerRegistry": {
+                    "properties": {
+                        "url": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "hadoop": {
+                    "properties": {
+                        "configMapName": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "ingress": {
+                    "properties": {
+                        "annotations": {
+                            "properties": {
+                                "nginx.ingress.kubernetes.io/ssl-passthrough": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "domain": {
+                            "type": "string"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "ingressClassName": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "volumes": {
+                    "properties": {
+                        "certificates": {
+                            "properties": {
+                                "destination": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "zookeeper": {
+                    "properties": {
+                        "quorum": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "hadoop": {
+            "properties": {
+                "classpath": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "rabbitmqService": {
+            "properties": {
+                "dnsName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

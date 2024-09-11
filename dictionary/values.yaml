@@ -1,0 +1,64 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    accumuloManager:
+      name: accumulo-manager
+    cache:
+      name: cache
+image:
+  name: datawave-dictionary-service
+  pullPolicy: IfNotPresent
+  tag: 4.0.3
+livenessProbe:
+  delaySeconds: 20
+  periodSeconds: 5
+  failureThreshold: 60
+  port: 8080
+  scheme: HTTP
+  uri: dictionary/mgmt/health
+meta:
+  name: dictionary
+readinessProbe:
+  delaySeconds: 24
+  periodSeconds: 5
+  port: 8080
+  scheme: HTTP
+  uri: dictionary/mgmt/health
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+
+#########################################
+# Default Values for dictionary Service #
+#########################################
+ports:
+  http: 8080
+  https: 8443
+
+#########################################
+# Default Values for dictionary ingress #
+#########################################
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  dictionary:
+    domain: "dictionary.datawave.org"

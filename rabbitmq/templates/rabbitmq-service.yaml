@@ -1,0 +1,46 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: Service
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: {{ if and (hasKey .Values "service") (hasKey .Values.service "name") }}
+            {{ .Values.service.name }}
+         {{ else }}
+            {{ .Values.meta.name }}
+         {{ end }}
+  labels:
+    application: "{{ .Values.meta.name }}"
+
+##################################
+# Complete Service Specification #
+##################################
+
+spec:
+
+  ###############################
+  # Pod Selection Configuration #
+  ###############################
+
+  selector:
+    application: "{{ .Values.meta.name }}"
+
+  ##############################
+  # Service Port Configuration #
+  ##############################
+
+  ports:
+
+    - name: amqp
+      port: {{ .Values.ports.amqp }}
+      targetPort: 5672
+
+    - name: mgmt
+      port: {{ .Values.ports.mgmt }}
+      targetPort: 15672

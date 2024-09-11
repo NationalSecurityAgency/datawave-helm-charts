@@ -240,7 +240,7 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
     
-{{- if .Values.hadoop.hdfs.webhdfs.enabled -}}
+{{- if .Values.hdfs.webhdfs.enabled -}}
       <property>
           <name>dfs.webhdfs.enabled</name>
           <value>true</value>
@@ -337,7 +337,7 @@ data:
     # limitations under the License.
 
 
-    # Start all yarn daemons.  Run this on master node.
+    # Start all yarn daemons.  Run this on manager node.
 
     echo "starting yarn daemons"
 
@@ -374,7 +374,7 @@ data:
     # limitations under the License.
 
 
-    # Start all yarn daemons.  Run this on master node.
+    # Start all yarn daemons.  Run this on manager node.
 
     echo "starting yarn daemons"
 

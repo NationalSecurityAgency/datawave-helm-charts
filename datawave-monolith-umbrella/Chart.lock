@@ -1,0 +1,24 @@
+dependencies:
+- name: dwv-audit
+  repository: file://../audit
+  version: 1.0.0
+- name: dwv-configuration
+  repository: file://../configuration
+  version: 1.0.0
+- name: dwv-cache
+  repository: file://../cache
+  version: 1.0.0
+- name: dwv-dictionary
+  repository: file://../dictionary
+  version: 1.0.0
+- name: dwv-rabbitmq
+  repository: file://../rabbitmq
+  version: 1.0.0
+- name: dwv-authorization
+  repository: file://../authorization
+  version: 1.0.0
+- name: dwv-web
+  repository: file://../datawave-monolith
+  version: 1.0.0
+digest: sha256:036e0ee1d1c57694a9ca4978790e7dab50290dfd2760e3240e90f813595260f2
+generated: "2024-08-30T12:37:00.20464175Z"

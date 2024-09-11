@@ -1,149 +1,149 @@
-hadoop: 
+global:
+  pullSecrets:
+  - dockerconfigjson-ghcr
 
- 
-  # The base hadoop image to use for all components.
-  # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
-  image:
-    repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-    tag: 3.3.6
-    pullPolicy: IfNotPresent
-    pullSecrets:
-    - dockerconfigjson-ghcr
-  
-  # The version of the hadoop libraries being used in the image.
-  hadoopVersion: 3.3.6-2
-  
-  # Select antiAffinity as either hard or soft, default is soft
-  antiAffinity: "soft"
-  config:
-    postInstallCommands:
-      - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/accumulo
-      - hdfs dfs -chown accumulo hdfs://hdfs-nn:9000/accumulo
-      - hdfs dfs -chmod 700 hdfs://hdfs-nn:9000/accumulo
-      - hdfs dfs -chmod 777 hdfs://hdfs-nn:9000/
-      - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/data
-      - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/datawave
-      - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/tmp/hadoop-yarn/staging/history
-      - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/tmp/
-    ec:
+nameOverride: hadoop
+
+# The base hadoop image to use for all components.
+# See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/manager/image
+image:
+  repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
+  tag: 3.3.6
+  pullPolicy: IfNotPresent
+
+# The version of the hadoop libraries being used in the image.
+hadoopVersion: 3.3.6-2
+
+# Select antiAffinity as either hard or soft, default is soft
+antiAffinity: "soft"
+config:
+  postInstallCommands:
+    - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/accumulo
+    - hdfs dfs -chown accumulo hdfs://hdfs-nn:9000/accumulo
+    - hdfs dfs -chmod 700 hdfs://hdfs-nn:9000/accumulo
+    - hdfs dfs -chmod 777 hdfs://hdfs-nn:9000/
+    - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/data
+    - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/datawave
+    - hdfs dfs -mkdir -p hdfs://hdfs-nn:9000/tmp/hadoop-yarn/staging/history
+    - hdfs dfs -chmod -R 777 hdfs://hdfs-nn:9000/tmp/
+  ec:
+    enabled: true
+    postInstallCommands: 
+      - export HADOOP_CONF_DIR=/tmp/hadoop-config
+      - hdfs ec -addPolicies -policyFile /tmp/hadoop-config/erasure-coding-policies.xml
+      - echo "done adding start enabling"
+      - hdfs ec -enablePolicy -policy RS-6-3-64k
+      - hdfs ec -enablePolicy -policy RS-6-3-128k
+      - hdfs ec -enablePolicy -policy RS-6-2-64k
+      - hdfs ec -enablePolicy -policy RS-6-2-128k
+      - hdfs ec -enablePolicy -policy RS-4-2-64k
+      - hdfs ec -enablePolicy -policy RS-4-2-128k
+      - hdfs ec -enablePolicy -policy RS-4-3-64k
+      - hdfs ec -enablePolicy -policy RS-4-3-128k
+hdfs:
+  nameNode:
+    ingress:
       enabled: true
-      postInstallCommands: 
-        - export HADOOP_CONF_DIR=/tmp/hadoop-config
-        - hdfs ec -addPolicies -policyFile /tmp/hadoop-config/erasure-coding-policies.xml
-        - echo "done adding start enabling"
-        - hdfs ec -enablePolicy -policy RS-6-3-64k
-        - hdfs ec -enablePolicy -policy RS-6-3-128k
-        - hdfs ec -enablePolicy -policy RS-6-2-64k
-        - hdfs ec -enablePolicy -policy RS-6-2-128k
-        - hdfs ec -enablePolicy -policy RS-4-2-64k
-        - hdfs ec -enablePolicy -policy RS-4-2-128k
-        - hdfs ec -enablePolicy -policy RS-4-3-64k
-        - hdfs ec -enablePolicy -policy RS-4-3-128k
-
-  hdfs:
-    nameNode:
-      ingress:
-        enabled: true
-        annotations: []
-        host: "namenode.datawave.org"
-      tolerations: []
-      pdbMinAvailable: 1
-  
-      resources:
-        requests:
-          memory: "256Mi"
-          cpu: "10m"
-        limits:
-          memory: "2048Mi"
-          cpu: "1000m"
-  
-    dataNode:
-      tolerations: []
-      replicas: 2
-  
-      pdbMinAvailable: 1
-  
-      resources:
-        requests:
-          memory: "256Mi"
-          cpu: "10m"
-        limits:
-          memory: "2048Mi"
-          cpu: "1000m"
-  
-    webhdfs:
-      enabled: false
-  
-  yarn:
-    historyServer:
-      ingress:
-        enabled: true
-        annotations: []
-        host: "historyserver.datawave.org"
-    resourceManager:
-      ingress:
-        enabled: true
-        annotations: []
-        host: "resourcemanager.datawave.org"
-      tolerations: []
-      pdbMinAvailable: 1
-  
-      resources:
-        requests:
-          memory: "256Mi"
-          cpu: "10m"
-        limits:
-          memory: "2048Mi"
-          cpu: "2000m"
-  
-    nodeManager:
-      tolerations: []
-      pdbMinAvailable: 1
-  
-      # The number of YARN NodeManager instances.
-      replicas: 2
-  
-      # Create statefulsets in parallel (K8S 1.7+)
-      parallelCreate: false
-  
-      # CPU and memory resources allocated to each node manager pod.
-      # This should be tuned to fit your workload.
-      resources:
-        requests:
-          memory: "2048Mi"
-          cpu: "1000m"
-        limits:
-          memory: "4096Mi"
-          cpu: "1000m"
-  cmds:
-    resources: {}
-    nodeSelector: {}
+      annotations: []
+      host: "namenode.datawave.org"
     tolerations: []
-    affinity: {}
-  
-  persistence:
-    nameNode:
-      enabled: false
-      definitions:
-      - metadata:
-          name: dfs
-        spec:
-          accessModes: ReadWriteOnce
-          storageClassName: managed-csi-driver
-          resources:
-            requests:
-              storage: 50Gi
-          selector:
-  
-    dataNode:
-      enabled: false
-      definitions:
-      - metadata:
-          name: dfs
-        spec:
-          accessModes: ReadWriteOnce
-          storageClassName: managed-csi-driver
-          resources:
-            requests:
-              storage: 200Gi
-          selector:
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+  dataNode:
+    tolerations: []
+    replicas: 2
+
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+  webhdfs:
+    enabled: false
+
+yarn:
+  historyServer:
+    ingress:
+      enabled: true
+      annotations: []
+      host: "historyserver.datawave.org"
+  resourceManager:
+    ingress:
+      enabled: true
+      annotations: []
+      host: "resourcemanager.datawave.org"
+    tolerations: []
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "2000m"
+
+  nodeManager:
+    tolerations: []
+    pdbMinAvailable: 1
+
+    # The number of YARN NodeManager instances.
+    replicas: 2
+
+    # Create statefulsets in parallel (K8S 1.7+)
+    parallelCreate: false
+
+    # CPU and memory resources allocated to each node manager pod.
+    # This should be tuned to fit your workload.
+    resources:
+      requests:
+        memory: "2048Mi"
+        cpu: "1000m"
+      limits:
+        memory: "4096Mi"
+        cpu: "1000m"
+cmds:
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+persistence:
+  nameNode:
+    enabled: false
+    definitions:
+    - metadata:
+        name: dfs
+      spec:
+        accessModes: ReadWriteOnce
+        storageClassName: managed-csi-driver
+        resources:
+          requests:
+            storage: 50Gi
+        selector:
+
+  dataNode:
+    enabled: false
+    definitions:
+    - metadata:
+        name: dfs
+      spec:
+        accessModes: ReadWriteOnce
+        storageClassName: managed-csi-driver
+        resources:
+          requests:
+            storage: 200Gi
+        selector:

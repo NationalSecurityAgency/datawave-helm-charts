@@ -1,11 +1,11 @@
-{{- if .Values.hadoop.yarn.resourceManager.ingress.enabled }}
+{{- if .Values.yarn.resourceManager.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "hadoop.fullname" . }}-rm-ingress
   labels:
     app.kubernetes.io/component: monitor
-  {{- with .Values.hadoop.yarn.resourceManager.ingress.annotations }}
+  {{- with .Values.yarn.resourceManager.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -26,7 +26,7 @@ spec:
           serviceName: yarn-rm
           servicePort: web
 {{- end }}
-    {{- if ne .Values.hadoop.yarn.resourceManager.ingress.host "" }}
-    host: {{ .Values.hadoop.yarn.resourceManager.ingress.host }}
+    {{- if ne .Values.yarn.resourceManager.ingress.host "" }}
+    host: {{ .Values.yarn.resourceManager.ingress.host }}
     {{- end }}
 {{- end }}

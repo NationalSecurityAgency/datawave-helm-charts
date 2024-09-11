@@ -24,7 +24,7 @@ data:
     <!-- Used by ingest job to precreate tables and get split information. -->
       <property>
         <name>ingest.data.types</name>
-        <value>{{ .Values.ingest.config.bulkDataTypes }},{{ .Values.ingest.config.liveDataTypes }}</value>
+        <value>{{ .Values.config.bulkDataTypes }},{{ .Values.config.liveDataTypes }}</value>
         <description>The list of datatypes to be processed by the system.</description>
       </property>
       

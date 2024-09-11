@@ -1,0 +1,49 @@
+datawave:
+  security:
+    util:
+      subjectDnPattern: "(?:^|,)\\s*OU\\s*=\\s*.*\\s*(?:,|$)"
+      npeOuList: "EXAMPLE_SERVER_OU1,EXAMPLE_SERVER_OU2"
+  authorization:
+    uri: "https://{{ .Values.global.serviceDns.authorization.name }}:{{ .Values.global.serviceDns.authorization.port}}/{{ .Values.global.serviceDns.authorization.endpoint }}"
+logging:
+  level:
+    root: DEBUG
+management:
+  endpoint.health.show-details: when-authorized
+  endpoints.web.base-path: /mgmt
+  endpoints.web.exposure.include: "*"
+server:
+  non-secure-port: 8080
+  outbound-ssl:
+    key-store: ${server.ssl.key-store}
+    key-store-password: ${server.ssl.key-store-password}
+    key-store-type: ${server.ssl.key-store-type}
+    trust-store: ${server.ssl.trust-store}
+    trust-store-password: ${server.ssl.trust-store-password}
+    trust-store-type: ${server.ssl.trust-store-type}
+  port: 8443
+  servlet.context-path: /${spring.application.name}
+  ssl:
+    client-auth: WANT
+    key-store: '{{ .Values.global.secrets.keystore.path }}'
+    key-store-password: '{{ .Values.global.secrets.keystore.password }}'
+    key-store-type: '{{ .Values.global.secrets.keystore.type }}'
+    trust-store: '{{ .Values.global.secrets.truststore.path }}'
+    trust-store-type: '{{ .Values.global.secrets.truststore.type }}'
+    trust-store-password: '{{ .Values.global.secrets.truststore.password }}'
+spring:
+  cloud:
+    consul:
+      enabled: false
+  rabbitmq:
+    discovery:
+      enabled: false
+      failFast: true
+    host: '{{ .Values.global.serviceDns.rabbitmq.name }}'
+  security:
+    datawave:
+      enforce-allowed-callers: false
+      issuers-required: true
+      jwt.ttl: 86400
+      manager-role: Administator,JBossAdministrator
+    user.password: passwordNotUsed

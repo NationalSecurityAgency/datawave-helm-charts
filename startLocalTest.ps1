@@ -23,25 +23,25 @@ if (Test-Path .\ghcr-image-pull-secret.yaml) {
 }
 
 Write-Output "Clearing out old tgz files..."
-mkdir .\umbrella\charts -Force
+mkdir .\datawave-stack\charts -Force
 foreach($zip_item in (Get-ChildItem -Recurse -Include *.tgz)) {
     Remove-Item $zip_item.FullName
 }
 
 Write-Output "Packaging helm charts..."
-# Create the individual tar balls and copy them to umbrella
+# Create the individual tar balls and copy them to datawave-stack
 foreach($folder in ("hadoop", "accumulo", "zookeeper", "ingest", "web")) {
     Write-Output $folder
     Set-Location $folder
     helm lint .
     helm package .
-    Copy-Item *.tgz ../umbrella/charts/
+    Copy-Item *.tgz ../datawave-stack/charts/
     Set-Location ..
 }
 
-Write-Output "Packaging and deploying Umbrella..."
-# Deploy umbrella
-Set-Location umbrella
+Write-Output "Packaging and deploying datawave-stack..."
+# Deploy datawave-stack
+Set-Location datawave-stack
 helm lint .
 helm package .
 helm install dwv datawave-system-3.40.0.tgz -f "values-testing.yaml"

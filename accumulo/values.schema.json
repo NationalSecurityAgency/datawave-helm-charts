@@ -1,0 +1,380 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+        "cmds": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "config": {
+            "properties": {
+                "accumuloSite": {
+                    "properties": {
+                        "instance.secret": {
+                            "type": "string"
+                        },
+                        "tserver.cache.data.size": {
+                            "type": "string"
+                        },
+                        "tserver.cache.index.size": {
+                            "type": "string"
+                        },
+                        "tserver.memory.maps.max": {
+                            "type": "string"
+                        },
+                        "tserver.memory.maps.native.enabled": {
+                            "type": "boolean"
+                        },
+                        "tserver.sort.buffer.size": {
+                            "type": "string"
+                        },
+                        "tserver.total.mutation.queue.max": {
+                            "type": "string"
+                        },
+                        "tserver.walog.max.size": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "auths": {
+                    "type": "string"
+                },
+                "files": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "postInstallCommands": {
+                    "type": "array"
+                },
+                "userManagement": {
+                    "properties": {
+                        "revoke": {
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "rootPassword": {
+                            "type": "string"
+                        },
+                        "users": {
+                            "properties": {
+                                "tracer": {
+                                    "properties": {
+                                        "password": {
+                                            "type": "string"
+                                        },
+                                        "permissions": {
+                                            "properties": {
+                                                "system": {
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": "array"
+                                                },
+                                                "table": {
+                                                    "properties": {
+                                                        "trace": {
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "array"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "fullnameOverride": {
+            "type": "string"
+        },
+        "gc": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "global": {
+            "properties": {
+                "pullSecrets": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "hadoop": {
+            "properties": {
+                "classpath": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "hadoopConfigMap": {
+            "type": "string"
+        },
+        "hdfs": {
+            "properties": {
+                "namenode": {
+                    "properties": {
+                        "hostname": {
+                            "type": "string"
+                        },
+                        "ports": {
+                            "properties": {
+                                "clientRpc": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "postInstallCommands": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "volumes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "image": {
+            "properties": {
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "initContainer": {
+            "properties": {
+                "image": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "instanceId": {
+            "type": "string"
+        },
+        "labels": {
+            "properties": {},
+            "type": "object"
+        },
+        "logging": {
+            "properties": {
+                "serviceAccumuloLevel": {
+                    "type": "string"
+                },
+                "serviceRootLevel": {
+                    "type": "string"
+                },
+                "shellAccumuloLevel": {
+                    "type": "string"
+                },
+                "shellRootLevel": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "manager": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "monitor": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "ingress": {
+                    "properties": {
+                        "annotations": {
+                            "type": "array"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "host": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "nameOverride": {
+            "type": "string"
+        },
+        "scanServers": {
+            "properties": {
+                "resourceGroups": {
+                    "items": {
+                        "properties": {
+                            "affinity": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "nodeSelector": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "replicaCount": {
+                                "type": "integer"
+                            },
+                            "resourceGroupName": {
+                                "type": "string"
+                            },
+                            "resources": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "tolerations": {
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "tabletServers": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "zookeeper": {
+            "properties": {
+                "externalHosts": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

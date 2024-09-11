@@ -1,0 +1,133 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Values.meta.name }}"
+  labels:
+    application: "{{ .Values.meta.name }}"
+
+#####################################
+# Complete Deployment Specification #
+#####################################
+
+spec:
+
+  ######################################
+  # Replication / Update Configuration #
+  ######################################
+
+  replicas: {{ .Values.replication.replicaCount }}
+  revisionHistoryLimit: {{ .Values.replication.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.replication.maxSurge }}
+      maxUnavailable: {{ .Values.replication.maxUnavailable }}
+
+  ###################################
+  # Resource Selector Configuration #
+  ###################################
+
+  selector:
+    matchLabels:
+      application: "{{ .Values.meta.name }}"
+  
+  #####################################
+  # Deployment Template Configuration #
+  #####################################
+
+  template:
+
+    ##################################################
+    # Basic Metadata for this Deployment's Resources #
+    ##################################################
+
+    metadata:
+      labels:
+        application: "{{ .Values.meta.name }}"
+
+    #######################################
+    # Deployment Resources Specifications #
+    #######################################
+
+    spec:
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      
+      securityContext:
+        runAsUser: 1000
+      restartPolicy: "{{ .Values.restartPolicy }}"
+
+      ##############################################
+      # Containers Associated with this Deployment #
+      ##############################################
+
+      containers:
+
+        - name: "{{ .Values.meta.name }}"
+          args:
+            - "--spring.cloud.config.server.native.searchLocations=file:///microservice-config"
+            - "--spring.output.ansi.enabled=ALWAYS"
+            - "--spring.profiles.active=native,open_actuator"
+          env:
+            - name: KEY_ALIAS
+              value: "{{ .Values.global.secrets.keystore.alias }}"
+            - name: KEYSTORE_LOCATION
+              value: "{{ .Values.global.secrets.keystore.path }}"
+            - name: KEYSTORE_PASSWORD
+              value: "{{ .Values.global.secrets.keystore.password }}"
+            - name: MESSAGING_SERVER_HOSTNAME
+              value: "{{ .Values.global.serviceDns.rabbitmq.name }}"
+          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          ports:
+            - containerPort: 8888
+          resources: {}
+          volumeMounts:
+            - name: "{{ .Values.global.volumes.certificates.name }}"
+              mountPath: "{{ .Values.global.volumes.certificates.destination }}"
+            - name: "{{ .Values.global.volumes.microserviceConfig.name }}"
+              mountPath: "{{ .Values.global.volumes.microserviceConfig.destination }}"
+              readOnly: true
+
+      #############################################################
+      # Initialization Containers Associated with this Deployment #
+      #############################################################
+
+      initContainers:
+
+
+        - name: "{{ .Chart.Name }}-init-rabbitmq"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.rabbitmq.name }}; do echo 'Waiting for RabbitMQ...'; sleep 2; done" ]
+
+      ###########################################
+      # Volumes Associated with this Deployment #
+      ###########################################
+
+      volumes:
+        
+        - name: "{{ .Values.global.volumes.certificates.name }}"
+          secret:
+            secretName: "{{ .Values.global.certSecretName }}"
+            optional: false
+
+        - name: "{{ .Values.global.volumes.microserviceConfig.name }}"
+          configMap:
+            name: {{ if .Values.global.externalConfigMap.enabled }} {{ .Values.global.externalConfigMap.name }} {{ else }} {{ .Values.configurationMap.meta.name }} {{ end}}
