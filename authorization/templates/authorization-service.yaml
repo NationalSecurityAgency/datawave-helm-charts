@@ -13,13 +13,9 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.19.0 (f63a961c)
-  name: {{ if and (hasKey .Values "service") (hasKey .Values.service "name") }}
-            {{ .Values.service.name }}
-         {{ else }}
-            {{ .Values.meta.name }}
-         {{ end }}
+  name: {{ default .Values.meta.name (.Values.service).name }}
   labels:
-    application: "{{ .Values.meta.name }}"
+    application: {{ .Values.meta.name | quote }}
 
 ##################################
 # Complete Service Specification #
@@ -32,7 +28,7 @@ spec:
   ###############################
 
   selector:
-    application: "{{ .Values.meta.name }}"
+    application: {{ .Values.meta.name }}
 
   ##############################
   # Service Port Configuration #

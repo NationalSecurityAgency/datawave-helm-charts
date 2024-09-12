@@ -81,6 +81,14 @@
             },
             "type": "object"
         },
+        "service": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "ports": {
             "properties": {
                 "amqp": {
