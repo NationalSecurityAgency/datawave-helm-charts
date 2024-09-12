@@ -38,6 +38,8 @@ livenessProbe:
   uri: audit/mgmt/health
 meta:
   name: audit
+service:
+  name: audit-service
 readinessProbe:
   delaySeconds: 60
   periodSeconds: 5
