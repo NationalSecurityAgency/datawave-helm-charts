@@ -34,7 +34,7 @@ helm package .
 cd ../datawave-stack;
 helm dependency update
 helm package .
-kubectl create secret generic certificates-secret --from-file=keystore.p12=certificates/keystore.p12 --from-file=truststore.jks=certificates/truststore.jks
+minikube kubectl -- create secret generic certificates-secret --from-file=keystore.p12=certificates/keystore.p12 --from-file=truststore.jks=certificates/truststore.jks
 helm install dwv *.tgz -f ${VALUES_FILE} && \
 cd ../
 
