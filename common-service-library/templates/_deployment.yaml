@@ -82,7 +82,7 @@ spec:
       containers:
         - name: "{{ .Values.meta.name }}"
           args:
-          {{- range $i, $value := .Values.ports }}
+          {{- range $i, $value := .Values.args }}
           - {{ $value }}
           {{- end }}
           env:
@@ -107,7 +107,7 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           ports:
           {{- range $i, $value := .Values.ports }}
-            - {{ $i }}: {{ $value }}
+            - containerPort: {{ $value }}
           {{- end }}
           resources: {}
           volumeMounts:

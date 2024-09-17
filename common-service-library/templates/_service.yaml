@@ -33,7 +33,7 @@ spec:
   ##############################
 
   ports:
-    {{- range $i, $value := .Values.configmaps }}
+    {{- range $i, $value := .Values.ports }}
     - name: {{ $i }}
       port: {{ $value }}
       targetPort: {{ $value }}

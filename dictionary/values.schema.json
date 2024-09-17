@@ -1,33 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
-        "accumuloManager": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
+        "args": {
+            "items": {
+                "type": "string"
             },
-            "type": "object"
-        },
-        "cacheService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "configurationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
+            "type": "array"
         },
         "global": {
             "properties": {
@@ -63,6 +42,38 @@
                         "type": "string"
                     },
                     "type": "array"
+                },
+                "serviceDns": {
+                    "properties": {
+                        "accumuloManager": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "cache": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "configuration": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 },
                 "volumes": {
                     "properties": {
@@ -140,14 +151,6 @@
             "type": "object"
         },
         "meta": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "service": {
             "properties": {
                 "name": {
                     "type": "string"
