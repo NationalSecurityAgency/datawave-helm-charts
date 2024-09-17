@@ -14,9 +14,13 @@ spec:
   restartPolicy: Never
   initContainers:
     - name: init-accumulo
+      securityContext:
+        runAsUser: 1000
       image: busybox:1.28
       command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for zookeeper; sleep 2; done"]
 
+  securityContext:
+    runAsUser: 1000
   containers:
   - name: cmds
     image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

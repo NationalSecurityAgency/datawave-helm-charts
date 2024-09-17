@@ -25,7 +25,7 @@ cd ..
 docker pull rabbitmq:3.11.4-alpine && \
 docker pull busybox:1.28 && \
 minikube delete --all --purge && \
-minikube start --cpus 8 --memory 30960 --disk-size 20480 && \
+minikube start --nodes 3 --cpus 4 --memory 15960 --disk-size 20480 && \
 minikube image load rabbitmq:3.11.4-alpine  && \
 minikube image load busybox:1.28 && \
 minikube image load mysql:8.0.32 && \

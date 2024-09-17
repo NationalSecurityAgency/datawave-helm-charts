@@ -74,11 +74,20 @@ manager:
   tolerations: []
   affinity: {}
 tabletServers:
-  replicaCount: 5
+  replicaCount: 3
   resources: {}
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity: 
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: "app.kubernetes.io/component"
+            operator: In
+            values:
+            - tserver
+        topologyKey: "kubernetes.io/hostname"
 scanServers:
   resourceGroups:
   - resourceGroupName: group1

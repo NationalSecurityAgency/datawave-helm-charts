@@ -87,6 +87,8 @@ spec:
             port: 9870
           initialDelaySeconds: 10
           timeoutSeconds: 2
+        ports:
+          - containerPort: 9870
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
