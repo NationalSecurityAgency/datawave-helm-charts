@@ -30,6 +30,7 @@ image:
   name: datawave-audit-service
   pullPolicy: IfNotPresent
   tag: 4.0.2
+profiles: "default,k8s"
 livenessProbe:
   delaySeconds: 60
   periodSeconds: 5

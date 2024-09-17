@@ -28,6 +28,10 @@ fi
 
 #Package charts
 find . -name "*.tgz" -delete
+cd audit
+helm dependency update
+helm package
+cd ..
 cd datawave-monolith-umbrella
 helm dependency update
 helm package .
