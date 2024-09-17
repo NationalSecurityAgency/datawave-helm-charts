@@ -46,18 +46,7 @@ if test -f ./ghcr-image-pull-secret.yaml; then
   minikube kubectl -- apply -f ./ghcr-image-pull-secret.yaml
 fi
 
-#Package charts
-find . -name "*.tgz" -delete
-cd audit
-helm dependency update
-helm package
-cd ..
-cd datawave-monolith-umbrella
-helm dependency update
-helm package .
-cd ../datawave-stack;
-helm dependency update
-helm package .
+cd datawave-stack
 minikube kubectl -- create secret generic certificates-secret --from-file=keystore.p12=certificates/keystore.p12 --from-file=truststore.jks=certificates/truststore.jks
 helm install dwv *.tgz -f ${VALUES_FILE} && \
 cd ../
