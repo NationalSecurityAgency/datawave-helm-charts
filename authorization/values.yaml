@@ -25,7 +25,9 @@ global:
 ###############################################
 # Default Values for Authorization Deployment #
 ###############################################
-profiles: "default,mock,k8s"
+args:
+- "--spring.output.ansi.enabled=ALWAYS"
+- "--spring.profiles.active=default,mock,k8s"
 image:
   name: datawave-authorization-service
   pullPolicy: IfNotPresent

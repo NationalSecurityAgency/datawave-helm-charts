@@ -33,14 +33,11 @@ spec:
   ##############################
 
   ports:
-
-    - name: http
-      port: {{ .Values.ports.http }}
-      targetPort: 8080
-
-    - name: https
-      port: {{ .Values.ports.https }}
-      targetPort: 8443
+    {{- range $i, $value := .Values.configmaps }}
+    - name: {{ $i }}
+      port: {{ $value }}
+      targetPort: {{ $value }}
+    {{- end }}
 {{- end -}}
 
 {{- define "common-service-library.service" -}}

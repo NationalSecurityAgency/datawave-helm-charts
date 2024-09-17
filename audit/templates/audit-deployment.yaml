@@ -1,4 +1,19 @@
 {{- include "common-service-library.deployment" (list . "audit.deployment") -}}
 {{- define "audit.deployment" -}}
 #overrides go here
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: "{{ .Chart.Name }}-init-authorization"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.authorization.name }} {{ .Values.global.serviceDns.authorization.port }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+        
+        - name: "{{ .Chart.Name }}-init-cache"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.cache.name }} {{ .Values.global.serviceDns.cache.port }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.configuration.name }} {{ .Values.global.serviceDns.configuration.port }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
 {{- end -}}

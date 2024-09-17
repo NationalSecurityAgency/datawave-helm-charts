@@ -82,8 +82,9 @@ spec:
       containers:
         - name: "{{ .Values.meta.name }}"
           args:
-            - "--spring.output.ansi.enabled=ALWAYS"
-            - "--spring.profiles.active={{ .Values.profiles }}"
+          {{- range $i, $value := .Values.ports }}
+          - {{ $value }}
+          {{- end }}
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.global.serviceDns.configuration.name }}:{{ .Values.global.serviceDns.configuration.port }}/configserver"
@@ -95,7 +96,8 @@ spec:
               port: {{ .Values.livenessProbe.port }}
               scheme: "{{ .Values.livenessProbe.scheme }}"
             initialDelaySeconds: {{ .Values.livenessProbe.delaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}            
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           readinessProbe:
             httpGet:
               path: "{{ .Values.readinessProbe.uri }}"
@@ -104,8 +106,9 @@ spec:
             initialDelaySeconds: {{ .Values.readinessProbe.delaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           ports:
-            - containerPort: 8080
-            - containerPort: 8443
+          {{- range $i, $value := .Values.ports }}
+            - {{ $i }}: {{ $value }}
+          {{- end }}
           resources: {}
           volumeMounts:
             - name: "{{ .Values.global.volumes.certificates.name }}"
@@ -116,20 +119,8 @@ spec:
       # Initialization Containers Associated with this Deployment #
       #############################################################
 
-      initContainers:
+      initContainers: {}
 
-        - name: "{{ .Chart.Name }}-init-authorization"
-          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.authorization.name }} {{ .Values.global.serviceDns.authorization.port }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
-        
-        - name: "{{ .Chart.Name }}-init-cache"
-          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.cache.name }} {{ .Values.global.serviceDns.cache.port }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
-
-        - name: "{{ .Chart.Name }}-init-configuration"
-          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.configuration.name }} {{ .Values.global.serviceDns.configuration.port }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
-      
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################

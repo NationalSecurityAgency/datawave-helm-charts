@@ -11,7 +11,7 @@
 development/
 setup.sh
 
-########################
-# Ignores All Archives #
-########################
+############################
+# Ignores package Archives #
+############################
 dwv-audit-*.tgz
