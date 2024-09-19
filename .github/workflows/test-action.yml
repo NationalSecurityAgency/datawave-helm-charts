@@ -29,13 +29,14 @@ jobs:
       - name: Create ../results directory for SARIF report files
         shell: bash
         run: mkdir -p ../results
-      - name: Update helm dependencies
-        shell: bash
-        run: |
-          cd common-service-library
-          helm package .
-          cd ../${{ matrix.chart }}
-          helm dependency update
+      # Enable after library charts
+      # - name: Update helm dependencies
+      #   shell: bash
+      #   run: |
+      #     cd common-service-library
+      #     helm package .
+      #     cd ../${{ matrix.chart }}
+      #     helm dependency update
 
       - name: Scan yaml files with kube-linter
         uses: stackrox/kube-linter-action@v1.0.5
