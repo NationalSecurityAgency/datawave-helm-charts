@@ -44,7 +44,7 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', 'until nslookup {{ include "accumulo.fullname" $ }}-tservers 2>/dev/null | sed -nr "/Name/,+1s|Address(es)?: *||p\"; do echo waiting for accumulo; sleep 2; done']
+        command: ['sh', '-c', 'until nslookup ', '{{ include "accumulo.fullname" $ }}',"-tservers 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p\'; do echo waiting for accumulo; sleep 2; done"]
       volumes:
       - name: hadoop-config
         configMap:
