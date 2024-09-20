@@ -21,7 +21,7 @@ spec:
         image: busybox:1.28
         securityContext:
           runAsUser: 1000
-        command: ['sh', '-c', "until nslookup hdfs-nn 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for hdfs; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs; sleep 2; done"]
       - name: accumulo-classpath-loader
         securityContext:
           runAsUser: 1000
@@ -40,7 +40,7 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup accumulo-manager 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for accumulo; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

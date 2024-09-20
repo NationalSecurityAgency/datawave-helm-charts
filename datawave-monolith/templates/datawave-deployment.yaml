@@ -79,7 +79,7 @@ spec:
           securityContext:
             runAsUser: 1000
           image: busybox:1.28
-          command: ['sh', '-c', "until nslookup authorization 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for auth service; sleep 2; done"]
+          command: ['sh', '-c', "until nslookup authorization; do echo waiting for auth service; sleep 2; done"]
       containers:
 
         - name: "{{ .Values.datawaveDeployment.meta.name }}"

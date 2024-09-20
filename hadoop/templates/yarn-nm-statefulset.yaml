@@ -54,7 +54,7 @@ spec:
         image: busybox:1.28
         securityContext:
           runAsUser: 1000
-        command: ['sh', '-c', "until nslookup yarn-rm 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for yarn-rm; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup yarn-rm; do echo waiting for yarn-rm; sleep 2; done"]
       {{- with .Values.yarn.nodeManager.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

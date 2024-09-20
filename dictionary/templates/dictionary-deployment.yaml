@@ -119,13 +119,13 @@ spec:
       initContainers:
         - name: "{{ .Chart.Name }}-init-cache"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.cache.name }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.cache.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-configuration"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
         - name: "{{ .Chart.Name }}-init-accumulo"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.accumuloManager.name }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for Accumulo...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.accumuloManager.name }}; do echo 'Waiting for Accumulo...'; sleep 2; done" ]
 
       
       ###########################################

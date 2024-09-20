@@ -38,7 +38,7 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup accumulo-manager 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for accumulo; sleep 2; done; sleep 20"]
+        command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done; sleep 20"]
       volumes:
         - name: hadoop-config
           configMap:
