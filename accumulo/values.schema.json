@@ -1,6 +1,8 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false,
+    "description": "Schema for DataWave Helm values",
     "properties": {
         "cmds": {
             "properties": {
@@ -148,6 +150,20 @@
         },
         "global": {
             "properties": {
+                "accumulo": {
+                    "properties": {
+                        "instanceName": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "accumuloConfigMap": {
+                    "type": "string"
+                },
+                "hadoopConfigMap": {
+                    "type": "string"
+                },
                 "pullSecrets": {
                     "items": {
                         "type": "string"
@@ -164,9 +180,6 @@
                 }
             },
             "type": "object"
-        },
-        "hadoopConfigMap": {
-            "type": "string"
         },
         "hdfs": {
             "properties": {
@@ -225,9 +238,6 @@
                 }
             },
             "type": "object"
-        },
-        "instanceId": {
-            "type": "string"
         },
         "labels": {
             "properties": {},
@@ -376,5 +386,6 @@
             "type": "object"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

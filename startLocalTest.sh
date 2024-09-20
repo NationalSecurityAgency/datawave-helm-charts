@@ -1,6 +1,6 @@
 VALUES_FILE=${1:-values.yaml}
-USE_LOCAL_ZOOKEEPER=${USE_LOCAL_ZOOKEEPER:-true}
-USE_LOCAL_HADOOP=${USE_LOCAL_HADOOP:-true}
+USE_LOCAL_ZOOKEEPER=${USE_LOCAL_ZOOKEEPER:-false}
+USE_LOCAL_HADOOP=${USE_LOCAL_HADOOP:-false}
 
 # Cache images and reset minikube. Then Setup minikube ingress.
 docker pull rabbitmq:3.11.4-alpine && \

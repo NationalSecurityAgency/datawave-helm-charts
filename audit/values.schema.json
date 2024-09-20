@@ -1,6 +1,8 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": false,
+    "description": "Schema for DataWave Helm values",
     "properties": {
         "global": {
             "properties": {
@@ -51,6 +53,9 @@
                             "properties": {
                                 "name": {
                                     "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
                                 }
                             },
                             "type": "object"
@@ -130,14 +135,6 @@
             },
             "type": "object"
         },
-        "service": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "ports": {
             "properties": {
                 "http": {
@@ -188,7 +185,16 @@
         },
         "restartPolicy": {
             "type": "string"
+        },
+        "service": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

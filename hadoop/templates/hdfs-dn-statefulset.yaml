@@ -45,7 +45,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       initContainers:
-      - name: init-hdfs
+      - name: init-hdfs-nn
         securityContext:
           runAsUser: 1000
         image: busybox:1.28

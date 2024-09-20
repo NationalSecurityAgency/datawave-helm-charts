@@ -115,7 +115,7 @@ spec:
 
         - name: "{{ .Chart.Name }}-init-rabbitmq"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.rabbitmq.name }}; do echo 'Waiting for RabbitMQ...'; sleep 2; done" ]
+          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.rabbitmq.name }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for RabbitMQ...'; sleep 2; done" ]
 
       ###########################################
       # Volumes Associated with this Deployment #

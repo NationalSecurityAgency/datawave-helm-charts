@@ -1,4 +1,15 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
 apiVersion: v2
 name: dwv-ingest
 version: 1.0.0
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
 appVersion: 7.5.0-SNAPSHOT
+description:  Deploys a DataWave Ingest service
+icon: https://code.nsa.gov/datawave/images/datawave-logo.png

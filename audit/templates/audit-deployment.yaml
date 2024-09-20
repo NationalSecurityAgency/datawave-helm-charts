@@ -117,15 +117,15 @@ spec:
 
         - name: "{{ .Chart.Name }}-init-authorization"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.authorization.name }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.authorization.name }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for Authorization...'; sleep 2; done" ]
         
         - name: "{{ .Chart.Name }}-init-cache"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.cache.name }} {{ .Values.global.serviceDns.cache.port }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.cache.name }} {{ .Values.global.serviceDns.cache.port }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for Cache...'; sleep 2; done" ]
 
         - name: "{{ .Chart.Name }}-init-configuration"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
-          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }} 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo 'Waiting for Configuration...'; sleep 2; done" ]
       
       ###########################################
       # Volumes Associated with this Deployment #

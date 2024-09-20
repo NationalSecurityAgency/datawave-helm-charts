@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
 data:
   accumulo-client.properties: |
-    instance.name=dev
+    instance.name={{ .Values.global.accumulo.instanceName }}
     instance.zookeepers=zookeeper:2181
     auth.principal=root
     auth.token={{ .Values.config.userManagement.rootPassword }}

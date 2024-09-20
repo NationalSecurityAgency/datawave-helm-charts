@@ -1,0 +1,21 @@
+{
+    "$id": "https://code.nsa.org/datawave/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "description": "Schema for DataWave Helm values",
+    "properties": {
+        "global": {
+            "properties": {
+                "hadoopConfigMap": {
+                    "type": "string"
+                },
+                "hdfsWebhdfsEnabled": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "title": "Helm Values Schema",
+    "type": "object"
+}

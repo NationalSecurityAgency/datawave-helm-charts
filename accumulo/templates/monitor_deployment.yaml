@@ -34,7 +34,7 @@ spec:
       securityContext:
         runAsUser: 1001
       initContainers:
-      - name: init-accumulo
+      - name: init-accumulo-manager
         securityContext:
           runAsUser: 1000
         image: busybox:1.28

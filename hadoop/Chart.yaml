@@ -1,4 +1,16 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
 apiVersion: v2
-appVersion: 3.3.6-2
 name: dwv-hadoop
+type: application
 version: 1.0.0
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: 3.3.6-2
+description: Deploys a Hadoop Service
+icon: https://hadoop.apache.org/hadoop-logo.jpg

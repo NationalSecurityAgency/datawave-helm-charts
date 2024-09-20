@@ -47,7 +47,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       initContainers:
-      - name: init-hdfs
+      - name: init-hdfs-nn
         image: busybox:1.28
         command: ['sh', '-c', "until nslookup hdfs-nn 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for hdfs-nn; sleep 2; done"]
       {{- with .Values.yarn.resourceManager.tolerations }}

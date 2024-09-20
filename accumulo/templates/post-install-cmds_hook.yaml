@@ -1,5 +1,5 @@
 
-{{- if or .Values.accumulo.config.userManagement.users .Values.accumulo.config.postInstallCommands }}
+{{- if or .Values.config.userManagement.users .Values.config.postInstallCommands }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -16,11 +16,11 @@ spec:
     runAsUser: 1001
   restartPolicy: Never
   initContainers:
-    - name: init-accumulo
+    - name: init-accumulo-manager
       securityContext:
         runAsUser: 1001
       image: busybox:1.28
-      command: ['sh', '-c', "until nslookup accumulo-master; do echo waiting for accumulo; sleep 2; done"]
+      command: ['sh', '-c', "until nslookup accumulo-manager 2>/dev/null | sed -nr '/Name/,+1s|Address(es)?: *||p'; do echo waiting for accumulo; sleep 2; done; sleep 20"]
   containers:
   - name: cmds
     image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

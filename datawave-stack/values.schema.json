@@ -1,7 +1,30 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
+        "charts": {
+            "properties": {
+                "hadoop": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                },
+                "zookeeper": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
         "dockerRegistry": {
             "properties": {
                 "url": {
@@ -9,7 +32,60 @@
                 }
             },
             "type": "object"
+        },
+        "external": {
+            "properties": {
+                "hdfs": {
+                    "properties": {
+                        "hosts": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "yarn": {
+                    "properties": {
+                        "hosts": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
+                "zookeeper": {
+                    "properties": {
+                        "hosts": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "global": {
+            "properties": {
+                "accumuloConfigMap": {
+                    "type": "string"
+                },
+                "hadoopConfigMap": {
+                    "type": "string"
+                },
+                "hdfsWebhdfsEnabled": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

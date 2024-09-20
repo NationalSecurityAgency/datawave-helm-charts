@@ -15,8 +15,6 @@ appVersion: 1.0.0
 description: Deploys an Entire DataWave Stack w/ Dependencies
 icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 
-
-
 dependencies:
   - name: dwv-ingest
     repository: file://../ingest

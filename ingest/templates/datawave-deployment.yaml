@@ -17,7 +17,7 @@ spec:
     spec:
       hostname: ingestmanager
       initContainers:
-      - name: init-hdfs
+      - name: init-hdfs-nn
         image: busybox:1.28
         securityContext:
           runAsUser: 1000
@@ -36,7 +36,7 @@ spec:
         env:
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
-      - name: init-accumulo
+      - name: init-accumulo-manager
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
