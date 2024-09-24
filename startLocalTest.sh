@@ -1,11 +1,31 @@
 #Values overrides file. See umbrella/values-testing.yaml
 VALUES_FILE=${1:-values-testing.yaml}
 
+
+#Package charts
+find . -name "*.tgz" -delete
+cd common-service-library
+helm package .
+cd ..
+for chart in audit authorization cache configuration dictionary datawave-monolith hadoop ingest mysql rabbitmq zookeeper; do
+  cd $chart;
+  helm dependency update
+  helm package .
+  cd ..
+done
+cd datawave-monolith-umbrella
+helm dependency update
+helm package .
+cd ../datawave-stack;
+helm dependency update
+helm package .
+cd ..
+
 # Cache images and reset minikube. Then Setup minikube ingress.
 docker pull rabbitmq:3.11.4-alpine && \
 docker pull busybox:1.28 && \
 minikube delete --all --purge && \
-minikube start --cpus 8 --memory 30960 --disk-size 20480 && \
+minikube start --nodes 3 --cpus 4 --memory 15960 --disk-size 20480 && \
 minikube image load rabbitmq:3.11.4-alpine  && \
 minikube image load busybox:1.28 && \
 minikube image load mysql:8.0.32 && \
@@ -26,14 +46,7 @@ if test -f ./ghcr-image-pull-secret.yaml; then
   minikube kubectl -- apply -f ./ghcr-image-pull-secret.yaml
 fi
 
-#Package charts
-find . -name "*.tgz" -delete
-cd datawave-monolith-umbrella
-helm dependency update
-helm package .
-cd ../datawave-stack;
-helm dependency update
-helm package .
+cd datawave-stack
 minikube kubectl -- create secret generic certificates-secret --from-file=keystore.p12=certificates/keystore.p12 --from-file=truststore.jks=certificates/truststore.jks
 helm install dwv *.tgz -f ${VALUES_FILE} && \
 cd ../

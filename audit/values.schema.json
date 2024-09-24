@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
         "global": {
             "properties": {
@@ -51,6 +51,9 @@
                             "properties": {
                                 "name": {
                                     "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
                                 }
                             },
                             "type": "object"
@@ -130,14 +133,6 @@
             },
             "type": "object"
         },
-        "service": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "ports": {
             "properties": {
                 "http": {
@@ -148,6 +143,9 @@
                 }
             },
             "type": "object"
+        },
+        "profiles": {
+            "type": "string"
         },
         "readinessProbe": {
             "properties": {
@@ -188,6 +186,14 @@
         },
         "restartPolicy": {
             "type": "string"
+        },
+        "service": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
         }
     },
     "type": "object"

@@ -1,26 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
-        "cacheService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "configurationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
-        },
         "global": {
             "properties": {
                 "certSecretName": {
@@ -55,6 +36,38 @@
                         "type": "string"
                     },
                     "type": "array"
+                },
+                "serviceDns": {
+                    "properties": {
+                        "cache": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "configuration": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "rabbitmq": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 },
                 "volumes": {
                     "properties": {
@@ -120,14 +133,6 @@
             },
             "type": "object"
         },
-        "service": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "ports": {
             "properties": {
                 "http": {
@@ -141,14 +146,6 @@
         },
         "profiles": {
             "type": "string"
-        },
-        "rabbitmqService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
         },
         "readinessProbe": {
             "properties": {

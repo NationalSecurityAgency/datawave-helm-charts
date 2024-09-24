@@ -1,7 +1,7 @@
 ---
 name: Lint
 
-on: push
+on: pull_request
 
 jobs:
   build-services:
@@ -29,14 +29,14 @@ jobs:
       - name: Create ../results directory for SARIF report files
         shell: bash
         run: mkdir -p ../results
-      # Enable after library charts
-      # - name: Update helm dependencies
-      #   shell: bash
-      #   run: |
-      #     cd common-service-library
-      #     helm package .
-      #     cd ../${{ matrix.chart }}
-      #     helm dependency update
+      - name: Update helm dependencies
+        shell: bash
+        run: |
+          cd common-service-library
+          helm package .
+          cd ../${{ matrix.chart }}
+          helm dependency update
+          
 
       - name: Scan yaml files with kube-linter
         uses: stackrox/kube-linter-action@v1.0.5
@@ -46,7 +46,7 @@ jobs:
           directory: ${{ matrix.chart }}
           # Adjust this to the location of kube-linter config you're using, or remove the setting if you'd like to use
           # the default config.
-          #config: sample/.kube-linter-config.yaml
+          config: .kube-lint-config.yaml
           # The following two settings make kube-linter produce scan analysis in SARIF format which would then be
           # made available in GitHub UI via upload-sarif action below.
           format: sarif
@@ -62,7 +62,6 @@ jobs:
 
       # Ensure the workflow eventually fails if files did not pass kube-linter checks.
       - name: Verify kube-linter-action succeeded
-        continue-on-error: true
         shell: bash
         run: |
           echo "If this step fails, kube-linter found issues. Check the output of the scan step above."

@@ -4,11 +4,9 @@ kind: Service
 metadata:
   name: ingestmanager
   labels:
-    {{- include "datawave.labels" . | nindent 4 }}
     app.kubernetes.io/component: ingest
 spec:
   selector:
-    {{- include "datawave.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: ingest
   type: ClusterIP
   clusterIP: None

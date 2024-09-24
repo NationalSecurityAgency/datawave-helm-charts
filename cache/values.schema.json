@@ -1,7 +1,13 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
     "properties": {
+        "args": {
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
         "global": {
             "properties": {
                 "certSecretName": {
@@ -107,14 +113,6 @@
             "type": "object"
         },
         "meta": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "service": {
             "properties": {
                 "name": {
                     "type": "string"
