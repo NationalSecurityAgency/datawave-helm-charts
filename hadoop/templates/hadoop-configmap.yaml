@@ -219,7 +219,7 @@ data:
     log4j.appender.JSA.layout=org.apache.log4j.PatternLayout
     log4j.appender.JSA.layout.ConversionPattern=%d{ISO8601} %p %c{2}: %m%n
     log4j.appender.JSA.DatePattern=.yyyy-MM-dd
-    {{- with .Values.hadoop.config.loggingProperties }}
+    {{- with .Values.config.loggingProperties }}
     {{- range . }}
     {{ .name }}={{ .value }}
     {{- end }}
@@ -228,7 +228,7 @@ data:
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
-      {{- with .Values.hadoop.config.coreSiteProperties }}
+      {{- with .Values.config.coreSiteProperties }}
       {{- range . }}
       <property>
           <name>{{ .name }}</name>
@@ -243,7 +243,7 @@ data:
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
-      {{- with .Values.hadoop.config.hdfsSiteProperties }}
+      {{- with .Values.config.hdfsSiteProperties }}
       {{- range . }}
       <property>
           <name>{{ .name }}</name>
@@ -259,7 +259,7 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
     <configuration>
-      {{- with .Values.hadoop.config.mapredSiteProperties }}
+      {{- with .Values.config.mapredSiteProperties }}
       {{- range . }}
       <property>
           <name>{{ .name }}</name>
@@ -355,8 +355,7 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
     <configuration>
-     
-      {{- with .Values.hadoop.config.yarnSiteProperties }}
+      {{- with .Values.config.yarnSiteProperties }}
       {{- range . }}
       <property>
           <name>{{ .name }}</name>

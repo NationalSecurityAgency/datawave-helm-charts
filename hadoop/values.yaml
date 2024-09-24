@@ -2,7 +2,6 @@ global:
   pullSecrets:
   - dockerconfigjson-ghcr
 
-<<<<<<< HEAD
 nameOverride: hadoop
 
 # The base hadoop image to use for all components.
