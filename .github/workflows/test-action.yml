@@ -2,8 +2,7 @@
 name: Lint
 
 on:
-  branches:
-    - '**' 
+  push:
   pull_request:
   workflow_dispatch:
 
