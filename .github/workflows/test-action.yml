@@ -1,7 +1,11 @@
 ---
 name: Lint
 
-on: pull_request
+on:
+  branches:
+    - '**' 
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build-services:
