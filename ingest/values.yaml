@@ -4,7 +4,7 @@ global:
 accumuloConfigMap: accumulo-config
 hadoopConfigMap: dwv-hadoop
 nameOverride: ""
-fullnameOverride: "datawave-ingest"
+fullnameOverride: ""
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
@@ -33,7 +33,7 @@ config:
   instanceName: dev
   hadoopConfDif: /usr/local/hadoop/conf
   bulkDataTypes: shardStats
-  liveDataTypes: wikipedia,mycsv,myjson
+  liveDataTypes: wikipedia,mycsv,myjson,openlib
   overallFlagConfig:
     defaultCfg:
       live:
@@ -71,8 +71,42 @@ config:
         datawaveHome: /opt/datawave-ingest/current
         flagFileDirectory: /srv/data/datawave/flags
         setFlagFileTimestamp: false
-        useFolderTimestamp: false      
+        useFolderTimestamp: false
+        
   types:
+    - name: openlib
+      flagMakerConfig:
+        liveFolder: openlib
+        bulkFolder: openlib-bulk
+        config:
+          distrubutionArgs: none
+          extraIngestArgs: "-data.name.override=openlib"
+          inputFormat: datawave.ingest.json.mr.input.JsonInputFormat
+          lifo: false
+      properties: 
+        "file.input.format": datawave.ingest.json.mr.input.JsonInputFormat
+        "data.name": openlib
+        "openlib.output.name": openlib
+        "openlib.ingest.helper.class": datawave.ingest.json.config.helper.JsonIngestHelper
+        "openlib.reader.class": datawave.ingest.json.mr.input.JsonRecordReader
+        "openlib.handler.classes": "datawave.ingest.json.mr.handler.ContentJsonColumnBasedHandler,datawave.ingest.mapreduce.handler.facet.FacetHandler"
+        "openlib.data.category.uuid.fields": KEY
+        "openlib.data.separator": ","
+        "openlib.data.header": KEY,TYPE,LASTMODIFIED_VALUE.LASTMODIFIED_0.VALUE_0
+        "openlib.data.process.extra.fields": true
+        "openlib.data.json.flattener.mode": GROUPED_AND_NORMAL
+        "openlib.data.category.marking.default": PRIVATE|(BAR&amp;FOO)
+        "openlib.data.category.date": LASTMODIFIED_VALUE.LASTMODIFIED_0.VALUE_0
+        "openlib.data.category.date.formats": yyyy-MM-dd,yyyy-MM-dd'T'HH:mm:ss'Z',yyyy-MM-dd HH:mm:ss
+        "openlib.data.category.index": KEY,NAME,TITLE,SUBTITLE,TYPE,ISBN_10
+        "openlib.data.category.index.reverse": KEY,NAME,TITLE,SUBTITLE,TYPE,ISBN_10
+        "openlib.data.category.token.fieldname.designator": _TOKEN
+        "openlib.data.category.index.tokenize.allowlist": KEY,TITLE,SUBTITLE
+        "openlib.data.category.index.only": KEY_TOKEN,TITLE_TOKEN,SUBTITLE_TOKEN
+        "openlib.data.default.normalization.failure.policy": FAIL
+        "openlib.data.default.type.class": datawave.data.type.LcNoDiacriticsType
+        "openlib.LASTMODIFIED_VALUE.LASTMODIFIED_0.VALUE_0.data.field.type.class": datawave.data.type.DateType
+        "openlib.facet.category.name.network": ""  
     - name: myjson
       flagMakerConfig:
         liveFolder: myjson
