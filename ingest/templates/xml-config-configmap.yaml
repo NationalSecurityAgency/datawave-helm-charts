@@ -1,0 +1,32 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: ConfigMap
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "datawave-general-ingest-config"
+
+##########################
+# Configuration Map Data #
+##########################
+
+data: 
+{{ range .Values.config.files}}
+  {{ .name }}: |
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?><?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+    {{ range $val := .properties }}
+      <property>
+        <name>{{ $val.name }}</name>
+        <value>{{ $val.value }}</value>
+        <description>{{ $val.description }}</description>
+      </property>  
+    {{ end }}
+    </configuration>
+{{- end -}}

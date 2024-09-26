@@ -83,6 +83,8 @@ spec:
           mountPath: /opt/datawave-ingest/current/config/{{ .name }}-ingest-config.xml
           subPath: {{ .name }}-ingest-config.xml
         {{ end }}
+        - name: datawave-general-ingest-config
+          mountPath: /opt/datawave-ingest/mounted-config/
         - name: genders
           mountPath: /etc/genders
           subPath: genders
@@ -92,6 +94,10 @@ spec:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
       volumes:
+      - name: datawave-general-ingest-config
+        configMap:
+          name: datawave-general-ingest-config
+          defaultMode: 0775
       {{ range .Values.config.types }}
       - name: {{ .name }}
         configMap:

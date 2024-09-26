@@ -69,9 +69,17 @@ spec:
           - name: cmds
             mountPath: /cmds
             readOnly: true
+          - name: entrypoint
+            mountPath: /entrypoint.sh
+            subPath: entrypoint.sh
         resources:
           {{- toYaml .Values.manager.resources | nindent 10 }}
       volumes:
+        - name: entrypoint
+          configMap:
+            name: {{ .Values.entrypointConfigMap.name }}
+            defaultMode: 0777
+
         - name: hadoop-config
           configMap:
             name: {{ .Values.global.hadoopConfigMap }}
