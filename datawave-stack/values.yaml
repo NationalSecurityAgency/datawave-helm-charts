@@ -11,9 +11,9 @@ dockerRegistry:
   url: ghcr.io/nationalsecurityagency/
 charts:
   zookeeper:
-    enabled: false
+    enabled: true
   hadoop:
-    enabled: false
+    enabled: true
 external:
   zookeeper:
     hosts:

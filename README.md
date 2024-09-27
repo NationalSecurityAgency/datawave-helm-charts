@@ -31,10 +31,16 @@ If you already have the prerequisites installed you can simply run `./startLocal
 
 Images are now created in [Datawave Stack Docker Images](https://github.com/nationalSecurityAgency/datawave-stack-docker-images)
 
-If you want to use an external Hadoop or Zookeeper instance then set these env vars to true or false.
+If you want to use an external Hadoop and/or Zookeeper instance then set the appropriate env var(s) to true.
 ```bash
-USE_LOCAL_ZOOKEEPER=true
-USE_LOCAL_HADOOP=true
+export USE_LOCAL_ZOOKEEPER=true
+export USE_LOCAL_HADOOP=true
+```
+
+And set the path to the installation(s) appropriately for your system.
+```bash
+export ZOOKEEPER_HOME=/opt/zookeeper
+export HADOOP_HOME=/opt/hadoop
 ```
 
 In order to test changes to helm charts, you can run the following script:

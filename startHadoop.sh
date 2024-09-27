@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-/opt/hadoop-3.4.0/bin/hdfs namenode -format
-/opt/hadoop-3.4.0/sbin/start-dfs.sh
-/opt/hadoop-3.4.0/sbin/start-yarn.sh
+if ${INIT_LOCAL_HADOOP}; then
+  "${HADOOP_HOME}"/bin/hdfs namenode -format
+fi
+"${HADOOP_HOME}"/sbin/start-dfs.sh
+"${HADOOP_HOME}"/sbin/start-yarn.sh
