@@ -5,7 +5,6 @@
 global:
   hadoopConfigMap: dwv-hadoop-config
   accumuloConfigMap: dwv-accumulo-config
-  hdfsWebhdfsEnabled: false
 
 dockerRegistry:
   url: ghcr.io/nationalsecurityagency/

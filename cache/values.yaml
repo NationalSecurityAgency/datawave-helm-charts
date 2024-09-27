@@ -26,6 +26,16 @@ image:
   name: datawave-hazelcast-service
   pullPolicy: IfNotPresent
   tag: 4.0.2
+
+args:
+- "--spring.output.ansi.enabled=ALWAYS"
+- "--spring.profiles.active=default,k8s"
+- "-Dhazelcast.diagnostics.enabled=true"
+- "--log4j.rootLogger=debug, stdout"
+- "--log4j.appender.stdout=org.apache.log4j.ConsoleAppender"
+- "--log4j.appender.stdout.Target=System.out"
+- "--log4j.appender.stdout.layout=org.apache.log4j.PatternLayout"
+- "--log4j.appender.stdout.layout.ConversionPattern=%t %-5p %c{2} - %m%n"
 livenessProbe:
   delaySeconds: 40
   periodSeconds: 15

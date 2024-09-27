@@ -46,9 +46,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        #runAsUser: 1002
-        #runAsGroup: 1002
         fsGroup: 1002
+        runAsUser: 1002
+        runAsNonRoot: true
       containers:
       - name: ingest
         env:

@@ -41,6 +41,7 @@ config:
       - hdfs ec -enablePolicy -policy RS-4-2-128k
       - hdfs ec -enablePolicy -policy RS-4-3-64k
       - hdfs ec -enablePolicy -policy RS-4-3-128k
+
 hdfs:
   nameNode:
     ingress:
@@ -48,7 +49,6 @@ hdfs:
       annotations: []
       host: "namenode.datawave.org"
     tolerations: []
-    pdbMinAvailable: 1
 
     resources:
       requests:
@@ -61,8 +61,6 @@ hdfs:
   dataNode:
     tolerations: []
     replicas: 2
-
-    pdbMinAvailable: 1
 
     resources:
       requests:
@@ -87,7 +85,6 @@ yarn:
       annotations: []
       host: "resourcemanager.datawave.org"
     tolerations: []
-    pdbMinAvailable: 1
 
     resources:
       requests:
@@ -99,7 +96,6 @@ yarn:
 
   nodeManager:
     tolerations: []
-    pdbMinAvailable: 1
 
     # The number of YARN NodeManager instances.
     replicas: 2

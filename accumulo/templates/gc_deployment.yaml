@@ -44,7 +44,7 @@ spec:
           mountPath: /opt/accumulo/conf
         env:
         - name: HADOOP_CONF_DIR
-          value: /opt/hadoop/conf
+          value: /usr/local/hadoop/conf
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
         - name: ACCUMULO_CONF_DIR

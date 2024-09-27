@@ -10,4 +10,4 @@ schemaRoot:
   id: https://code.nsa.org/datawave/schema
   title: Helm Values Schema
   description: Schema for DataWave Helm values
-  additionalProperties: false
+  additionalProperties: true

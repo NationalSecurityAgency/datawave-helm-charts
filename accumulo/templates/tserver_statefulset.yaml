@@ -58,14 +58,14 @@ spec:
           - containerPort: 9997
         volumeMounts:
         - name: hadoop-config
-          mountPath: /opt/hadoop/conf
+          mountPath: /usr/local/hadoop/conf
         - name: config
           mountPath: /opt/accumulo/conf
         env:
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
         - name: HADOOP_CONF_DIR
-          value: /opt/hadoop/conf
+          value: /usr/local/hadoop/conf
         - name: ACCUMULO_CONF_DIR
           value: {{ .Values.config.path }}
         resources:

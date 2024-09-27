@@ -11,9 +11,8 @@
 development/
 setup.sh
 
-########################
-# Ignores All Archives #
-########################
 
-*.tar.gz
-*.tgz
+############################
+# Ignores package Archives #
+############################
+dwv-dictionary-*.tgz

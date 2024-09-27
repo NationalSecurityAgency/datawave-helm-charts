@@ -1,0 +1,45 @@
+{{- define "common-service-library.service.tpl" -}}
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: Service
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: {{ default .Values.meta.name (.Values.service).name }}
+  labels:
+    application: {{ .Values.meta.name | quote }}
+
+##################################
+# Complete Service Specification #
+##################################
+
+spec:
+
+  ###############################
+  # Pod Selection Configuration #
+  ###############################
+
+  selector:
+    application: {{ .Values.meta.name }}
+
+  ##############################
+  # Service Port Configuration #
+  ##############################
+
+  ports:
+    {{- range $i, $value := .Values.ports }}
+    - name: {{ $i }}
+      port: {{ $value }}
+      targetPort: {{ $value }}
+    {{- end }}
+{{- end -}}
+
+{{- define "common-service-library.service" -}}
+{{- include "common-service-library.util.merge" (append . "common-service-library.service.tpl") -}}
+{{- end -}}

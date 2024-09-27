@@ -143,7 +143,7 @@
             "properties": {
                 "args": {
                     "items": {
-                        "type": "string"
+                        "type": ["number", "string"]
                     },
                     "type": "array"
                 },

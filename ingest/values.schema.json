@@ -1,7 +1,7 @@
 {
     "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
     "description": "Schema for DataWave Helm values",
     "properties": {
         "config": {
@@ -212,76 +212,67 @@
                                     "file.input.format": {
                                         "type": "string"
                                     },
-                                    "myjson.PREMIERED.data.field.type.class": {
+                                    "openlib.LASTMODIFIED_VALUE.LASTMODIFIED_0.VALUE_0.data.field.type.class": {
                                         "type": "string"
                                     },
-                                    "myjson.RUNTIME.data.field.type.class": {
+                                    "openlib.data.category.date": {
                                         "type": "string"
                                     },
-                                    "myjson.SUMMARY.data.field.marking": {
+                                    "openlib.data.category.date.formats": {
                                         "type": "string"
                                     },
-                                    "myjson.WEIGHT.data.field.type.class": {
+                                    "openlib.data.category.index": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.date": {
+                                    "openlib.data.category.index.only": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.date.formats": {
+                                    "openlib.data.category.index.reverse": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.index": {
+                                    "openlib.data.category.index.tokenize.allowlist": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.index.only": {
+                                    "openlib.data.category.marking.default": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.index.reverse": {
+                                    "openlib.data.category.token.fieldname.designator": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.index.tokenize.allowlist": {
+                                    "openlib.data.category.uuid.fields": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.marking.default": {
+                                    "openlib.data.default.normalization.failure.policy": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.token.fieldname.designator": {
+                                    "openlib.data.default.type.class": {
                                         "type": "string"
                                     },
-                                    "myjson.data.category.uuid.fields": {
+                                    "openlib.data.header": {
                                         "type": "string"
                                     },
-                                    "myjson.data.default.normalization.failure.policy": {
+                                    "openlib.data.json.flattener.mode": {
                                         "type": "string"
                                     },
-                                    "myjson.data.default.type.class": {
-                                        "type": "string"
-                                    },
-                                    "myjson.data.header": {
-                                        "type": "string"
-                                    },
-                                    "myjson.data.json.flattener.mode": {
-                                        "type": "string"
-                                    },
-                                    "myjson.data.process.extra.fields": {
+                                    "openlib.data.process.extra.fields": {
                                         "type": "boolean"
                                     },
-                                    "myjson.data.separator": {
+                                    "openlib.data.separator": {
                                         "type": "string"
                                     },
-                                    "myjson.facet.category.name.network": {
+                                    "openlib.facet.category.name.network": {
                                         "type": "string"
                                     },
-                                    "myjson.handler.classes": {
+                                    "openlib.handler.classes": {
                                         "type": "string"
                                     },
-                                    "myjson.ingest.helper.class": {
+                                    "openlib.ingest.helper.class": {
                                         "type": "string"
                                     },
-                                    "myjson.output.name": {
+                                    "openlib.output.name": {
                                         "type": "string"
                                     },
-                                    "myjson.reader.class": {
+                                    "openlib.reader.class": {
                                         "type": "string"
                                     }
                                 },

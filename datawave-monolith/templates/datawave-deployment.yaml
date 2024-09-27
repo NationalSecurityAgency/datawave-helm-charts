@@ -11,6 +11,8 @@ kind: Deployment
 
 metadata:
   name: "{{ .Values.datawaveDeployment.meta.name }}"
+  annotations:
+    ignore-check.kube-linter.io/run-as-non-root: "This deployment needs to run as root until datawave image is fixed"
   labels:
     application: "{{ .Values.datawaveDeployment.meta.name }}"
 
@@ -78,8 +80,13 @@ spec:
         - name: init-authorization
           securityContext:
             runAsUser: 1000
+            runAsNonRoot: true
           image: busybox:1.28
           command: ['sh', '-c', "until nslookup authorization; do echo waiting for auth service; sleep 2; done"]
+     #TODO: Add this in after making it work. Will require updates in datawave
+      # securityContext:
+        # runAsUser: 1000
+        # runAsNonRoot: true
       containers:
 
         - name: "{{ .Values.datawaveDeployment.meta.name }}"
@@ -100,6 +107,7 @@ spec:
             initialDelaySeconds: {{ .Values.datawaveDeployment.readinessProbe.delaySeconds }}
             periodSeconds: {{ .Values.datawaveDeployment.readinessProbe.periodSeconds }}
           ports:
+            - containerPort: 8080
             - containerPort: 8443
           resources: {}
           env:

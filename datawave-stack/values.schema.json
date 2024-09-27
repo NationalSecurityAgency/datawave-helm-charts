@@ -78,9 +78,6 @@
                 },
                 "hadoopConfigMap": {
                     "type": "string"
-                },
-                "hdfsWebhdfsEnabled": {
-                    "type": "boolean"
                 }
             },
             "type": "object"
