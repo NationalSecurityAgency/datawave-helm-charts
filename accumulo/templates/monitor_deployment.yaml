@@ -34,7 +34,7 @@ spec:
       securityContext:
         runAsUser: 1001
       initContainers:
-      - name: init-accumulo
+      - name: init-accumulo-manager
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
@@ -42,10 +42,10 @@ spec:
       volumes:
         - name: hadoop-config
           configMap:
-            name: {{ .Values.hadoopConfigMap }}
+            name: {{ .Values.global.hadoopConfigMap }}
         - name: config
           configMap:
-            name: accumulo-config
+            name: {{ .Values.global.accumuloConfigMap }}
       containers:
       - name: accumulo-monitor
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

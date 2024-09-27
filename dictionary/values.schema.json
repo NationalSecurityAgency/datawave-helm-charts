@@ -1,6 +1,8 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
         "args": {
             "items": {
@@ -210,5 +212,6 @@
             "type": "string"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

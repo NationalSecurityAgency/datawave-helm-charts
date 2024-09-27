@@ -1,6 +1,8 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
         "antiAffinity": {
             "type": "string"
@@ -52,6 +54,9 @@
         },
         "global": {
             "properties": {
+                "hadoopConfigMap": {
+                    "type": "string"
+                },
                 "pullSecrets": {
                     "items": {
                         "type": "string"
@@ -68,9 +73,6 @@
             "properties": {
                 "dataNode": {
                     "properties": {
-                        "pdbMinAvailable": {
-                            "type": "integer"
-                        },
                         "replicas": {
                             "type": "integer"
                         },
@@ -122,9 +124,6 @@
                                 }
                             },
                             "type": "object"
-                        },
-                        "pdbMinAvailable": {
-                            "type": "integer"
                         },
                         "resources": {
                             "properties": {
@@ -320,9 +319,6 @@
                         "parallelCreate": {
                             "type": "boolean"
                         },
-                        "pdbMinAvailable": {
-                            "type": "integer"
-                        },
                         "replicas": {
                             "type": "integer"
                         },
@@ -375,9 +371,6 @@
                             },
                             "type": "object"
                         },
-                        "pdbMinAvailable": {
-                            "type": "integer"
-                        },
                         "resources": {
                             "properties": {
                                 "limits": {
@@ -415,5 +408,6 @@
             "type": "object"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

@@ -1,13 +1,15 @@
 global:
   pullSecrets: 
   - dockerconfigjson-ghcr
-
+  hadoopConfigMap: hadoop-config
+  accumuloConfigMap: accumulo-config
+  accumulo:
+    instanceName: dev
 logging:
   shellRootLevel: debug
   shellAccumuloLevel: trace
   serviceAccumuloLevel: debug
-  serviceRootLevel: debug  
-hadoopConfigMap: dwv-hadoop
+  serviceRootLevel: debug
 nameOverride: ""
 fullnameOverride: "accumulo"
 labels: {}
@@ -28,7 +30,6 @@ hdfs:
     - hadoop fs -ls /
 zookeeper:
   externalHosts: "zookeeper"
-instanceId: dev
 config:
   auths: "JBOSS_ADMIN,DW_ADMIN,AUTH_USER,BAR,FOO,PRIVATE,PUBLIC"
   path: /opt/accumulo/conf

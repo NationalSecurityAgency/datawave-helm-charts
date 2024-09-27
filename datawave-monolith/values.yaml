@@ -19,8 +19,8 @@ global:
     password: ThisP@ssw0rd1sBANANAS
   zookeeper:
     quorum: zookeeper:2181
-  hadoop:
-    configMapName: dwv-hadoop
+  hadoopConfigMap: hadoop-config
+  accumuloConfigMap: accumulo-config
   pullSecrets:
     - dockerconfigjson-ghcr
 

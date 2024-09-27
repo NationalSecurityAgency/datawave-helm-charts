@@ -13,5 +13,5 @@ version: 1.0.0
 
 appVersion: 8.0.42
 description: Deploys a mysql instance for use in DataWave Web
-icon: https://code.nsa.gov/datawave/images/datawave-logo.png
+icon: https://labs.mysql.com/common/themes/sakila/favicon.ico
 

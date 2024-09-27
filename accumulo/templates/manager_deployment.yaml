@@ -41,7 +41,7 @@ spec:
         command: 
         - "/bin/sh"
         args: ["-c", "while [ `hdfs dfs -ls hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
-      hostname: accumulo-manager 
+      hostname: accumulo-manager
       containers:
       - name: accumulo-manager
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -56,7 +56,7 @@ spec:
         - name: ACCUMULO_CONF_DIR
           value: {{ .Values.config.path }}
         - name: ACCUMULO_INSTANCE_NAME
-          value: {{ .Values.instanceId }}
+          value: {{ .Values.global.accumulo.instanceName }}
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
         - name: ACCUMULO_ROOT_PASSWORD
@@ -74,10 +74,10 @@ spec:
       volumes:
         - name: hadoop-config
           configMap:
-            name: {{ .Values.hadoopConfigMap }}
+            name: {{ .Values.global.hadoopConfigMap }}
         - name: config
           configMap:
-            name: accumulo-config
+            name: {{ .Values.global.accumuloConfigMap }}
         - name: cmds
           secret:
             secretName: {{ include "accumulo.fullname" . }}-cmds

@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-yarn-nm
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
@@ -114,4 +112,4 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ include "hadoop.fullname" . }}
+          name: {{ .Values.global.hadoopConfigMap }}

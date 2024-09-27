@@ -1,6 +1,8 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
         "configMap": {
             "properties": {
@@ -81,14 +83,6 @@
             },
             "type": "object"
         },
-        "service": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "ports": {
             "properties": {
                 "amqp": {
@@ -147,5 +141,6 @@
             "type": "array"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

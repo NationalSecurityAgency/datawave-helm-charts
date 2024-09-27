@@ -148,7 +148,7 @@ data:
     datawave:
       dictionary:
         accumulo-properties:
-          instance-name: "dev"
+          instance-name: "{{ .Values.global.accumulo.instanceName }}"
           password: "Th1sP@ssw0rd1sBANANAS"
           username: "root"
           zookeepers: "zookeeper:2181"

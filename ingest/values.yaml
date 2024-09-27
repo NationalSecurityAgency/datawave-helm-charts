@@ -1,8 +1,8 @@
 global:
   pullSecrets:
-    - dockerconfigjson-ghcr 
-accumuloConfigMap: accumulo-config
-hadoopConfigMap: dwv-hadoop
+    - dockerconfigjson-ghcr
+  hadoopConfigMap: hadoop-config
+  accumuloConfigMap: accumulo-config
 nameOverride: ""
 fullnameOverride: ""
 labels: {}

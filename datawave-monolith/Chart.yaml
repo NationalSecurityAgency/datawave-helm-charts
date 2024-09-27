@@ -14,4 +14,3 @@ version: 1.0.0
 appVersion: 7.5.0-SNAPSHOT
 description: Deploys an Entire DataWave Web Stack w/ Dependencies
 icon: https://code.nsa.gov/datawave/images/datawave-logo.png
-
