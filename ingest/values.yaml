@@ -34,6 +34,230 @@ config:
   hadoopConfDif: /usr/local/hadoop/conf
   bulkDataTypes: shardStats
   liveDataTypes: wikipedia,mycsv,myjson,openlib
+
+  files:
+  - name: all-config.xml
+    properties:
+      - name: all.handler.classes
+        value: >-
+          datawave.ingest.mapreduce.handler.edge.ProtobufEdgeDataTypeHandler,datawave.ingest.mapreduce.handler.dateindex.DateIndexDataTypeHandler
+        description: >-
+          Datatype handlers to be utilized by all registered datatypes (in
+          *addition* to any distinct handlers
+                  that they may have set independently via their respective *-config.xml files)
+      - name: all.ingest.helper.class
+        value: ''
+      - name: all.reader.class
+        value: ''
+      - name: all.data.category.marking.upstream.error
+        value: SOMEDOMAIN=SOMEMARKINGASS
+        description: >-
+          If any record comes into the system with this security marking, then
+          recognize it as an upstream error
+                  which is considered to be FATAL in this system
+      - description: Properties to include in the accumulo table config cache
+        name: cache.table.properties
+        value: >-
+          table.file.compress.*,table.file.blocksize,table.file.replication,table.iterator.minc.*,crypto.*
+      - name: all.filter.classes
+        value: ${ALL_FILTER_CLASSES}
+        description: >-
+          This is the chain of context writers that will receive the output of
+          all handlers and
+                  higher prioriy content writers
+      - name: all.filter.priority
+        value: 50
+        description: This is the priority of this context writer chain
+      - name: all.data.combine.separator
+        value: ':'
+        description: Output separator for Virtual Fields
+      - name: all.ingest.policy.enforcer.class
+        value: datawave.policy.IngestPolicyEnforcer$NoOpIngestPolicyEnforcer
+        description: |-
+          Name of the class to use for policy enforcement.
+                  (1) datawave.policy.IngestPolicyEnforcer$NoOpIngestPolicyEnforcer will assume all records are valid.
+                  (2) datawave.policy.ExampleIngestPolicyEnforcer will perform some validations that you'd probably want
+                      to enforce for all data in a production deployment
+      - name: all.date.index.type.to.field.map
+        value: LOADED=LOAD_DATE,ACTIVITY=EVENT_DATE
+  - name: edge-ingest-config.xml
+    properties:
+    - name: protobufedge.table.name
+      value: datawave.edge
+    - name: protobufedge.table.loader.priority
+      value: 30
+    - name: datawave.edge.table.config.class
+      value: datawave.ingest.table.config.ProtobufEdgeTableConfigHelper
+    - name: protobufedge.table.metadata.enable
+      value: true
+    - name: protobufedge.table.disallowlist.enable
+      value: true
+    - name: protobufedge.spring.config
+      value: config/edge-definitions.xml
+    - name: protobufedge.setup.default.failurepolicy
+      value: FAIL_JOB
+    - name: protobufedge.process.default.failurepolicy
+      value: FAIL_JOB
+    - name: protobufedge.valid.activitytime.future.delta
+      value: 86400000
+    - name: protobufedge.valid.activitytime.past.delta
+      value: 315360000000
+  - name: shard-ingest-config.xml
+    properties:
+    - name: num.shards
+      value: 10
+    - name: sharded.table.names
+      value: datawave.shard,datawave.error_s
+      description: Comma-separated list of tables that need to pull splits from accumulo
+    - name: shard.table.name
+      value: datawave.shard
+    - name: shard.index.create.uids
+      value: true
+    - name: shard.table.loader.priority
+      value: 30
+    - name: datawave.shard.table.config.class
+      value: datawave.ingest.table.config.ShardTableConfigHelper
+    - name: shard.table.locality.groups
+      value: fullcontent:d,termfrequency:tf
+      description: >-
+        The list of locality groups in the form groupname:columnfamily, comma
+        separated
+    - name: shard.global.index.table.name
+      value: datawave.shardIndex
+    - name: shard.global.index.table.loader.priority
+      value: 30
+    - name: datawave.shardIndex.table.config.class
+      value: datawave.ingest.table.config.ShardTableConfigHelper
+    - name: shard.global.rindex.table.name
+      value: datawave.shardReverseIndex
+    - name: shard.global.rindex.table.loader.priority
+      value: 30
+    - name: datawave.shardReverseIndex.table.config.class
+      value: datawave.ingest.table.config.ShardTableConfigHelper
+    - name: markings.setup.iterator.enabled
+      value: false
+    - name: markings.setup.iterator.config
+      value: ''
+    - name: shard.global.index.geo.field
+      value: LAT_LONG
+    - name: partitioner.category.shardedTables
+      value: datawave.ingest.mapreduce.partition.BalancedShardPartitioner
+    - name: partitioner.category.member.datawave.shard
+      value: shardedTables
+    - name: index.tables.keep.count.only.entries
+      value: false
+  - name: metadata-config.xml
+    properties:
+    - name: metadata.ingest.helper.class
+      value: datawave.ingest.data.config.ingest.MetaDataIngestHelper
+    - name: metadata.reader.class
+      value: ''
+    - name: metadata.handler.classes
+      value: ''
+    - name: metadata.table.name
+      value: datawave.metadata
+    - name: metadata.table.loader.priority
+      value: 30
+    - name: datawave.metadata.table.config.class
+      value: datawave.ingest.table.config.MetadataTableConfigHelper
+    - name: metadata.loaddates.enabled
+      value: true
+    - name: metadata.loaddates.table.name
+      value: datawave.loadDates
+    - name: metadata.loaddates.table.loader.priority
+      value: 30
+    - name: metadata.loaddates.table.locality.groups
+      value: ''
+      description: >-
+        The list of locality groups.  Groups are comma separated.  Column
+        families are semicolon separated, e.g.
+        groupName1:colFamily1;colFamily2,groupName2:colFamily3
+    - name: datawave.loadDates.table.config.class
+      value: datawave.ingest.table.config.LoadDateTableConfigHelper
+    - name: metadata.term.frequency.enabled
+      value: true
+  - name: facet-config.xml
+    properties:
+    - name: facet.table.name
+      value: datawave.facets
+    - name: facet.table.loader.priority
+      value: 40
+    - name: facet.metadata.table.name
+      value: datawave.facetMetadata
+    - name: facet.metadata.table.loader.priority
+      value: 40
+    - name: facet.hash.table.name
+      value: datawave.facetHashes
+    - name: facet.hash.table.loader.priority
+      value: 40
+  - name: error-ingest-config.xml
+    properties:
+    - name: error.table.loader.priority
+      value: 30
+    - name: error.shard.table.name
+      value: datawave.error_s
+    - name: error.shard.table.loader.priority
+      value: 30
+    - name: error.shard.global.index.table.name
+      value: datawave.error_i
+    - name: error.shard.global.index.table.loader.priority
+      value: 30
+    - name: error.shard.global.rindex.table.name
+      value: datawave.error_r
+    - name: error.shard.global.rindex.table.loader.priority
+      value: 30
+    - name: error.shard.enable.bloom.filters
+      value: false
+      description: >-
+        Whether or not to add bloom filters on the index tables. Default is
+        false
+    - name: error.shard.table.locality.groups
+      value: fullcontent:d
+      description: >-
+        The list of locality groups in the form groupname:columnfamily, comma
+        separated
+    - name: error.metadata.table.name
+      value: datawave.error_m
+    - name: error.metadata.table.loader.priority
+      value: 30
+    - name: error.metadata.term.frequency.enabled
+      value: true
+    - name: datawave.error_s.table.config.class
+      value: datawave.ingest.table.config.ErrorShardTableConfigHelper
+    - name: datawave.error_i.table.config.class
+      value: datawave.ingest.table.config.ErrorShardTableConfigHelper
+    - name: datawave.error_r.table.config.class
+      value: datawave.ingest.table.config.ErrorShardTableConfigHelper
+    - name: datawave.error_m.table.config.class
+      value: datawave.ingest.table.config.ErrorMetadataTableConfigHelper
+    - name: error.table.ageoff.ttl
+      value: 30
+    - name: error.data.default.type.class
+      value: datawave.data.type.LcNoDiacriticsType
+    - name: error.table.ageoff.ttlunits
+      value: d
+    - name: error.use.default.type.handlers
+      value: true
+    - name: error.ingest.helper.class
+      value: datawave.ingest.data.config.ingest.ErrorShardedIngestHelper
+    - name: error.reader.class
+      value: ''
+    - name: error.handler.classes
+      value: >-
+        datawave.ingest.mapreduce.handler.error.ErrorShardedDataTypeHandler,${ADDITIONAL_ERROR_HANDLER_CLASSES}
+    - name: error.data.category.marking.default
+      value: PRIVATE
+      description: >-
+        Default ColumnVisibility to be applied to fields/records if none
+        provided in the data
+    - name: error.data.replace.malformed.utf8
+      value: true
+    - name: partitioner.category.member.datawave.error_s
+      value: shardedTables
+
+
+
+
   overallFlagConfig:
     defaultCfg:
       live:

@@ -122,6 +122,14 @@
             },
             "type": "object"
         },
+        "entrypointConfigMap": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "fullnameOverride": {
             "type": "string"
         },
