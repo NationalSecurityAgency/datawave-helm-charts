@@ -16,8 +16,9 @@ jobs:
     permissions: write-all
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: See if I can look at minikube
         shell: bash
         run: |
-          minikube version
-          minikube kubectl -- get po 
+          ./startLocalTest.sh
