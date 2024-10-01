@@ -21,4 +21,5 @@ jobs:
       - name: See if I can look at minikube
         shell: bash
         run: |
+          ./create-image-pull-secrets.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }}
           ./startLocalTest.sh
