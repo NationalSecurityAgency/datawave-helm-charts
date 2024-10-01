@@ -1,0 +1,23 @@
+---
+name: Run on Hosted Runner
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-services:
+    
+    runs-on: self-hosted-1
+
+    name: Hosted Runner Test
+
+    permissions: write-all
+
+    steps:
+      - name: See if I can look at minikube
+        shell: bash
+        run: |
+          minikube version
+          minikube kubectl -- get po 
