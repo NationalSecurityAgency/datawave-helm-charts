@@ -109,11 +109,18 @@ function helm_install() {
   helm install dwv "${DATAWAVE_STACK}"/datawave-system-*.tgz -f "${DATAWAVE_STACK}"/${VALUES_FILE} ${EXTRA_HELM_ARGS}
 }
 
-start_minikube
-initialize_hosts_file
-updateCoreDns
+
+echo "Package helm charts"
 helm_package
+echo "Purge and restart Minikube"
+start_minikube
+echo "Initialize Hosts file"
+initialize_hosts_file
+echo "Update COREDNS"
+updateCoreDns
+echo "Running Helm Install"
 helm_install
+echo "Deploy to MiniKube complete!"
 
 #Currently Disabled. See DataWave repo on how to get this json file.
 #kubectl cp tv-show-raw-data-stock.json dwv-dwv-hadoop-hdfs-nn-0:/tmp && \
