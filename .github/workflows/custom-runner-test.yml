@@ -9,7 +9,7 @@ on:
 jobs:
   build-services:
     
-    runs-on: self-hosted-1
+    runs-on: self-hosted
 
     name: Hosted Runner Test
 
