@@ -23,5 +23,5 @@ jobs:
     - name: Test
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
-        sed -i.bak -E 's/^(version:.*)-SNAPSHOT$/\1/' Chart.yml
-        cat Chart.yml
+        sed -i.bak -E 's/^(version:.*)-SNAPSHOT$/\1/' Chart.yaml
+        cat Chart.yaml
