@@ -1,7 +1,15 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
+        "args": {
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
         "global": {
             "properties": {
                 "certSecretName": {
@@ -114,14 +122,6 @@
             },
             "type": "object"
         },
-        "service": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "ports": {
             "properties": {
                 "hazelcast1": {
@@ -183,5 +183,6 @@
             "type": "string"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

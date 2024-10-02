@@ -1,2 +1,4 @@
 ghcr-image-pull-secret.yaml
 **/*.tgz
+.idea/
+*.swp

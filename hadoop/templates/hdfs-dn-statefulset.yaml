@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-hdfs-dn
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
@@ -47,7 +45,7 @@ spec:
         {{- end }}
       terminationGracePeriodSeconds: 0
       initContainers:
-      - name: init-hdfs
+      - name: init-hdfs-nn
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
@@ -87,6 +85,8 @@ spec:
             port: 9864
           initialDelaySeconds: 10
           timeoutSeconds: 2
+        ports:
+          - containerPort: 9864
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
@@ -97,7 +97,7 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ include "hadoop.fullname" . }}
+          name: {{ .Values.global.hadoopConfigMap }}
   {{- if .Values.persistence.dataNode.enabled }}
   {{- with .Values.persistence.dataNode.definitions }}
   volumeClaimTemplates:

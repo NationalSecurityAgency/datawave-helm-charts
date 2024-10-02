@@ -17,7 +17,7 @@ spec:
     spec:
       hostname: ingestmanager
       initContainers:
-      - name: init-hdfs
+      - name: init-hdfs-nn
         image: busybox:1.28
         securityContext:
           runAsUser: 1000
@@ -36,7 +36,7 @@ spec:
         env:
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
-      - name: init-accumulo
+      - name: init-accumulo-manager
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
@@ -46,9 +46,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        #runAsUser: 1002
-        #runAsGroup: 1002
         fsGroup: 1002
+        runAsUser: 1002
+        runAsNonRoot: true
       containers:
       - name: ingest
         env:
@@ -83,6 +83,8 @@ spec:
           mountPath: /opt/datawave-ingest/current/config/{{ .name }}-ingest-config.xml
           subPath: {{ .name }}-ingest-config.xml
         {{ end }}
+        - name: datawave-general-ingest-config
+          mountPath: /opt/datawave-ingest/mounted-config/
         - name: genders
           mountPath: /etc/genders
           subPath: genders
@@ -92,6 +94,10 @@ spec:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
       volumes:
+      - name: datawave-general-ingest-config
+        configMap:
+          name: datawave-general-ingest-config
+          defaultMode: 0775
       {{ range .Values.config.types }}
       - name: {{ .name }}
         configMap:
@@ -116,13 +122,13 @@ spec:
           defaultMode: 0775
       - name: genders
         configMap:
-          name: {{ .Chart.Name }}-genders
+          name: "{{ .Chart.Name }}-genders"
       - name: hadoop-config
         configMap:
-          name: {{ .Values.hadoopConfigMap }}
+          name: {{ .Values.global.hadoopConfigMap }}
       - name: accumulo-config
         configMap:
-          name: {{ .Values.accumuloConfigMap }}
+          name: {{ .Values.global.accumuloConfigMap }}
       - name: cmds
         secret:
           secretName: {{ include "datawave.fullname" . }}-cmds

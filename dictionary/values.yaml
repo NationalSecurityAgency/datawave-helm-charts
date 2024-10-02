@@ -24,6 +24,9 @@ image:
   name: datawave-dictionary-service
   pullPolicy: IfNotPresent
   tag: 4.0.3
+args:
+- "--spring.output.ansi.enabled=ALWAYS"
+- "--spring.profiles.active=default,k8s,remoteauth"
 livenessProbe:
   delaySeconds: 20
   periodSeconds: 5

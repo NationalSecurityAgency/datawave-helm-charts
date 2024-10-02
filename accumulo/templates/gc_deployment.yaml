@@ -20,7 +20,7 @@ spec:
       securityContext:
         runAsUser: 1001
       initContainers:
-      - name: init-accumulo
+      - name: init-accumulo-manager
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
@@ -28,10 +28,10 @@ spec:
       volumes:
         - name: hadoop-config
           configMap:
-            name: {{ .Values.hadoopConfigMap }}
+            name: {{ .Values.global.hadoopConfigMap }}
         - name: config
           configMap:
-            name: accumulo-config
+            name: {{ .Values.global.accumuloConfigMap }}
       hostname: accumulo-gc
       containers:
       - name: accumulo-gc
@@ -44,7 +44,7 @@ spec:
           mountPath: /opt/accumulo/conf
         env:
         - name: HADOOP_CONF_DIR
-          value: /opt/hadoop/conf
+          value: /usr/local/hadoop/conf
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
         - name: ACCUMULO_CONF_DIR

@@ -15,8 +15,6 @@ appVersion: 1.0.0
 description: Deploys an Entire DataWave Stack w/ Dependencies
 icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 
-
-
 dependencies:
   - name: dwv-ingest
     repository: file://../ingest
@@ -24,9 +22,14 @@ dependencies:
   - name: dwv-hadoop
     repository: file://../hadoop
     version: 1.0.0
+    condition: charts.hadoop.enabled
+  - name: dwv-hadoop-config
+    version: 1.0.0
+    repository: file://../hadoop-config
   - name: dwv-zookeeper
     repository: file://../zookeeper
     version: 1.0.0
+    condition: charts.zookeeper.enabled
   - name: dwv-accumulo
     repository: file://../accumulo
     version: 1.0.0

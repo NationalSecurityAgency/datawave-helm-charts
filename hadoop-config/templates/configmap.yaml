@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "hadoop.fullname" . }}
+  name: {{ .Values.global.hadoopConfigMap }}
   labels:
-    app: {{ include "hadoop.name" . }}
+    app: {{ include "hadoop.appName" . }}
     chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
 data:
@@ -219,76 +219,38 @@ data:
     log4j.appender.JSA.layout=org.apache.log4j.PatternLayout
     log4j.appender.JSA.layout.ConversionPattern=%d{ISO8601} %p %c{2}: %m%n
     log4j.appender.JSA.DatePattern=.yyyy-MM-dd
-
+    {{- with .Values.config.loggingProperties }}
+    {{- range . }}
+    {{ .name }}={{ .value }}
+    {{- end }}
+    {{- end }}
   core-site.xml: |
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
+      {{- with .Values.config.coreSiteProperties }}
+      {{- range . }}
       <property>
-            <name>fs.defaultFS</name>
-            <value>hdfs://hdfs-nn:9000/</value>
-            <description>NameNode URI</description>
+          <name>{{ .name }}</name>
+          <value>{{ .value }}</value>
+          <description>{{ .description }}</description>
       </property>
-      <property>
-          <name>dfs.permissions.supergroup</name>
-          <value>hadoop</value>
-      </property>
+      {{- end }}
+      {{- end }}
     </configuration>
 
   hdfs-site.xml: |
     <?xml version="1.0"?>
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
     <configuration>
-    
-{{- if .Values.hdfs.webhdfs.enabled -}}
+      {{- with .Values.config.hdfsSiteProperties }}
+      {{- range . }}
       <property>
-          <name>dfs.webhdfs.enabled</name>
-          <value>true</value>
-      </property> 
-{{- end -}}
-
-      <property>
-        <name>dfs.datanode.use.datanode.hostname</name>
-        <value>false</value>
+          <name>{{ .name }}</name>
+          <value>{{ .value }}</value>
       </property>
-
-      <property>
-        <name>dfs.client.use.datanode.hostname</name>
-        <value>false</value>
-      </property>
-
-      <property>
-        <name>dfs.replication</name>
-          <value>3</value>
-      </property>
-
-      <property>
-        <name>dfs.datanode.data.dir</name>
-        <value>file:///usr/local/hadoop/hdfs/datanode</value>
-        <description>DataNode directory</description>
-      </property>
-
-      <property>
-        <name>dfs.namenode.name.dir</name>
-        <value>file:///usr/local/hadoop/data</value>
-        <description>NameNode directory for namespace and transaction logs storage.</description>
-      </property>
-
-      <property>
-        <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
-        <value>false</value>
-      </property>
-
-      <!-- Bind to all interfaces -->
-      <property>
-        <name>dfs.namenode.rpc-bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <property>
-        <name>dfs.namenode.servicerpc-bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <!-- /Bind to all interfaces -->
+      {{- end }}
+      {{- end }}
 
     </configuration>
 
@@ -297,22 +259,14 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
     <configuration>
+      {{- with .Values.config.mapredSiteProperties }}
+      {{- range . }}
       <property>
-        <name>mapreduce.framework.name</name>
-        <value>yarn</value>
+          <name>{{ .name }}</name>
+          <value>{{ .value }}</value>
       </property>
-      <property>
-        <name>mapreduce.map.memory.mb</name>
-        <value>4096</value>
-      </property>
-      <property>
-        <name>mapreduce.jobhistory.address</name>
-        <value>yarn-rm:10020</value>
-      </property>
-      <property>
-        <name>mapreduce.jobhistory.webapp.address</name>
-        <value>0.0.0.0:19888</value>
-      </property>
+      {{- end }}
+      {{- end }}
     </configuration>
 
   slaves: |
@@ -401,83 +355,14 @@ data:
     <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
     <configuration>
+      {{- with .Values.config.yarnSiteProperties }}
+      {{- range . }}
       <property>
-        <name>yarn.resourcemanager.hostname</name>
-        <value>yarn-rm</value>
+          <name>{{ .name }}</name>
+          <value>{{ .value }}</value>
       </property>
-
-      <!-- Bind to all interfaces -->
-      <property>
-        <name>yarn.resourcemanager.bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <property>
-        <name>yarn.nodemanager.bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <property>
-        <name>yarn.timeline-service.bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <!-- /Bind to all interfaces -->
-
-      <property>
-        <name>yarn.nodemanager.vmem-check-enabled</name>
-        <value>false</value>
-      </property>
-
-      <property>
-        <name>yarn.nodemanager.aux-services</name>
-        <value>mapreduce_shuffle</value>
-      </property>
-
-      <property>
-        <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
-        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
-      </property>
-
-      <property>
-        <name>yarn.nodemanager.resource.memory-mb</name>
-        <value>4096</value>
-      </property>
-      <property>
-        <description>List of directories to store localized files in.</description>
-        <name>yarn.nodemanager.local-dirs</name>
-        <value>/opt/hdfs/hadoop-yarn/cache/${user.name}/nm-local-dir</value>
-      </property>
-
-      <property>
-        <description>Where to store container logs.</description>
-        <name>yarn.nodemanager.log-dirs</name>
-        <value>/opt/hdfs/hadoop-yarn/containers</value>
-      </property>
-
-      <property>
-        <description>Where to aggregate logs to.</description>
-        <name>yarn.nodemanager.remote-app-log-dir</name>
-        <value>/opt/hdfs/hadoop-yarn/apps</value>
-      </property>
-
-      <property>
-        <name>yarn.resourcemanager.scheduler.class</name>
-        <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
-      </property>
-
-      <property>
-        <name>yarn.application.classpath</name>
-        <value>
-          /opt/hadoop/conf,
-          /usr/lib/hadoop/*,
-          /usr/lib/hadoop/lib/*,
-          /usr/lib/hadoop-hdfs/*,
-          /usr/lib/hadoop-hdfs/lib/*,
-          /usr/lib/hadoop-yarn/*,
-          /usr/lib/hadoop-yarn/lib/*,
-          /usr/lib/hadoop-yarn/timelineservice/*,
-          /usr/lib/hadoop-mapreduce/*,
-          /usr/lib/hadoop-mapreduce/lib/*
-        </value>
-      </property>
+      {{- end }}
+      {{- end }}
     </configuration>
 
   fair-scheduler.xml: |

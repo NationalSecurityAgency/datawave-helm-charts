@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-hdfs-nn
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
@@ -87,6 +85,8 @@ spec:
             port: 9870
           initialDelaySeconds: 10
           timeoutSeconds: 2
+        ports:
+          - containerPort: 9870
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
@@ -97,7 +97,7 @@ spec:
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ include "hadoop.fullname" . }}
+          name: {{ .Values.global.hadoopConfigMap }}
   {{- if .Values.persistence.nameNode.enabled }}
   {{- with .Values.persistence.nameNode.definitions }}
   volumeClaimTemplates:

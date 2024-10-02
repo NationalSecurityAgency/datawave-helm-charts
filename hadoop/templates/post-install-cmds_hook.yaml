@@ -13,10 +13,14 @@ metadata:
 spec:
   restartPolicy: Never
   initContainers:
-    - name: init-accumulo
+    - name: init-hdfs-nn
+      securityContext:
+        runAsUser: 1000
       image: busybox:1.28
-      command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for zookeeper; sleep 2; done"]
+      command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs-nn; sleep 2; done"]
 
+  securityContext:
+    runAsUser: 1000
   containers:
   - name: cmds
     image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -37,7 +41,7 @@ spec:
       optional: false
   - name: hadoop-config
     configMap:
-      name: {{ include "hadoop.fullname" . }}
+      name: {{ .Values.global.hadoopConfigMap }}
      
   {{- with .Values.cmds.affinity }}
   affinity:

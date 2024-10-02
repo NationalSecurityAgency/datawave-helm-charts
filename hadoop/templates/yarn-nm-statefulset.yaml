@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "hadoop.fullname" . }}-yarn-nm
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
     app: {{ include "hadoop.name" . }}
     chart: {{ include "hadoop.chart" . }}
@@ -105,10 +103,13 @@ spec:
               containerName: yarn-nm
               resource: limits.memory
               divisor: 1M
+        ports:
+          - containerPort: 8088
+          - containerPort: 8042
         volumeMounts:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
       volumes:
       - name: hadoop-config
         configMap:
-          name: {{ include "hadoop.fullname" . }}
+          name: {{ .Values.global.hadoopConfigMap }}

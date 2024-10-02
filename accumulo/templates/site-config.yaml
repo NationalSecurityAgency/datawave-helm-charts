@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: accumulo-config
+  name: {{ .Values.global.accumuloConfigMap }}
   labels:
     app: accumulo
     chart: accumulo
     release: {{ .Release.Name }}
 data:
   accumulo-client.properties: |
-    instance.name=dev
+    instance.name={{ .Values.global.accumulo.instanceName }}
     instance.zookeepers=zookeeper:2181
     auth.principal=root
     auth.token={{ .Values.config.userManagement.rootPassword }}

@@ -1,25 +1,14 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
-        "cacheService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                }
+        "args": {
+            "items": {
+                "type": "string"
             },
-            "type": "object"
-        },
-        "configurationService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
+            "type": "array"
         },
         "global": {
             "properties": {
@@ -55,6 +44,38 @@
                         "type": "string"
                     },
                     "type": "array"
+                },
+                "serviceDns": {
+                    "properties": {
+                        "cache": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "configuration": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "port": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "rabbitmq": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 },
                 "volumes": {
                     "properties": {
@@ -120,14 +141,6 @@
             },
             "type": "object"
         },
-        "service": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "ports": {
             "properties": {
                 "http": {
@@ -135,17 +148,6 @@
                 },
                 "https": {
                     "type": "integer"
-                }
-            },
-            "type": "object"
-        },
-        "profiles": {
-            "type": "string"
-        },
-        "rabbitmqService": {
-            "properties": {
-                "dnsName": {
-                    "type": "string"
                 }
             },
             "type": "object"
@@ -191,5 +193,6 @@
             "type": "string"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }

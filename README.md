@@ -4,7 +4,7 @@ Running this stack uses images in the ghcr repository which are not public. The 
 
 Through the GitHub UI, generate a PAT with at least read packages
 
-```
+```bash
 ./create-image-pull-secrets.sh <github username> <gihub PAT>
 ```
 
@@ -27,11 +27,29 @@ If you already have the prerequisites installed you can simply run `./startLocal
 
 Images are now created in [Datawave Stack Docker Images](https://github.com/nationalSecurityAgency/datawave-stack-docker-images)
 
-In order to test changes to helm charts, you can run the following script:
+If you want to use an external Hadoop and/or Zookeeper instance then set the appropriate env var(s) to true.
+```bash
+export USE_LOCAL_ZOOKEEPER=true
+export USE_LOCAL_HADOOP=true
 ```
+
+And set the path to the installation(s) appropriately for your system.
+```bash
+export ZOOKEEPER_HOME=/opt/zookeeper
+export HADOOP_HOME=/opt/hadoop
+```
+
+In order to test changes to helm charts, you can run the following script:
+```bash
 ./startLocalTest.sh
 ```
 This will package all the helm charts from the local directories, and launch the cluster.
+
+## Updating Helm schemas
+```bash
+helm plugin install https://github.com/losisin/helm-values-schema-json.git
+find * -maxdepth 0 -type d -exec sh -c "cd {}; helm schema" \;
+```
 
 ## DataWave Configuration and Deployment
 

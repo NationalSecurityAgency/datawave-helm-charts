@@ -1,6 +1,8 @@
 {
+    "$id": "https://code.nsa.org/datawave/schema",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "additionalProperties": false,
+    "additionalProperties": true,
+    "description": "Schema for DataWave Helm values",
     "properties": {
         "cmds": {
             "properties": {
@@ -120,6 +122,14 @@
             },
             "type": "object"
         },
+        "entrypointConfigMap": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "fullnameOverride": {
             "type": "string"
         },
@@ -148,6 +158,20 @@
         },
         "global": {
             "properties": {
+                "accumulo": {
+                    "properties": {
+                        "instanceName": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "accumuloConfigMap": {
+                    "type": "string"
+                },
+                "hadoopConfigMap": {
+                    "type": "string"
+                },
                 "pullSecrets": {
                     "items": {
                         "type": "string"
@@ -164,9 +188,6 @@
                 }
             },
             "type": "object"
-        },
-        "hadoopConfigMap": {
-            "type": "string"
         },
         "hdfs": {
             "properties": {
@@ -225,9 +246,6 @@
                 }
             },
             "type": "object"
-        },
-        "instanceId": {
-            "type": "string"
         },
         "labels": {
             "properties": {},
@@ -347,7 +365,49 @@
         "tabletServers": {
             "properties": {
                 "affinity": {
-                    "properties": {},
+                    "properties": {
+                        "podAntiAffinity": {
+                            "properties": {
+                                "requiredDuringSchedulingIgnoredDuringExecution": {
+                                    "items": {
+                                        "properties": {
+                                            "labelSelector": {
+                                                "properties": {
+                                                    "matchExpressions": {
+                                                        "items": {
+                                                            "properties": {
+                                                                "key": {
+                                                                    "type": "string"
+                                                                },
+                                                                "operator": {
+                                                                    "type": "string"
+                                                                },
+                                                                "values": {
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": "array"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "topologyKey": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
                     "type": "object"
                 },
                 "nodeSelector": {
@@ -376,5 +436,6 @@
             "type": "object"
         }
     },
+    "title": "Helm Values Schema",
     "type": "object"
 }
