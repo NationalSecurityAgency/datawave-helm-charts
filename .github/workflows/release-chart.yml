@@ -23,5 +23,8 @@ jobs:
     - name: Test
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
-        sed -i.bak -E 's/^(version:.*)-SNAPSHOT$/\1/' Chart.yaml
-        cat Chart.yaml
+        sed -i -E 's/^(version:.*)-SNAPSHOT$/\1/' Chart.yaml
+    - name: Get Version
+      run: |
+        cat Chart.yaml | grep version: | awk '{print "${{ env.RELEASE_CHART_NAME }}-"$NF}''
+
