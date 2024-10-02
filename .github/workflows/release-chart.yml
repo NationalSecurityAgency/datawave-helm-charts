@@ -28,5 +28,5 @@ jobs:
       run: |
         cat Chart.yaml | grep version: | awk '{print "TAG_NAME=${{ env.RELEASE_CHART_NAME }}-"$NF}' >> $GITHUB_ENV
     - name: Print Version
-      run: echo $TAB_NAME
+      run: echo $TAG_NAME
 
