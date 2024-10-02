@@ -254,9 +254,24 @@ config:
       value: true
     - name: partitioner.category.member.datawave.error_s
       value: shardedTables
-
-
-
+  - name : dateindex-ingest-config.xml
+    properties:
+      - name: date.index.table.name
+        value: datawave.dateIndex
+      - name: date.index.table.loader.priority
+        value: 30
+      - name: datawave.dateIndex.table.config.class
+        value: datawave.ingest.table.config.DateIndexTableConfigHelper
+      - name: date.index.table.locality.groups
+        value: activity:ACTIVITY,loaded:LOADED
+        description: >-
+          The list of locality groups in the form groupname:columnfamily, comma separated
+      - name: partitioner.dedicated.datawave.dateIndex
+        value: datawave.ingest.mapreduce.partition.LimitedKeyPartitioner
+      - name: date.index.num.shards
+        value: 10
+      - name: datawave.dateIndex.partition.limiter.max
+        value: 3
 
   overallFlagConfig:
     defaultCfg:
