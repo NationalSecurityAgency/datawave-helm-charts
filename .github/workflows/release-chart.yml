@@ -26,5 +26,7 @@ jobs:
         sed -i -E 's/^(version:.*)-SNAPSHOT$/\1/' Chart.yaml
     - name: Get Version
       run: |
-        cat Chart.yaml | grep version: | awk '{print "${{ env.RELEASE_CHART_NAME }}-"$NF}''
+        cat Chart.yaml | grep version: | awk '{print "TAG_NAME=${{ env.RELEASE_CHART_NAME }}-"$NF}' >> $GITHUB_ENV
+    - name: Print Version
+      run: echo $TAB_NAME
 
