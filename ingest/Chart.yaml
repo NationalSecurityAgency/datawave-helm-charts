@@ -4,7 +4,7 @@
 
 apiVersion: v2
 name: dwv-ingest
-version: 1.0.0
+version: 1.0.0-SNAPSHOT
 
 #################################
 # Basic Metadata for this Chart #

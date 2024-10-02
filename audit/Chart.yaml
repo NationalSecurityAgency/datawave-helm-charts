@@ -5,7 +5,7 @@
 apiVersion: v2
 name: dwv-audit
 type: application
-version: 1.0.0
+version: 1.0.0-SNAPSHOT
 
 #################################
 # Basic Metadata for this Chart #
@@ -17,6 +17,6 @@ icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 
 dependencies:
   - name: common-service-library
-    repository: file://../common-service-library
-    version: 0.0.1
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 0.0.2
 
