@@ -71,6 +71,7 @@ jobs:
         next=$((patch + 1))
         new_version="${major}.${minor}.${next}-SNAPSHOT"
         sed -i "s/^version:.*/version: ${new_version}/" Chart.yaml  
+        
     - name: Commit Snapshot Number
       run: |
         git config --global user.name "GitHub Actions"
