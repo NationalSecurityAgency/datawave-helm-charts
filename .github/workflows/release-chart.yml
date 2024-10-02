@@ -12,6 +12,7 @@ on:
 env:
   RELEASE_CHART_NAME: ${{ github.event.inputs.RELEASE_CHART_NAME || 'common-service-library' }}
 
+
 jobs:
   release-chart:
     runs-on: ubuntu-latest
@@ -30,4 +31,51 @@ jobs:
         cat Chart.yaml | grep version: | awk '{print "TAG_NAME=${{ env.RELEASE_CHART_NAME }}-"$NF}' >> $GITHUB_ENV
     - name: Print Version
       run: echo $TAG_NAME
+    - name: Commit Non Snapshot and Create Tag
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "datawave@github.com"
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
+        git tag $TAG_NAME
+        git push --tags
+    - name: Set environment variables
+      id: set-variables
+      run: |
+          echo "REPOSITORY=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$(yq -r .version ${{ env.RELEASE_CHART_NAME}}/Chart.yaml)" >> "$GITHUB_OUTPUT"          
+
+    - name: Env variable output
+      id: test-variables
+      run: |
+          echo ${{ steps.set-variables.outputs.REPOSITORY }}
+          echo ${{ steps.set-variables.outputs.VERSION }}          
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
+    - name: Package and push helm chart
+      run: |
+        cd ${{ env.RELEASE_CHART_NAME}}
+        helm package . --version ${{ steps.set-variables.outputs.VERSION }}
+        helm push ./${{ env.RELEASE_CHART_NAME}}-*.tgz oci://${{ steps.set-variables.outputs.REPOSITORY }}/charts          
+        
+    - name: Update Version Number
+      run: |
+        cd ${{ env.RELEASE_CHART_NAME }}
+        TAG_NAME=prefix-1.0.0
+        version="${TAG_NAME#*-}"
+        IFS='.' read -r major minor patch <<< "${version}"
+        next=$((patch + 1))
+        new_version="${major}.${minor}.${next}-SNAPSHOT"
+        sed -i "s/^version:.*/version: ${new_version}/" Chart.yaml  
+    - name: Commit Snapshot Number
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "datawave@github.com"
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set snapshot version."
+        git push
 
