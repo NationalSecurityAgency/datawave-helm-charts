@@ -18,6 +18,8 @@ jobs:
 
     permissions: write-all
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
     - name: Test
       run: |
         cd $GITHUB_WORKSPACE/${{ env.RELEASE_CHART_NAME }}
