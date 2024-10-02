@@ -8,6 +8,7 @@ Through the GitHub UI, generate a PAT with at least read packages
 ./create-image-pull-secrets.sh <github username> <gihub PAT>
 ```
 
+
 ### DataWave Stack Helm Deployment ###
 
 This repository holds Helm charts and Docker files used to deploy Datawave locally for testing. 
@@ -21,6 +22,9 @@ Prerequisites:
 
 
 If you already have the prerequisites installed you can simply run `./startLocalTest.sh`
+
+
+
 
 
 ## Testing of images and helm charts ##
