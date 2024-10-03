@@ -59,6 +59,7 @@ jobs:
     - name: Package and push helm chart
       run: |
         cd ${{ env.RELEASE_CHART_NAME}}
+        helm dependency update
         helm package . --version ${{ steps.set-variables.outputs.VERSION }}
         helm push ./${{ env.RELEASE_CHART_NAME}}-*.tgz oci://${{ steps.set-variables.outputs.REPOSITORY }}/charts          
         
