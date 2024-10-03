@@ -1,21 +1,21 @@
 dependencies:
 - name: dwv-ingest
   repository: file://../ingest
-  version: 1.0.0
+  version: 1.0.0-SNAPSHOT
 - name: dwv-hadoop
   repository: file://../hadoop
-  version: 1.0.0
+  version: 1.0.0-SNAPSHOT
 - name: dwv-hadoop-config
   repository: file://../hadoop-config
-  version: 1.0.0
+  version: 1.0.0-SNAPSHOT
 - name: dwv-zookeeper
   repository: file://../zookeeper
-  version: 1.0.0
+  version: 1.0.0-SNAPSHOT
 - name: dwv-accumulo
   repository: file://../accumulo
-  version: 1.0.0
+  version: 1.0.0-SNAPSHOT
 - name: datawave-monolith-umbrella
   repository: file://../datawave-monolith-umbrella
-  version: 1.0.0
-digest: sha256:0cae5a75d9af9f21003dfdaf1d26ed7fb1ffa17aed3e8b26984015220b870c67
-generated: "2024-09-20T12:09:35.864774436-04:00"
+  version: 1.0.0-SNAPSHOT
+digest: sha256:d306ab10e69f7de2993f250d557685e533876b2c8fe04b32f74ed7bf6bdab331
+generated: "2024-10-03T10:38:01.925615317Z"

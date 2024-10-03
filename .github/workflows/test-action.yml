@@ -29,16 +29,21 @@ jobs:
         with:
           version: '3.12.0' # default is latest (stable)
         id: install
-      - name: Create ../results directory for SARIF report files
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Create results directory for SARIF report files
         shell: bash
-        run: mkdir -p ../results
+        run: mkdir -p results
       - name: Update helm dependencies
         shell: bash
         run: |
-          cd common-service-library
-          helm package .
-          cd ../${{ matrix.chart }}
+          cd ${{ matrix.chart }}
           helm dependency update
+          cd ..
 
       - name: Scan yaml files with kube-linter
         uses: stackrox/kube-linter-action@v1.0.5
@@ -52,7 +57,7 @@ jobs:
           # The following two settings make kube-linter produce scan analysis in SARIF format which would then be
           # made available in GitHub UI via upload-sarif action below.
           format: sarif
-          output-file: ../results/kube-linter-${{ matrix.chart }}.sarif
+          output-file: results/kube-linter-${{ matrix.chart }}.sarif
         # The following line prevents aborting the workflow immediately in case your files fail kube-linter checks.
         # This allows the following upload-sarif action to still upload the results to your GitHub repo.
         continue-on-error: true
@@ -60,7 +65,7 @@ jobs:
       - name: Upload SARIF report files to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ../results/kube-linter-${{ matrix.chart }}.sarif
+          sarif_file: results/kube-linter-${{ matrix.chart }}.sarif
 
       # Ensure the workflow eventually fails if files did not pass kube-linter checks.
       - name: Verify kube-linter-action succeeded
