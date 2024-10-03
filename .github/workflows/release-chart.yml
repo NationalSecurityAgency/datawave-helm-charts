@@ -66,7 +66,7 @@ jobs:
     - name: Update Version Number
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
-        version="${TAG_NAME#*-}"
+        version="${TAG_NAME##*-}"
         IFS='.' read -r major minor patch <<< "${version}"
         next=$((patch + 1))
         new_version="${major}.${minor}.${next}-SNAPSHOT"
