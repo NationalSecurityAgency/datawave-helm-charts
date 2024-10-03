@@ -3,7 +3,6 @@
 USERNAME=$1
 PAT=$2
 
-
 BASE64ENCODEDTOKEN=`echo -n "${USERNAME}:${PAT}" | base64`
 
 

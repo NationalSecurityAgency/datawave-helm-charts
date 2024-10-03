@@ -29,6 +29,31 @@ function start_minikube() {
   minikube kubectl -- create secret generic certificates-secret --from-file=keystore.p12="${DATAWAVE_STACK}"/certificates/keystore.p12 --from-file=truststore.jks="${DATAWAVE_STACK}"/certificates/truststore.jks
 }
 
+function docker_login() {
+  if test -f "${BASEDIR}"/ghcr-image-pull-secret.yaml; then
+    # File path
+    FILE_PATH="./ghcr-image-pull-secret.yaml"
+
+    # Extract the base64-encoded .dockerconfigjson value
+    ENCODED_JSON=$(grep '.dockerconfigjson:' $FILE_PATH | awk '{print $2}')
+
+    # Decode the JSON value
+    DECODED_JSON=$(echo $ENCODED_JSON | base64 --decode)
+
+    # Extract the base64-encoded auth value for ghcr.io
+    ENCODED_AUTH=$(echo $DECODED_JSON | jq -r '.auths["ghcr.io"].auth')
+
+    # Decode the auth value to get username:password
+    AUTH=$(echo $ENCODED_AUTH | base64 --decode)
+
+    # Split the username and password
+    USERNAME=$(echo $AUTH | cut -d ':' -f 1)
+    PASSWORD=$(echo $AUTH | cut -d ':' -f 2)
+  
+    echo $PASSWORD | docker login ghcr.io --username $USERNAME --password-stdin
+  fi
+}
+
 function initialize_hosts_file() {
   sudo sed -i "/^$/d" /etc/hosts
   sudo sed -i "/.*datawave\.org.*/d" /etc/hosts
@@ -109,7 +134,8 @@ function helm_install() {
   helm install dwv "${DATAWAVE_STACK}"/datawave-system-*.tgz -f "${DATAWAVE_STACK}"/${VALUES_FILE} ${EXTRA_HELM_ARGS}
 }
 
-
+echo "Login to Helm Charts repo using docker"
+docker_login
 echo "Package helm charts"
 helm_package
 echo "Purge and restart Minikube"

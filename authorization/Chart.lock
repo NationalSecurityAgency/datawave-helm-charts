@@ -1,6 +1,6 @@
 dependencies:
 - name: common-service-library
-  repository: file://../common-service-library
-  version: 0.0.1
-digest: sha256:601f067953d6fbf6599bae6fb5b33e17552a16ac7bb386e065d2a2d61eec74e8
-generated: "2024-09-17T16:28:28.652068325Z"
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 0.0.2
+digest: sha256:9f6737e1bdb7c4772bf295ccb128a1d540237dd1b7770e0edbd185d1b17a1a31
+generated: "2024-10-03T10:32:00.129593266Z"
