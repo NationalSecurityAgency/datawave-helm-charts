@@ -58,13 +58,15 @@ find * -maxdepth 0 -type d -exec sh -c "cd {}; helm schema" \;
 ## Troubleshooting Datawave
 
 ### Authorization
-The first thing you should check is that you are using both the cert and key files we provided. The deployment is configured to trust our self signed certs so you should be using those. The certs can be found in nexus in the Frostbite-Raw repo at `datawave-certs/test-users`. You will need both the cert and key to use python or just the p12 to use browser endpoints. If a user has them listed under madcert, use those as the other versions are not correctly configured. If a user does not have madcert they are the correctly configured ones.
+The first thing to check is that certificates trusted by the Datawave stack are being used. This may require adding public certificates to the truststore Datawave utilizes or configuring Datawave with a new truststore that contains the correct certificates.
 
-Python's request library (at least the version we have) does not work with non-pem certificate formats. If you're using the certs we provided you should be fine. However, if you are modifying it to use your own certs, you have been warned, convert them to pem or don't use python. Hitting a datawave endpoint from a browser will allow selection of trusted certificates loaded into the cert store.
+A Python library is available to provide easy CLI interactions with Datawave and can be found at the [Datawave CLI](https://github.com/AFMC-MAJCOM/datawave-cli). It utilizes Python's request library on the backend.
 
-If you can authorize but not getting what you'd expect you can try hitting the `whoami` endpoint either in the browser or by using `datawave authorization` from the Datawave CLI python library we have written. This will tell you what auths the user is getting as well as the roles they have for datawave. Datawave users need to have AuthorizedUser at the minimum to be able to make queries.
+Python's request library (at least the version used in the Datawave CLI) does not work with non-pem certificate formats. If modifications are being made to use custom certificates, ensure they are converted to pem format, or avoid using Python. Accessing a Datawave endpoint from a browser allows selection of trusted certificates loaded into the cert store.
 
-Datawave may cache users and this has caused problems for us before. So if you have updated a user and are not seeing the updates you may need to clear the cache. This can be done from an admin user with the evict endpoints of the authorization end point. `dwv-authorization.***/authorization/v2/admin/evictAll` or `/evictUser`.
+If authorization is successful but the expected results are not being returned, try hitting the `whoami` endpoint either in a browser or by using `datawave authorization` from the Datawave CLI Python library. This will indicate what authorizations and roles the user has in Datawave. Datawave users must have AuthorizedUser at a minimum to make queries.
+
+Datawave may cache users, so if updates to a user are not reflected, the cache may need to be cleared. This can be done by an admin user with the evict endpoints of the authorization endpoint: `dwv-authorization.***/authorization/v2/admin/evictAll` or `/evictUser`.
 
 #### Logs
 **Pod:** dwv-web-authorization-*
@@ -72,50 +74,53 @@ Datawave may cache users and this has caused problems for us before. So if you h
 **Log:** ~/logs/authorization-service.log
 
 ### Ingest
-In our experience the biggest issue we encountered with ingesting new data types was in formatting the values.yaml of the new datatype or in the json being uploaded. Datawave's documentation that we linked above is really good at outlining what everything needs to be. Just double check everything is set up correctly and that the json file you're ingesting is formatted correctly with all required fields (ie the indexed ones).
+The biggest issues with ingesting new data types are often related to formatting the `values.yaml` of the new datatype or the JSON being uploaded. Datawave's documentation provides a detailed outline of what everything needs to be. Ensure everything is set up correctly and that the JSON file being ingested is formatted properly with all required fields (i.e., the indexed ones).
 
-Another thing to note is that we were not able to get dashes to work in the datatype name. As far as we can tell there is no reason that shouldn't work but it did not.
+It should also be noted that dashes in the datatype name were not functional. There does not appear to be a clear reason for this, but it did not work.
 
-You can watch your ingest job by checking the yarn status of the ingest job on the hadoop pod. There are three ways you can view this.
-1) You can use `datawave ingest`. If you do not pass a file to ingest, it will instead display the yarn job statuses.
-1) It can be done manually by executing `yarn node -list` in the pod `*-hadoop-yarn-rm-0`.
-1) Or a web GUI can be accessed by port forwarding the `*-hadoop-yarn-rm-0` pod's 8088 port.
+The ingest job status can be monitored by checking the YARN status on the Hadoop pod. There are three ways to do this:
+1) Use `datawave ingest`. If no file is passed for ingest, it will display the YARN job statuses.
+1) Execute `yarn node -list` manually in the pod `*-hadoop-yarn-rm-0`.
+1) Access the web GUI by port-forwarding the `*-hadoop-yarn-rm-0` pod's 8088 port.
 
 #### Logs
-**pod:** [helm release name]-dwv-ingest-ingest-*
+**Pod:** [helm release name]-dwv-ingest-ingest-*
 
 **Log:**
-There are several log files in here. We only use the live ingest service, so only those logs are of interest.
-* `flag_maker_flag-maker-live.log` can be useful to see why an ingest isn't firing off if it is not being flagged
-* `live-ingest.log` this log updates on a timer and will tell you when something new is detected but it is constantly being updated so might not be very useful in most cases
-* There are also file specific logs based on the file ingested. This is where you will find what errors were raised and the result of the ingest job. If you need to dive into the log level this is probably where you should start looking.
+Several log files are present. Only the live ingest service logs are relevant.
+* `flag_maker_flag-maker-live.log` can help identify why an ingest isn't starting if it's not being flagged.
+* `live-ingest.log` updates on a timer and indicates when new data is detected but may not be useful in most cases due to constant updates.
+* File-specific logs for ingested files contain errors and the results of the ingest job. For log-level details, start here.
 
 ### Query
-The following is a list of common errors and their usual cause
-* ERROR: The query contained fields which do not exist in the data dictionary for any specified datatype
-  * If you are getting this immediately after redeploying and uploading some data you may need to refresh the cache. This can be accomplished with the `datawave accumulo` command.
-    * You may have to invoke this twice to get it to refresh in a timely manner. We are not sure why.
-    * It should further be noted that once this cache refresh has been completed it should not need to be done again until a new datatype is uploaded or the existing datatype structure is changed.
-  * Otherwise the following two issues are usually the cause.
-    1) You're trying to search on a column that does not exist. Check that you're spelling it correctly. It should be noted that capitaliation does not matter as datawave normalizes it anyway.
-    1) You forgot to wrap the value you're searching on in quotes. For example `GENRES == IntegrationTest` would return this error since IntegrationTest is not quoted.
-* ERROR: User requested authorizations that they don't have
-  * This error does a pretty good job of explaining what is missing.
-  * You can use `datawave authorization` to check which auths that the user you're running the query with has. From there you should be able to resolve this.
-* ERROR: Full table scan required but not enabled
-  * You are trying to query on a field that is not indexed. When creating a new datatype you have to specify which fields are to be queriable. If you try to search one of the fields that has not been set up as queriable then datawave will return this error.
-  * This error also occurs if you have messed up the JEXL format. Here are two examples that we have observed this error occuring
-    1) `GENRES == 'IntegrationTest' & LANGUAGE == 'English'`, the problem being that there is a single & rather than &&.
-    1) `GENRES = 'IntegrationTest'`, in this case we have a single = instead of ==.
-* If you are not getting results when you know there should be some.
-  1) Check the ingest job completed. These can be checked by calling `datawave ingest` without passing it a file.
-  1) You may need to refresh the cache. Use `datawave accumulo` to request a refresh and wait a moment.
-  1) Double check the authorizations requested match the visibility uploaded.
-  1) If none of those work, check the Query.log at the location listed below. Be warned, the logs are very dense. It might help to use grep with -B and -A to show lines before and after the match.
+The following is a list of common errors and their usual causes:
+* **ERROR: The query contained fields which do not exist in the data dictionary for any specified datatype**
+  * After redeploying and uploading data, a cache refresh might be needed. Use the `datawave accumulo` command to do this.
+    * It may need to be invoked twice for a timely refresh. The reason for this is unclear.
+    * Once completed, the cache should not need refreshing again unless a new datatype is uploaded or an existing datatype structure is changed.
+  * Other common causes include:
+    1) Searching for a column that does not exist. Verify the spelling. Datawave normalizes it, so capitalization is not important.
+    1) Forgetting to wrap the value in quotes. For example, `GENRES == IntegrationTest` would return this error since IntegrationTest is not quoted.
+
+* **ERROR: User requested authorizations that they don't have**
+  * This error indicates what authorizations are missing.
+  * Use `datawave authorization` to check the authorizations the user has, then resolve the issue from there.
+
+* **ERROR: Full table scan required but not enabled**
+  * This occurs when querying a field that is not indexed. When creating a new datatype, specify which fields should be queriable. Attempting to search a field that is not set up as queriable triggers this error.
+  * It can also result from incorrect JEXL formatting. Here are two examples:
+    1) `GENRES == 'IntegrationTest' & LANGUAGE == 'English'` — the issue is using a single `&` instead of `&&`.
+    1) `GENRES = 'IntegrationTest'` — in this case, a single `=` is used instead of `==`.
+
+* **If no results are returned when some are expected:**
+  1) Confirm the ingest job completed. Check by calling `datawave ingest` without passing a file.
+  1) The cache may need refreshing. Use `datawave accumulo` to request a refresh and wait a moment.
+  1) Double-check that the requested authorizations match the visibility uploaded.
+  1) If none of these resolve the issue, check the `Query.log` at the location listed below. The logs are dense, so using `grep` with `-B` and `-A` to show lines before and after the match might help.
 
 #### Logs
-**pod:** dwv-web-datawave
+**Pod:** dwv-web-datawave
 
 **Log:** *$WILDFLY_HOME/standalone/log/*
-  * Query.log - logs the query and the steps preformed for it
-  * Security.log - logs any security requests made through the Datawave app
+  * `Query.log` - logs the query and the steps performed for it.
+  * `Security.log` - logs any security requests made through the Datawave app.
