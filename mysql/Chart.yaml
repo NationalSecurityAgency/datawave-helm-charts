@@ -5,7 +5,7 @@
 apiVersion: v2
 name: dwv-mysql
 type: application
-version: 1.0.0-SNAPSHOT
+version: 1.0.0
 
 #################################
 # Basic Metadata for this Chart #
