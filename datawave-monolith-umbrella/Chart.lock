@@ -1,24 +1,24 @@
 dependencies:
 - name: dwv-audit
-  repository: file://../audit
-  version: 1.0.0-SNAPSHOT
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
 - name: dwv-configuration
-  repository: file://../configuration
-  version: 1.0.0-SNAPSHOT
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
 - name: dwv-cache
-  repository: file://../cache
-  version: 1.0.0-SNAPSHOT
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
 - name: dwv-dictionary
-  repository: file://../dictionary
-  version: 1.0.0-SNAPSHOT
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
 - name: dwv-rabbitmq
-  repository: file://../rabbitmq
-  version: 1.0.0-SNAPSHOT
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
 - name: dwv-authorization
-  repository: file://../authorization
-  version: 1.0.0-SNAPSHOT
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
 - name: dwv-web
-  repository: file://../datawave-monolith
-  version: 1.0.0-SNAPSHOT
-digest: sha256:780d0c4e0b41104773262d6b89a365ef1a1fd225c0d6fc05504d2b51353b83fe
-generated: "2024-10-03T10:37:07.886390653Z"
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
+digest: sha256:10393e972dc61932b23c1a11defdf861af88a3b95d25c18858a45f8fe28e50b7
+generated: "2024-10-04T11:05:55.698542945Z"
