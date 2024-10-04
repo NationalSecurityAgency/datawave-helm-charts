@@ -1,0 +1,32 @@
+#######################################
+# Default Values for Kafka Deployment #
+#######################################
+image:
+  name: bitnami/kafka
+  pullPolicy: IfNotPresent
+  tag: 3.2.3
+
+
+meta:
+  name: kafka
+service:
+  name: kafka
+
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+  
+#######################################
+# Default Values for Executor Service #
+#######################################
+
+ports:
+  client: 9092
+  controller: 9093
+  external: 9094
+
+tolerations: []
+  

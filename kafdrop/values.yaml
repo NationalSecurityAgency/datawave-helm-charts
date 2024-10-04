@@ -1,0 +1,42 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
+
+#######################################
+# Default Values for Audit Deployment #
+#######################################
+image:
+  name: obsidiandynamics/kafdrop
+  pullPolicy: IfNotPresent
+  tag: latest
+args: []
+
+meta:
+  name: kafdrop
+service:
+  name: kafdrop
+
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+  
+#######################################
+# Default Values for Executor Service #
+#######################################
+
+ports:
+  kafdrop: 9000

@@ -1,0 +1,18 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
+apiVersion: v2
+name: dwv-executor
+type: application
+version: 1.0.0-SNAPSHOT
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: latest
+description: Deploys a Kafdrop instance
+icon: https://code.nsa.gov/datawave/images/datawave-logo.png
+
+
