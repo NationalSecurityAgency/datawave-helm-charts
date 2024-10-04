@@ -1,0 +1,46 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: Service
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Values.service.name }}"
+  labels:
+    application: "{{ .Values.meta.name }}"
+
+##################################
+# Complete Service Specification #
+##################################
+
+spec:
+
+  ###############################
+  # Pod Selection Configuration #
+  ###############################
+
+  selector:
+    application: "{{ .Values.meta.name }}"
+
+  ##############################
+  # Service Port Configuration #
+  ##############################
+
+  ports:
+
+    - name: kafka-controller
+      port: {{ .Values.ports.controller }}
+      targetPort: 9093
+    
+    - name: kafka-client
+      port: {{ .Values.ports.client }}
+      targetPort: 9092
+    
+    - name: kafka-external
+      port: {{ .Values.ports.external }}
+      targetPort: 9094
