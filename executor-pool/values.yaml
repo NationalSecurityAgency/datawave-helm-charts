@@ -18,7 +18,6 @@ global:
       port: 8888
     authorization:
       name: authorization
-      port: 8080
     cache:
       name: cache
       port: 8080
@@ -28,34 +27,30 @@ global:
 # Default Values for Audit Deployment #
 #######################################
 image:
-  name: datawave-modification-service
+  name: datawave-query-executor-service
   pullPolicy: IfNotPresent
-<<<<<<< HEAD
-  tag: latest
-=======
-  tag: 1.0.2
->>>>>>> 9cd6ade (Most ms added. Saving work for weekend. Still need query and query metrics)
+  tag: 1.0.9
 args:
 - "--spring.output.ansi.enabled=ALWAYS"
-- "--spring.profiles.active=default,k8s,remoteauth,query"
+- "--spring.profiles.active= default,k8s,remoteauth,querymessaging,metricssource,federation,query,pool1"
 livenessProbe:
   delaySeconds: 20
   periodSeconds: 5
   failureThreshold: 60
   port: 8080
   scheme: HTTP
-  uri: modification/mgmt/health
+  uri: executor/mgmt/health
 meta:
-  name: modification
+  name: executor
 service:
-  name: modification
+  name: executor
 readinessProbe:
   delaySeconds: 20
   periodSeconds: 5
   failureThreshold: 60
   port: 8080
   scheme: HTTP
-  uri: modification/mgmt/health
+  uri: executor/mgmt/health
 replication:
   maxSurge: 2
   maxUnavailable: 1
