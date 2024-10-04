@@ -1,0 +1,22 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
+apiVersion: v2
+name: dwv-modification
+type: application
+version: 1.0.0-SNAPSHOT
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: 1.0.3
+description: Deploys a datawave modification service
+icon: https://code.nsa.gov/datawave/images/datawave-logo.png
+
+dependencies:
+  - name: common-service-library
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 0.0.2
+

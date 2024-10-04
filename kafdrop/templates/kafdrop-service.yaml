@@ -1,0 +1,40 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: Service
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Values.service.name }}"
+  labels:
+    application: "{{ .Values.service.name }}"
+
+##################################
+# Complete Service Specification #
+##################################
+
+spec:
+
+  ###############################
+  # Pod Selection Configuration #
+  ###############################
+
+  selector:
+    application: "{{ .Values.service.name }}"
+
+  ##############################
+  # Service Port Configuration #
+  ##############################
+
+  ports:
+
+    - name: kafdrop
+      port: {{ .Values.ports.kafdrop }}
+      targetPort: 9000
+    
+    

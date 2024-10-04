@@ -1,0 +1,67 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    authorization:
+      name: authorization
+    cache:
+      name: cache
+      port: 8080
+
+
+#######################################
+# Default Values for Audit Deployment #
+#######################################
+image:
+  name: datawave-modification-service
+  pullPolicy: IfNotPresent
+  tag: 1.0.2
+args:
+- "--spring.output.ansi.enabled=ALWAYS"
+- "--spring.profiles.active=default,k8s,remoteauth,query"
+livenessProbe:
+  delaySeconds: 20
+  periodSeconds: 5
+  failureThreshold: 60
+  port: 8080
+  scheme: HTTP
+  uri: modification/mgmt/health
+meta:
+  name: modification
+service:
+  name: modification
+readinessProbe:
+  delaySeconds: 20
+  periodSeconds: 5
+  failureThreshold: 60
+  port: 8080
+  scheme: HTTP
+  uri: modification/mgmt/health
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+  
+#######################################
+# Default Values for Executor Service #
+#######################################
+
+ports:
+  http: 8080
+  https: 8443
