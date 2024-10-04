@@ -17,22 +17,22 @@ icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 
 dependencies:
   - name: dwv-ingest
-    repository: file://../ingest
-    version: 1.0.0-SNAPSHOT
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0
   - name: dwv-hadoop
-    repository: file://../hadoop
-    version: 1.0.0-SNAPSHOT
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0
     condition: charts.hadoop.enabled
   - name: dwv-hadoop-config
-    version: 1.0.0-SNAPSHOT
-    repository: file://../hadoop-config
+    version: 1.0.0
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
   - name: dwv-zookeeper
-    repository: file://../zookeeper
-    version: 1.0.0-SNAPSHOT
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0
     condition: charts.zookeeper.enabled
   - name: dwv-accumulo
-    repository: file://../accumulo
-    version: 1.0.0-SNAPSHOT
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0
   - name: datawave-monolith-umbrella
     repository: file://../datawave-monolith-umbrella
     version: 1.0.0-SNAPSHOT
