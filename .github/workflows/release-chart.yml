@@ -59,7 +59,7 @@ jobs:
     - name: Package and push helm chart
       run: |
         cd ${{ env.RELEASE_CHART_NAME}}
-        export CHART_NAME= $(cat Chart.yaml | grep "^name:" | awk '{print $NF}' )
+        export CHART_NAME=$(cat Chart.yaml | grep "^name:" | awk '{print $NF}' )
         helm package . --version ${{ steps.set-variables.outputs.VERSION }} --dependency-update
         helm push ${CHART_NAME}-${{ steps.set-variables.outputs.VERSION }}.tgz oci://${{ steps.set-variables.outputs.REPOSITORY }}/charts          
         
