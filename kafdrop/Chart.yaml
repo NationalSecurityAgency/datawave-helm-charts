@@ -3,7 +3,7 @@
 #################################
 
 apiVersion: v2
-name: dwv-executor
+name: dwv-kafdrop
 type: application
 version: 1.0.0-SNAPSHOT
 
