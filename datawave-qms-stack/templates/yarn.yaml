@@ -1,0 +1,19 @@
+{{- if not .Values.charts.hadoop.enabled }}
+{{- with .Values.external.yarn.hosts }}
+{{- range . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ . }}
+  labels:
+    app: yarn
+    chart: {{ include "datawave.stack.chart" $ }}
+    release: {{ $.Release.Name }}
+    app.kubernetes.io/component: {{ . }}
+spec:
+  externalName: {{ . }}
+  type: ExternalName
+{{- end }}
+{{- end }}
+{{- end }}
