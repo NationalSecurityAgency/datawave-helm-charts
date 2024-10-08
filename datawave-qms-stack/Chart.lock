@@ -1,0 +1,21 @@
+dependencies:
+- name: dwv-ingest
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
+- name: dwv-hadoop
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
+- name: dwv-hadoop-config
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
+- name: dwv-zookeeper
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
+- name: dwv-accumulo
+  repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  version: 1.0.0
+- name: datawave-qms-umbrella
+  repository: file://../datawave-qms-umbrella
+  version: 1.0.0-SNAPSHOT
+digest: sha256:425b773c0ee3abf3d311df05c0213f9ba5af887792be8f8edaaf628c4ac3207a
+generated: "2024-10-08T11:06:21.957957643Z"

@@ -1,0 +1,8 @@
+dwv-accumulo:
+  image:
+    tag: 2.1.3
+  initContainer:
+    tag: 3.3.6
+dwv-hadoop:
+  image:
+    tag: 3.3.6
