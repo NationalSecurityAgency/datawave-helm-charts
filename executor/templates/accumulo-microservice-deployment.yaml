@@ -1,5 +1,5 @@
-{{- include "common-service-library.deployment" (list . "executorService.deployment") -}}
-{{- define "executorService.deployment" -}}
+{{- include "common-service-library.deployment" (list . "accumuloMicroservice.deployment") -}}
+{{- define "accumuloMicroservice.deployment" -}}
 #overrides go here
 spec:
   template:

@@ -1,4 +1,4 @@
-global:
+git stglobal:
   dockerRegistry:
     url: ghcr.io/nationalsecurityagency
   volumes:

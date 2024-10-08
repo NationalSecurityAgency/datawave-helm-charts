@@ -28,9 +28,15 @@ global:
 # Default Values for Audit Deployment #
 #######################################
 image:
+<<<<<<< HEAD
   name: datawave-query-service
   pullPolicy: IfNotPresent
   tag: 1.0.11
+=======
+  name: datawave-mapreduce-query-service
+  pullPolicy: IfNotPresent
+  tag: 1.0.10
+>>>>>>> 356f4da (QMS next step complete)
 args:
 - "--spring.output.ansi.enabled=ALWAYS"
 - "--spring.profiles.active=default,k8s,remoteauth,querymessaging,metricssource,query,mrquery,cachedresults,federation"
