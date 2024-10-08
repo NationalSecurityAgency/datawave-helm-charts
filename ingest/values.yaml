@@ -99,9 +99,9 @@ config:
     - name: protobufedge.process.default.failurepolicy
       value: FAIL_JOB
     - name: protobufedge.valid.activitytime.future.delta
-      value: 86400000
+      value: "86400000"
     - name: protobufedge.valid.activitytime.past.delta
-      value: 315360000000
+      value: "315360000000"
   - name: shard-ingest-config.xml
     properties:
     - name: num.shards

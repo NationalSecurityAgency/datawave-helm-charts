@@ -66,6 +66,8 @@ spec:
         volumeMounts:
         - name: accumulo-config
           mountPath: /opt/accumulo/conf
+        - name: ephemeral-pvc-claim
+          mountPath: /opt/datawave-ingest/current/config
         - name: flag-maker-live
           mountPath: /opt/datawave-ingest/current/config/flag-maker-live.xml
           subPath: flag-maker-live.xml
@@ -94,6 +96,9 @@ spec:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
       volumes:
+      - name: ephemeral-pvc-claim
+        persistentVolumeClaim:
+          claimName: ephemeral-pvc
       - name: datawave-general-ingest-config
         configMap:
           name: datawave-general-ingest-config
