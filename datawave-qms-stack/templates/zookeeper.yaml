@@ -1,0 +1,24 @@
+{{- if not .Values.charts.zookeeper.enabled }}
+{{- with .Values.external.zookeeper.hosts }}
+{{- range . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ . }}
+  labels:
+    app: zookeeper
+    chart: {{ include "datawave.stack.chart" $ }}
+    release: {{ $.Release.Name }}
+    app.kubernetes.io/component: zookeeper
+spec:
+  externalName: {{ . }}
+  ports:
+    - name: zk
+      port: 2181
+      protocol: TCP
+      targetPort: 2181
+  type: ExternalName
+{{- end }}
+{{- end }}
+{{- end }}

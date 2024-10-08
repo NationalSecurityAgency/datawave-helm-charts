@@ -1,0 +1,4 @@
+{{- include "common-service-library.service" (list . "query.service") -}}
+{{- define "query.service" -}}
+#overrides go here
+{{- end -}}
