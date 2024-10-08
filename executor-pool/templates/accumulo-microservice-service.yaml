@@ -1,4 +1,0 @@
-{{- include "common-service-library.service" (list . "accumuloMicroservice.service") -}}
-{{- define "accumuloMicroservice.service" -}}
-#overrides go here
-{{- end -}}
