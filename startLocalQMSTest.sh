@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-## Support for this script is discontinued. See datawave-driver.sh
-
-
-
 VALUES_FILE=${1:-values.yaml}
 USE_LOCAL_ZOOKEEPER=${USE_LOCAL_ZOOKEEPER:-false}
 USE_LOCAL_HADOOP=${USE_LOCAL_HADOOP:-false}
@@ -13,7 +9,6 @@ BASEDIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit; pwd -P )"
 DATAWAVE_STACK="${BASEDIR}/datawave-stack"
 
 . ./shared-functions.sh
-
 function helm_install() {
   if ${USE_LOCAL_ZOOKEEPER}; then
     start_zk
@@ -27,7 +22,7 @@ function helm_install() {
   fi
 
   # shellcheck disable=SC2086
-  helm install dwv "${DATAWAVE_STACK}"/datawave-system-*.tgz -f "${DATAWAVE_STACK}"/${VALUES_FILE} ${EXTRA_HELM_ARGS}
+  helm install dwv "${DATAWAVE_STACK}"/datawave-qms*.tgz -f "${DATAWAVE_STACK}"/${VALUES_FILE} ${EXTRA_HELM_ARGS}
 }
 
 
@@ -36,22 +31,22 @@ function helm_package() {
   cd "${BASEDIR}"/common-service-library || exit
   helm package .
   cd "${BASEDIR}" || exit
-  for chart in audit authorization cache configuration dictionary datawave-monolith hadoop ingest mysql rabbitmq zookeeper; do
+  for chart in executor query query-metrics kafka kafdrop modification mr-query audit authorization cache configuration dictionary hadoop ingest mysql rabbitmq zookeeper; do
     cd "${BASEDIR}"/$chart || exit
     helm dependency update
     helm package .
   done
-  cd "${BASEDIR}"/datawave-monolith-umbrella || exit
+  cd "${BASEDIR}"/datawave-qms-umbrella || exit
   helm dependency update
   helm package .
-  cd "${BASEDIR}"/datawave-stack || exit
+  cd "${BASEDIR}"/datawave-qms-stack || exit
   helm dependency update
   helm package .
   cd "${BASEDIR}" || exit
 }
 
-echo "Login to Docker and Helm Charts GHCR repo"
-ghcr_login
+echo "Login to Helm Charts repo using docker"
+docker_login
 echo "Package helm charts"
 helm_package
 echo "Purge and restart Minikube"
