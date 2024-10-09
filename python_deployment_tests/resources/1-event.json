@@ -1,0 +1,555 @@
+{
+    "_embedded": {
+      "cast": [
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37218"
+              }
+            },
+            "id": 37218,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995297.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995297.jpg"
+            },
+            "name": "Selina Meyer",
+            "url": "https://www.tvmaze.com/characters/37218/veep-selina-meyer"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/27606"
+              }
+            },
+            "birthday": "1961-01-13",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Female",
+            "id": 27606,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/3/8670.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/3/8670.jpg"
+            },
+            "name": "Julia Louis-Dreyfus",
+            "updated": 1705930179,
+            "url": "https://www.tvmaze.com/people/27606/julia-louis-dreyfus"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37219"
+              }
+            },
+            "id": 37219,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995298.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995298.jpg"
+            },
+            "name": "Amy Brookheimer",
+            "url": "https://www.tvmaze.com/characters/37219/veep-amy-brookheimer"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/24960"
+              }
+            },
+            "birthday": "1980-12-03",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Female",
+            "id": 24960,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/106/265498.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/106/265498.jpg"
+            },
+            "name": "Anna Chlumsky",
+            "updated": 1684411468,
+            "url": "https://www.tvmaze.com/people/24960/anna-chlumsky"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37220"
+              }
+            },
+            "id": 37220,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995299.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995299.jpg"
+            },
+            "name": "Gary Walsh",
+            "url": "https://www.tvmaze.com/characters/37220/veep-gary-walsh"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/20861"
+              }
+            },
+            "birthday": "1970-09-30",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 20861,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/503/1259198.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/503/1259198.jpg"
+            },
+            "name": "Tony Hale",
+            "updated": 1709079675,
+            "url": "https://www.tvmaze.com/people/20861/tony-hale"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37221"
+              }
+            },
+            "id": 37221,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995300.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995300.jpg"
+            },
+            "name": "Dan Egan",
+            "url": "https://www.tvmaze.com/characters/37221/veep-dan-egan"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/22179"
+              }
+            },
+            "birthday": "1977-11-19",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 22179,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/487/1219345.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/487/1219345.jpg"
+            },
+            "name": "Reid Scott",
+            "updated": 1708578464,
+            "url": "https://www.tvmaze.com/people/22179/reid-scott"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37222"
+              }
+            },
+            "id": 37222,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995301.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995301.jpg"
+            },
+            "name": "Jonah Ryan",
+            "url": "https://www.tvmaze.com/characters/37222/veep-jonah-ryan"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/27607"
+              }
+            },
+            "birthday": "1978-06-12",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 27607,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/3/8671.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/3/8671.jpg"
+            },
+            "name": "Timothy Simons",
+            "updated": 1694561386,
+            "url": "https://www.tvmaze.com/people/27607/timothy-simons"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37223"
+              }
+            },
+            "id": 37223,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995302.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995302.jpg"
+            },
+            "name": "Mike McLintock",
+            "url": "https://www.tvmaze.com/characters/37223/veep-mike-mclintock"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/7058"
+              }
+            },
+            "birthday": "1964-10-13",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 7058,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/0/1980.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/0/1980.jpg"
+            },
+            "name": "Matt Walsh",
+            "updated": 1706560764,
+            "url": "https://www.tvmaze.com/people/7058/matt-walsh"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37286"
+              }
+            },
+            "id": 37286,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995303.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995303.jpg"
+            },
+            "name": "Kent Davison",
+            "url": "https://www.tvmaze.com/characters/37286/veep-kent-davison"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/3681"
+              }
+            },
+            "birthday": "1956-09-20",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 3681,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/5/13600.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/5/13600.jpg"
+            },
+            "name": "Gary Cole",
+            "updated": 1709051500,
+            "url": "https://www.tvmaze.com/people/3681/gary-cole"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37289"
+              }
+            },
+            "id": 37289,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995304.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995304.jpg"
+            },
+            "name": "Ben Caffrey",
+            "url": "https://www.tvmaze.com/characters/37289/veep-ben-caffrey"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/683"
+              }
+            },
+            "birthday": "1956-08-24",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 683,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/1/3460.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/1/3460.jpg"
+            },
+            "name": "Kevin Dunn",
+            "updated": 1707254691,
+            "url": "https://www.tvmaze.com/people/683/kevin-dunn"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37224"
+              }
+            },
+            "id": 37224,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/398/995305.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/398/995305.jpg"
+            },
+            "name": "Sue Wilson",
+            "url": "https://www.tvmaze.com/characters/37224/veep-sue-wilson"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/27608"
+              }
+            },
+            "birthday": "1986-04-16",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Female",
+            "id": 27608,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/0/1982.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/0/1982.jpg"
+            },
+            "name": "Sufe Bradshaw",
+            "updated": 1540409445,
+            "url": "https://www.tvmaze.com/people/27608/sufe-bradshaw"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/37241"
+              }
+            },
+            "id": 37241,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/109/272968.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/109/272968.jpg"
+            },
+            "name": "Catherine Meyer",
+            "url": "https://www.tvmaze.com/characters/37241/veep-catherine-meyer"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/27625"
+              }
+            },
+            "birthday": "1988-02-18",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Female",
+            "id": 27625,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/178/445018.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/178/445018.jpg"
+            },
+            "name": "Sarah Sutherland",
+            "updated": 1554044179,
+            "url": "https://www.tvmaze.com/people/27625/sarah-sutherland"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/131273"
+              }
+            },
+            "id": 131273,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/109/272969.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/109/272969.jpg"
+            },
+            "name": "Richard Splett",
+            "url": "https://www.tvmaze.com/characters/131273/veep-richard-splett"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/27711"
+              }
+            },
+            "birthday": "1984-01-12",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Male",
+            "id": 27711,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/393/982554.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/393/982554.jpg"
+            },
+            "name": "Sam Richardson",
+            "updated": 1708429626,
+            "url": "https://www.tvmaze.com/people/27711/sam-richardson"
+          },
+          "self": false,
+          "voice": false
+        },
+        {
+          "character": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/characters/277064"
+              }
+            },
+            "id": 277064,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/129/324556.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/129/324556.jpg"
+            },
+            "name": "Marjorie Palmiotti",
+            "url": "https://www.tvmaze.com/characters/277064/veep-marjorie-palmiotti"
+          },
+          "person": {
+            "_links": {
+              "self": {
+                "href": "https://api.tvmaze.com/people/9555"
+              }
+            },
+            "birthday": "1977-09-25",
+            "country": {
+              "code": "US",
+              "name": "United States",
+              "timezone": "America/New_York"
+            },
+            "deathday": null,
+            "gender": "Female",
+            "id": 9555,
+            "image": {
+              "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/2/6770.jpg",
+              "original": "https://static.tvmaze.com/uploads/images/original_untouched/2/6770.jpg"
+            },
+            "name": "Clea DuVall",
+            "updated": 1691543517,
+            "url": "https://www.tvmaze.com/people/9555/clea-duvall"
+          },
+          "self": false,
+          "voice": false
+        }
+      ]
+    },
+    "_links": {
+      "previousepisode": {
+        "href": "https://api.tvmaze.com/episodes/1610420"
+      },
+      "self": {
+        "href": "https://api.tvmaze.com/shows/142"
+      }
+    },
+    "averageRuntime": 30,
+    "dvdCountry": null,
+    "ended": "2019-05-12",
+    "externals": {
+      "imdb": "tt1759761",
+      "thetvdb": 237831,
+      "tvrage": 28149
+    },
+    "genres": [
+      "Comedy"
+    ],
+    "id": 142,
+    "image": {
+      "medium": "https://static.tvmaze.com/uploads/images/medium_portrait/189/472887.jpg",
+      "original": "https://static.tvmaze.com/uploads/images/original_untouched/189/472887.jpg"
+    },
+    "language": "English",
+    "name": "Veep",
+    "network": {
+      "country": {
+        "code": "US",
+        "name": "United States",
+        "timezone": "America/New_York"
+      },
+      "id": 8,
+      "name": "HBO",
+      "officialSite": "https://www.hbo.com/"
+    },
+    "officialSite": "http://www.hbo.com/veep/",
+    "premiered": "2012-04-22",
+    "rating": {
+      "average": 8.1
+    },
+    "runtime": 30,
+    "schedule": {
+      "days": [
+        "Sunday"
+      ],
+      "time": "22:30"
+    },
+    "status": "Ended",
+    "summary": "<p>Former Senator Selina Meyer has accepted the call to serve as Vice President of the United States. The job is nothing like she imagined and everything she was warned about. <b>Veep</b> follows Meyer and her staff as they attempt to make their mark and leave a lasting legacy, without getting tripped up in the day-to-day political games that define Washington.</p>",
+    "type": "Scripted",
+    "updated": 1708094021,
+    "url": "https://www.tvmaze.com/shows/142/veep",
+    "webChannel": null,
+    "weight": 95,
+    "visibility": "PUBLIC"
+  }
+  

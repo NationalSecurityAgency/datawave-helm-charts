@@ -1,0 +1,19 @@
+{
+    "genres": [
+      "Lorem",
+      "Ipsum",
+      "Test"
+    ],
+    "id": 123,
+    "language": "Latin",
+    "name": "Lorem Ipsum: The Series",
+    "officialSite": null,
+    "premiered": "2023-05-12",
+    "runtime": 45,
+    "status": "Ongoing",
+    "summary": "<p>Lorem Ipsum: The Series follows the adventures of Lorem, a brilliant scientist, and Ipsum, a daring explorer, as they navigate through the mysteries of the Lorem Ipsum galaxy. Together with their team of quirky companions, they encounter thrilling challenges, uncover ancient secrets, and confront formidable foes.</p>",
+    "type": "Scripted",
+    "url": "https://www.loremipsum.com/series/123",
+    "weight": 75,
+    "visibility": "PRIVATE"
+  }

@@ -2,3 +2,6 @@ ghcr-image-pull-secret.yaml
 **/*.tgz
 .idea/
 *.swp
+logs
+__pycache__
+.pytest_cache
