@@ -26,7 +26,7 @@ def test_query(log: Logger, query_interactions: QueryInteractions):
                                query="GENRES == 'action' || GENRES =~ 'adv.*'",
                                auths="BAR,FOO,PRIVATE,PUBLIC")
     args = SimpleNamespace(query_name=query_params.query_name, query=query_params.query,
-                          auths=query_params.auths, filter=None, output=None)
+                          auths=query_params.auths, filter=None, output=None, decode_raw=False)
     results = query_interactions.perform_query(args)
     event_count = results['metadata']['Returned Events']
 
@@ -54,11 +54,9 @@ def test_query_fields(log: Logger,  query_interactions: QueryInteractions):
                                    query=f"{field} == '{value}'",
                                    auths="BAR,FOO,PRIVATE,PUBLIC")
         args = SimpleNamespace(query_name=query_params.query_name, query=query_params.query,
-                               auths=query_params.auths, filter=None, output=None)
+                               auths=query_params.auths, filter=None, output=None, decode_raw=False)
         results = query_interactions.perform_query(args)
         event_count = results['metadata']['Returned Events']
-        for data in results['events']:
-            log.debug(f"Number of Returned Events: {data['ReturnedEvents']}")
         if not event_count:
             log.error(f'Failed to find any results for {field}!')
             missing_fields.add(field)
@@ -155,42 +153,32 @@ def test_query_data(log: Logger, query_interactions):
                                query=f"NAME == 'Veep'",
                                auths="BAR,FOO,PRIVATE,PUBLIC")
     args = SimpleNamespace(query_name=query_params.query_name, query=query_params.query,
-                           auths=query_params.auths, filter=None, output=None)
+                           auths=query_params.auths, filter=None, output=None, decode_raw=False)
     results = query_interactions.perform_query(args)
     event_count = results['metadata']['Returned Events']
-    for queried_data in results['events']:
-        log.debug(f"Number of Returned Events: {queried_data['ReturnedEvents']}")
-
     if event_count != 1:
         msg = f'Expected 1 event, found {event_count}!'
         log.error(msg)
         log.error(ascii_fail)
         pytest.fail(msg)
 
-    fields = queried_data['Events'][0]['Fields']
-
+    fields = results['events'][0]
     # Combine all the same name fields found in the query
     fields_combined = {}
-    for field in fields:
-        field_name = field['name'].lower()
-        field_value = field['Value']['value'].lower()
+    for key, value in fields.items():
+        field_name = key.lower()
 
-        if field_name in fields_combined:
-            # convert value to list and append
-            cur_v = fields_combined[field_name]
-            if isinstance(cur_v, list):
-                # no need to create new list
-                fields_combined[field_name].append(field_value)
-            else:
-                new_list = [cur_v, field_value]
-                fields_combined[field_name] = new_list
+        if isinstance(value, list):
+            # no need to create new list
+            fields_combined[field_name] = [v.lower() for v in value]
         else:
-            fields_combined[field_name] = field_value
+            fields_combined[field_name] = value.lower()
 
     # Grab the value from the test data and the query data and compare
     # the two values to make sure they match.
     passed = True
     dw_only_keys = {'record_id', 'load_date', 'orig_file', 'term_count'}
+
     for key, value in fields_combined.items():
         log.info(f"Comparing {key}...")
         if '_' in key:
@@ -252,7 +240,7 @@ def _lowercase(obj):
         return str(obj).lower()
 
 
-def test_auth(log: Logger):
+def test_auth(log: Logger, query_interactions: QueryInteractions):
     """Tests that datawave's auths are working as expected"""
     test = Test(log, test_auth)
     query_params = QueryParams(query_name="test-query",
@@ -286,23 +274,23 @@ def test_auth(log: Logger):
     with test.subtest("Test PRIVATE auth"):
         query_params.auths = 'PRIVATE'
         expected = {'Lorem Ipsum: The Series', 'Galactic Explorers', 'Small Town Shenanigans'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test PRIVATE,PUBLIC auth"):
         query_params.auths = 'PRIVATE,PUBLIC'
         expected = {'Lorem Ipsum: The Series', 'City of Shadows', 'Small Town Shenanigans',
                     'Jungle Quest', 'Galactic Explorers', 'Whispers in the Dark'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test FOO,BAR auth"):
         query_params.auths = 'FOO,BAR'
         expected = {'Whispers in the Dark', 'Chronicles of Tomorrow', 'Small Town Shenanigans'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     assert test.passed
 
 
-def test_operators(log: Logger):
+def test_operators(log: Logger, query_interactions: QueryInteractions):
     """Tests the arithmetic operators for datawave"""
     test = Test(log, test_operators)
     query_params = QueryParams(query_name="test-query",
@@ -312,44 +300,44 @@ def test_operators(log: Logger):
     with test.subtest("Test == Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME == 45"
         expected = {'Lorem Ipsum: The Series', 'Jungle Quest'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test != Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME == 45 && GENRES != 'Lorem'"
         expected = {'Jungle Quest'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test < Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME < 45"
         expected = {'Small Town Shenanigans', 'Pixel Pals'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test <= Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME <= 45"
         expected = {'Lorem Ipsum: The Series', 'Jungle Quest', 'Small Town Shenanigans', 'Pixel Pals'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test > Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME > 50"
         expected = {'Eternal Realms', 'Dynasty of Thrones', 'Chronicles of Tomorrow'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test >= Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME >= 50"
         expected = {'Galactic Explorers', 'Eternal Realms', 'Whispers in the Dark',
                     'Dynasty of Thrones', 'Chronicles of Tomorrow', 'Realm Guardians',
                     'City of Shadows'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test || Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME == 60 || RUNTIME == 45"
         expected = {'Dynasty of Thrones', 'Lorem Ipsum: The Series', 'Jungle Quest'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     assert test.passed
 
 
-def test_date_queries(log: Logger):
+def test_date_queries(log: Logger, query_interactions: QueryInteractions):
     """Tests date query options"""
     test = Test(log, test_date_queries)
     query_params = QueryParams(query_name="test-query",
@@ -360,17 +348,17 @@ def test_date_queries(log: Logger):
         query_params.query = "GENRES == 'Test' && filter:beforeDate(PREMIERED, '2023-10-01')"
         expected = {'Lorem Ipsum: The Series', 'Whispers in the Dark', 'Eternal Realms',
                     'Dynasty of Thrones', 'Realm Guardians', 'Small Town Shenanigans'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test afterDate"):
         query_params.query = "GENRES == 'Test' && filter:afterDate(PREMIERED, '2024-01-01')"
         expected = {'Jungle Quest', 'Galactic Explorers'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test betweenDates"):
         query_params.query = "GENRES == 'Test' && filter:betweenDates(PREMIERED, '2023-10-01', '2024-01-01')"
         expected = {'Pixel Pals', 'City of Shadows', 'Chronicles of Tomorrow'}
-        execute_query(cert, query_params, expected, log)
+        execute_query(query_params, expected, query_interactions)
 
     assert test.passed
 
@@ -378,8 +366,8 @@ def test_date_queries(log: Logger):
 def execute_query(query_params: QueryParams, expected: set, query_interactions: QueryInteractions):
     results = []
     sns = SimpleNamespace(query_name=query_params.query_name, query=query_params.query,
-                          auths=query_params.auths, filter=None, output=None)
-    results = query_interactions.perform_query(sns)
+                          auths=query_params.auths, filter='NAME', output=None, decode_raw=False)
+    results = query_interactions.perform_query(sns)['events']
     actual = {name for event in results for name in event.values()}
     if actual != expected:
         raise AssertionError(f'Expected {expected} but found {actual}')

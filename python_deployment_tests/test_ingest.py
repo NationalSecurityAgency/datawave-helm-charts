@@ -47,10 +47,10 @@ def refresh_cache(log: Logger, accumulo_interactions: AccumuloInteractions):
     log.info('Attempting to refresh accumulo cache')
     try:
         accumulo_interactions.reload_accumulo_cache()
-        check_cache_ready(log)
+        check_cache_ready(log, accumulo_interactions)
         log.debug("\nWhat about refresh?\nYou've already had it.\nWe've had one, yes. What about second refresh?")
         accumulo_interactions.reload_accumulo_cache(log)
-        check_cache_ready(log)
+        check_cache_ready(log, accumulo_interactions)
     except TimeoutError as e:
         msg = 'Cache failed to refresh. You will need to do so manually before proceeding.'
         log.error(e)
