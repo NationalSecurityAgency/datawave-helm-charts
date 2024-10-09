@@ -18,7 +18,7 @@ icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 dependencies:
   - name: dwv-ingest
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.1
   - name: dwv-hadoop
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.0
