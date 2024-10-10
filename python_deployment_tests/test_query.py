@@ -9,12 +9,13 @@ import pytest
 from datawave_cli.query_interactions import QueryParams, QueryInteractions
 from helpers.subtest import Test
 from helpers.utilities import assert_test, log_test_start
-from helpers.constants import namespace, use_ip, cert, ascii_fail
+from helpers.constants import namespace, use_ip, cert, ascii_fail, use_localhost, url
 
 
 @pytest.fixture()
 def query_interactions(log: Logger):
-    sns = SimpleNamespace(cert=cert[0], key=cert[1], namespace=namespace, localhost=True, ip=use_ip, header={})
+    sns = SimpleNamespace(cert=cert[0], key=cert[1], namespace=namespace, localhost=use_localhost, ip=use_ip,
+                          header={}, url=url)
     qi = QueryInteractions(sns, log)
     yield qi
 

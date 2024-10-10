@@ -1,6 +1,8 @@
 namespace = 'datawave'
 cert = ('resources/test.crt.pem', 'resources/test.key.pem')
 use_ip = False
+use_localhost = True
+url = ''
 
 ascii_start = r"""
    _____ _             _   _               _______        _

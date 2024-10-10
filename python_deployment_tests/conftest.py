@@ -65,6 +65,8 @@ def pytest_addoption(parser):
     # -n is reserved so -N is used instead
     parser.addoption("-N", "--namespace", action="store", default=consts.namespace)
     parser.addoption("--use_ip", action="store_true")
+    parser.addoption("--disable_localhost", action="store_false")
+    parser.addoption("--url", action="store")
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -75,6 +77,8 @@ def pytest_configure(config):
     """
     consts.namespace = config.getoption("namespace")
     consts.use_ip = config.getoption("use_ip")
+    consts.use_localhost = config.getoption("disable_localhost")
+    consts.url = config.getoption("url")
 
 
 # Logging stuff

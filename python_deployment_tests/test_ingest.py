@@ -13,7 +13,7 @@ from datawave_cli.ingest_interactions import check_app_statuses, get_accumulo_ap
 from datawave_cli.utilities.utilities import Retry
 from datawave_cli.utilities.pods import yarn_rm_info, hdfs_nn_info, get_specific_pod
 from helpers.utilities import log_test_start, assert_test
-from helpers.constants import namespace, cert, use_ip
+from helpers.constants import namespace, cert, use_ip, use_localhost, url
 
 # ---- Changable values ----
 """
@@ -27,7 +27,8 @@ data_folder = 'myjson'
 
 @pytest.fixture()
 def accumulo_interactions(log: Logger):
-    sns = SimpleNamespace(cert=cert[0], key=cert[1], namespace=namespace, localhost=True, ip=use_ip, header={})
+    sns = SimpleNamespace(cert=cert[0], key=cert[1], namespace=namespace, localhost=use_localhost,
+                          ip=use_ip, header={}, url=url)
     ai = AccumuloInteractions(sns, log)
     yield ai
 
