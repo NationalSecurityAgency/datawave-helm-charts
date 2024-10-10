@@ -40,7 +40,7 @@ def test_query_fields(log: Logger,  query_interactions: QueryInteractions):
     log_test_start(log, test_query_fields)
     fields = ['NAME', 'ID', 'EXTERNALS_THETVDB', 'EXTERNALS_TVRAGE', 'EXTERNALS_IMDB',
               'GENRES', 'NETWORK_NAME', 'TYPE', 'STATUS', 'RUNTIME', 'URL']
-    with open('resources/1-event.json', 'r') as data:
+    with open('resources/1-custom-event.json', 'r') as data:
         test_data = json.load(data)
 
     missing_fields = set()
@@ -146,12 +146,12 @@ def extract_value(obj: list | set | tuple | Any) -> Any:
 def test_query_data(log: Logger, query_interactions):
     """Tests that the data queried matches the data ingested"""
     log_test_start(log, test_query_data)
-    with open('resources/1-event.json', 'r') as data:
+    with open('resources/1-custom-event.json', 'r') as data:
         ingested_data = json.load(data)
     ingested_data = _lowercase(ingested_data)
 
     query_params = QueryParams(query_name="test-query",
-                               query=f"NAME == 'Veep'",
+                               query=f"NAME == 'The Singles Show'",
                                auths="BAR,FOO,PRIVATE,PUBLIC")
     args = SimpleNamespace(query_name=query_params.query_name, query=query_params.query,
                            auths=query_params.auths, filter=None, output=None, decode_raw=False)
@@ -280,7 +280,7 @@ def test_auth(log: Logger, query_interactions: QueryInteractions):
     with test.subtest("Test PRIVATE,PUBLIC auth"):
         query_params.auths = 'PRIVATE,PUBLIC'
         expected = {'Lorem Ipsum: The Series', 'City of Shadows', 'Small Town Shenanigans',
-                    'Jungle Quest', 'Galactic Explorers', 'Whispers in the Dark'}
+                    'Jungle Quest', 'Galactic Explorers', 'Whispers in the Dark', 'The Singles Show'}
         execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test FOO,BAR auth"):
@@ -310,12 +310,12 @@ def test_operators(log: Logger, query_interactions: QueryInteractions):
 
     with test.subtest("Test < Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME < 45"
-        expected = {'Small Town Shenanigans', 'Pixel Pals'}
+        expected = {'Small Town Shenanigans', 'Pixel Pals', 'The Singles Show'}
         execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test <= Operator"):
         query_params.query = "GENRES == 'Test' && RUNTIME <= 45"
-        expected = {'Lorem Ipsum: The Series', 'Jungle Quest', 'Small Town Shenanigans', 'Pixel Pals'}
+        expected = {'Lorem Ipsum: The Series', 'Jungle Quest', 'Small Town Shenanigans', 'Pixel Pals', 'The Singles Show'}
         execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test > Operator"):
@@ -348,7 +348,7 @@ def test_date_queries(log: Logger, query_interactions: QueryInteractions):
     with test.subtest("Test beforeDate"):
         query_params.query = "GENRES == 'Test' && filter:beforeDate(PREMIERED, '2023-10-01')"
         expected = {'Lorem Ipsum: The Series', 'Whispers in the Dark', 'Eternal Realms',
-                    'Dynasty of Thrones', 'Realm Guardians', 'Small Town Shenanigans'}
+                    'Dynasty of Thrones', 'Realm Guardians', 'Small Town Shenanigans', 'The Singles Show'}
         execute_query(query_params, expected, query_interactions)
 
     with test.subtest("Test afterDate"):

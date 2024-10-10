@@ -21,7 +21,7 @@ from helpers.constants import namespace, cert, use_ip, use_localhost, url
     variable in the constants.py file.
 -
 """
-src_file = "resources/more-tv-shows1.json"
+src_file = "resources/custom-tv-shows.json"
 data_folder = 'myjson'
 
 
@@ -36,11 +36,10 @@ def accumulo_interactions(log: Logger):
 def refresh_cache(log: Logger, accumulo_interactions: AccumuloInteractions):
     """Fixture to handle teardown of ingest test.
 
-    After ingesting we must refresh the accumulo cache to be able to query the
-    ingested data. For some reasons that we're not entirely sure about the refresh
-    needs to be ran twice in order to work. If either refresh fails to complete
-    within 5 minutes we will log an error and exit the test as we can not proceed
-    with query testing without both refreshes completing.
+    After ingesting data, the `datawave.metadata` needs to be refreshed for new
+    data types. If either refresh fails to complete within 5 minutes an error
+    will be logged and the test will exit as it cannot proceed with query testing
+    without both refreshes completing.
     """
     # setup
     yield None
@@ -50,7 +49,7 @@ def refresh_cache(log: Logger, accumulo_interactions: AccumuloInteractions):
         accumulo_interactions.reload_accumulo_cache()
         check_cache_ready(log, accumulo_interactions)
         log.debug("\nWhat about refresh?\nYou've already had it.\nWe've had one, yes. What about second refresh?")
-        accumulo_interactions.reload_accumulo_cache(log)
+        accumulo_interactions.reload_accumulo_cache()
         check_cache_ready(log, accumulo_interactions)
     except TimeoutError as e:
         msg = 'Cache failed to refresh. You will need to do so manually before proceeding.'
@@ -64,13 +63,6 @@ def refresh_cache(log: Logger, accumulo_interactions: AccumuloInteractions):
 @Retry(time_limit_min=5, delay_sec=10)
 def check_cache_ready(log: Logger,  accumulo_interactions: AccumuloInteractions):
     """Checks if the accumulo cache has been refreshed
-
-    We don't entirely understand why this method of checking works but we think
-    it is because when a cache reload is started the `lastRefresh` field of the
-    tableCache objects are set to epoch, they are then updated to the current
-    timestamp when the refresh completes. Apparently we only need the metadata
-    tableCache to finish refreshing before we can continue on, so that is the
-    only one that we check.
     """
     root = ET.fromstring(accumulo_interactions.view_accumulo_cache(cert, namespace, log))
     table = root.find(".//{http://webservice.datawave.nsa/v1}TableCache[@tableName='datawave.metadata']")

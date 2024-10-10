@@ -32,7 +32,7 @@ Kubernetes.
 | namespace | Set the namespace within Kubernetes to utilize for the pods and ingest tests. |
 | disable_localhost | Disable the usage of `localhost:8443`. |
 | url | required if localhost is disabled, specifies the url to use when calling the datawave-monolith. |
-| use_ip | Enables the usage of the pods `IP:port` for interacting with datawave. Overrides the url option. |
+| use_ip | Enables the usage of the pods `IP:port` for interacting with datawave. Overrides the url option. localhost will need to be disabled for this parameter to take effect. |
 
 ### Generating a Report
 Run `pytest --html=<path to report name.html> --css=assets/report.css` to run the full suite of tests and create a report.

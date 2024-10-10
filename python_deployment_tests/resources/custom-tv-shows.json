@@ -1,4 +1,29 @@
 {
+  "genres": [
+    "Test"
+  ],
+  "id": 1234,
+  "language": "Enlgish",
+  "name": "The Singles Show",
+  "officialSite": null,
+  "premiered": "2023-05-12",
+  "runtime": 23,
+  "status": "Ongoing",
+  "summary": "</p>A show where singles 'date' each other to end up Ghosting each other.</p>",
+  "type": "Unscripted",
+  "url": "https://www.singles-show.com/series/123",
+  "weight": 75,
+  "visibility": "PUBLIC",
+  "externals": {
+    "imdb":"tt0",
+    "thetvdb":"0",
+    "tvrage":"0"
+  },
+  "network": {
+    "name":"custom-tv"
+  }
+}
+{
     "genres": [
       "Lorem",
       "Ipsum",
@@ -15,7 +40,15 @@
     "type": "Scripted",
     "url": "https://www.loremipsum.com/series/123",
     "weight": 75,
-    "visibility": "PRIVATE"
+    "visibility": "PRIVATE",
+    "externals": {
+      "imdb":"tt1",
+      "thetvdb":"1",
+      "tvrage":"1"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -34,7 +67,15 @@
     "type": "Scripted",
     "url": "https://www.galacticexplorers.com/series/1",
     "weight": 80,
-    "visibility": "PRIVATE"
+    "visibility": "PRIVATE",
+    "externals": {
+      "imdb":"tt2",
+      "thetvdb":"2",
+      "tvrage":"2"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -53,7 +94,15 @@
     "type": "Scripted",
     "url": "https://www.eternalrealms.com/series/2",
     "weight": 85,
-    "visibility": "PUBLIC&FOO"
+    "visibility": "PUBLIC&FOO",
+    "externals": {
+      "imdb":"tt3",
+      "thetvdb":"3",
+      "tvrage":"3"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -72,7 +121,15 @@
     "type": "Scripted",
     "url": "https://www.pixelpals.com/series/3",
     "weight": 70,
-    "visibility": "PRIVATE&BAR"
+    "visibility": "PRIVATE&BAR",
+    "externals": {
+      "imdb":"tt4",
+      "thetvdb":"4",
+      "tvrage":"4"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -91,7 +148,15 @@
     "type": "Scripted",
     "url": "https://www.whispersinthedark.com/series/4",
     "weight": 75,
-    "visibility": "PUBLIC|FOO"
+    "visibility": "PUBLIC|FOO",
+    "externals": {
+      "imdb":"tt5",
+      "thetvdb":"5",
+      "tvrage":"5"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -110,7 +175,15 @@
     "type": "Scripted",
     "url": "https://www.dynastyofthrones.com/series/5",
     "weight": 90,
-    "visibility": "PRIVATE&(FOO|BAR)"
+    "visibility": "PRIVATE&(FOO|BAR)",
+    "externals": {
+      "imdb":"tt6",
+      "thetvdb":"6",
+      "tvrage":"6"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -129,7 +202,15 @@
     "type": "Scripted",
     "url": "https://www.junglequest.com/series/6",
     "weight": 85,
-    "visibility": "PUBLIC&PRIVATE"
+    "visibility": "PUBLIC&PRIVATE",
+    "externals": {
+      "imdb":"tt7",
+      "thetvdb":"7",
+      "tvrage":"7"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -148,7 +229,15 @@
     "type": "Scripted",
     "url": "https://www.smalltownshenanigans.com/series/7",
     "weight": 75,
-    "visibility": "PRIVATE|(FOO&BAR)"
+    "visibility": "PRIVATE|(FOO&BAR)",
+    "externals": {
+      "imdb":"tt9",
+      "thetvdb":"9",
+      "tvrage":"9"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -167,7 +256,15 @@
     "type": "Scripted",
     "url": "https://www.chroniclesoftomorrow.com/series/8",
     "weight": 80,
-    "visibility": "FOO&(PRIVATE|BAR)"
+    "visibility": "FOO&(PRIVATE|BAR)",
+    "externals": {
+      "imdb":"tt10",
+      "thetvdb":"10",
+      "tvrage":"10"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -186,7 +283,15 @@
     "type": "Scripted",
     "url": "https://www.realmguardians.com/series/9",
     "weight": 85,
-    "visibility": "PUBLIC&(FOO|BAR)"
+    "visibility": "PUBLIC&(FOO|BAR)",
+    "externals": {
+      "imdb":"tt11",
+      "thetvdb":"11",
+      "tvrage":"11"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }
   {
     "genres": [
@@ -205,5 +310,13 @@
     "type": "Scripted",
     "url": "https://www.cityofshadows.com/series/10",
     "weight": 75,
-    "visibility": "PUBLIC&PRIVATE"
+    "visibility": "PUBLIC&PRIVATE",
+    "externals": {
+      "imdb":"tt12",
+      "thetvdb":"12",
+      "tvrage":"12"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
   }

@@ -39,22 +39,15 @@ def kube_client():
     """Fixture for creating a Kubernetes client instance.
 
     This fixture loads the Kubernetes configuration and initializes a CoreV1Api client.
-    It verifies the connection by attempting to list nodes with a short timeout.
-    If authentication fails, it exits the tests with an error message.
 
     Returns
     -------
     client.CoreV1Api:
         A Kubernetes client instance.
     """
-    try:
-        config.load_kube_config()
-        kube_client = client.CoreV1Api()
-        # Quick check that we connected
-        # kube_client.list_node(timeout_seconds=5)
-        yield kube_client
-    except Exception as e:
-        raise RuntimeError(f"Kubernetes Authentication Failed! {e}")
+    config.load_kube_config()
+    kube_client = client.CoreV1Api()
+    yield kube_client
 
 
 def pytest_addoption(parser):
