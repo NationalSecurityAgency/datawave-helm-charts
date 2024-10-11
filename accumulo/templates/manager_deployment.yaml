@@ -47,7 +47,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
-        args: ["./entrypoint.sh accumulo manager -a $(hostname -f)" ]
+        args: ["./entrypoint.sh accumulo manager -o general.process.bind.addr=$(hostname -f)" ]
         ports:
           - containerPort: 9999
         env:

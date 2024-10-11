@@ -58,9 +58,9 @@ spec:
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
         {{ if eq .resourceGroupName "default" }}
-        args: ["accumulo sserver -a $(hostname -f) " ]
+        args: ["accumulo sserver -o general.process.bind.addr=$(hostname -f) " ]
         {{ else }}
-        args: ["accumulo sserver -a $(hostname -f) -g {{ .resourceGroupName }}" ]
+        args: ["accumulo sserver -o general.process.bind.addr=$(hostname -f) -o sserver.group={{ .resourceGroupName }}" ]
         {{ end }}
         ports:
           - containerPort: 9997

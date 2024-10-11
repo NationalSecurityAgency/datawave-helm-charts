@@ -38,7 +38,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
-        args: ["accumulo gc -a $(hostname -f)" ]
+        args: ["accumulo gc -o general.process.bind.addr=$(hostname -f)" ]
         volumeMounts:
         - name: config
           mountPath: /opt/accumulo/conf

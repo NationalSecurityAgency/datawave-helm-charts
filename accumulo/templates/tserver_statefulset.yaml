@@ -53,7 +53,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
-        args: ["accumulo tserver -a $(hostname -f)" ]
+        args: ["accumulo tserver -o general.process.bind.addr=$(hostname -f)" ]
         ports:
           - containerPort: 9997
         volumeMounts:
