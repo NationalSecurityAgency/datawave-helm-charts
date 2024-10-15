@@ -11,6 +11,7 @@ DATAWAVE_STACK="${BASEDIR}/datawave-stack"
 function start_minikube() {
   # Cache images and reset minikube. Then Setup minikube ingress.
   docker pull rabbitmq:3.11.4-alpine && \
+  docker pull mysql:8.0.32 && \
   docker pull busybox:1.28 && \
   minikube delete --all --purge && \
   minikube start --nodes 3 --cpus 4 --memory 15960 --disk-size 20480 && \
@@ -29,7 +30,7 @@ function start_minikube() {
   minikube kubectl -- create secret generic certificates-secret --from-file=keystore.p12="${DATAWAVE_STACK}"/certificates/keystore.p12 --from-file=truststore.jks="${DATAWAVE_STACK}"/certificates/truststore.jks
 }
 
-function docker_login() {
+function ghcr_login() {
   if test -f "${BASEDIR}"/ghcr-image-pull-secret.yaml; then
     # File path
     FILE_PATH="./ghcr-image-pull-secret.yaml"
@@ -51,6 +52,7 @@ function docker_login() {
     PASSWORD=$(echo $AUTH | cut -d ':' -f 2)
   
     echo $PASSWORD | docker login ghcr.io --username $USERNAME --password-stdin
+    echo $PASSWORD | helm registry login ghcr.io --username $USERNAME --password-stdin
   fi
 }
 
@@ -134,8 +136,8 @@ function helm_install() {
   helm install dwv "${DATAWAVE_STACK}"/datawave-system-*.tgz -f "${DATAWAVE_STACK}"/${VALUES_FILE} ${EXTRA_HELM_ARGS}
 }
 
-echo "Login to Helm Charts repo using docker"
-docker_login
+echo "Login to Docker and Helm Charts GHCR repo"
+ghcr_login
 echo "Package helm charts"
 helm_package
 echo "Purge and restart Minikube"
