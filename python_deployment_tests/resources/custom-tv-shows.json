@@ -1,0 +1,322 @@
+{
+  "genres": [
+    "Test"
+  ],
+  "id": 1234,
+  "language": "Enlgish",
+  "name": "The Singles Show",
+  "officialSite": null,
+  "premiered": "2023-05-12",
+  "runtime": 23,
+  "status": "Ongoing",
+  "summary": "</p>A show where singles 'date' each other to end up Ghosting each other.</p>",
+  "type": "Unscripted",
+  "url": "https://www.singles-show.com/series/123",
+  "weight": 75,
+  "visibility": "PUBLIC",
+  "externals": {
+    "imdb":"tt0",
+    "thetvdb":"0",
+    "tvrage":"0"
+  },
+  "network": {
+    "name":"custom-tv"
+  }
+}
+{
+    "genres": [
+      "Lorem",
+      "Ipsum",
+      "Test"
+    ],
+    "id": 123,
+    "language": "Latin",
+    "name": "Lorem Ipsum: The Series",
+    "officialSite": null,
+    "premiered": "2023-05-12",
+    "runtime": 45,
+    "status": "Ongoing",
+    "summary": "<p>Lorem Ipsum: The Series follows the adventures of Lorem, a brilliant scientist, and Ipsum, a daring explorer, as they navigate through the mysteries of the Lorem Ipsum galaxy. Together with their team of quirky companions, they encounter thrilling challenges, uncover ancient secrets, and confront formidable foes.</p>",
+    "type": "Scripted",
+    "url": "https://www.loremipsum.com/series/123",
+    "weight": 75,
+    "visibility": "PRIVATE",
+    "externals": {
+      "imdb":"tt1",
+      "thetvdb":"1",
+      "tvrage":"1"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Science Fiction",
+      "Adventure",
+      "Test"
+    ],
+    "id": 1,
+    "language": "English",
+    "name": "Galactic Explorers",
+    "officialSite": null,
+    "premiered": "2024-02-18",
+    "runtime": 50,
+    "status": "Ongoing",
+    "summary": "<p>Galactic Explorers follows the adventures of Captain Orion and his crew aboard the starship Phoenix as they journey through uncharted territories of the galaxy. Together, they face perilous challenges, uncover ancient relics, and encounter strange civilizations.</p>",
+    "type": "Scripted",
+    "url": "https://www.galacticexplorers.com/series/1",
+    "weight": 80,
+    "visibility": "PRIVATE",
+    "externals": {
+      "imdb":"tt2",
+      "thetvdb":"2",
+      "tvrage":"2"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Fantasy",
+      "Drama",
+      "Test"
+    ],
+    "id": 2,
+    "language": "English",
+    "name": "Eternal Realms",
+    "officialSite": null,
+    "premiered": "2023-09-30",
+    "runtime": 55,
+    "status": "Ongoing",
+    "summary": "<p>Eternal Realms transports viewers to a mystical world where magic reigns supreme. Follow the journey of Elara, a young sorceress, as she battles dark forces, forges alliances, and uncovers the secrets of her lineage.</p>",
+    "type": "Scripted",
+    "url": "https://www.eternalrealms.com/series/2",
+    "weight": 85,
+    "visibility": "PUBLIC&FOO",
+    "externals": {
+      "imdb":"tt3",
+      "thetvdb":"3",
+      "tvrage":"3"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Comedy",
+      "Animation",
+      "Test"
+    ],
+    "id": 3,
+    "language": "English",
+    "name": "Pixel Pals",
+    "officialSite": null,
+    "premiered": "2023-11-10",
+    "runtime": 30,
+    "status": "Ongoing",
+    "summary": "<p>Pixel Pals is a zany animated series featuring a group of retro video game characters brought to life. Join Mega Max, Jumping Jill, and their pals as they embark on hilarious adventures across the digital landscape.</p>",
+    "type": "Scripted",
+    "url": "https://www.pixelpals.com/series/3",
+    "weight": 70,
+    "visibility": "PRIVATE&BAR",
+    "externals": {
+      "imdb":"tt4",
+      "thetvdb":"4",
+      "tvrage":"4"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Mystery",
+      "Thriller",
+      "Test"
+    ],
+    "id": 4,
+    "language": "English",
+    "name": "Whispers in the Dark",
+    "officialSite": null,
+    "premiered": "2023-07-22",
+    "runtime": 50,
+    "status": "Ongoing",
+    "summary": "<p>Whispers in the Dark follows Detective Alex Black as he delves into the sinister underbelly of a small town plagued by unsolved mysteries. As he uncovers dark secrets, Alex realizes that some truths are best left buried.</p>",
+    "type": "Scripted",
+    "url": "https://www.whispersinthedark.com/series/4",
+    "weight": 75,
+    "visibility": "PUBLIC|FOO",
+    "externals": {
+      "imdb":"tt5",
+      "thetvdb":"5",
+      "tvrage":"5"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Historical",
+      "Drama",
+      "Test"
+    ],
+    "id": 5,
+    "language": "English",
+    "name": "Dynasty of Thrones",
+    "officialSite": null,
+    "premiered": "2023-04-15",
+    "runtime": 60,
+    "status": "Ongoing",
+    "summary": "<p>Dynasty of Thrones chronicles the power struggles and intrigues of noble families vying for control in a medieval kingdom. Betrayal, ambition, and romance intertwine as alliances are forged and empires rise and fall.</p>",
+    "type": "Scripted",
+    "url": "https://www.dynastyofthrones.com/series/5",
+    "weight": 90,
+    "visibility": "PRIVATE&(FOO|BAR)",
+    "externals": {
+      "imdb":"tt6",
+      "thetvdb":"6",
+      "tvrage":"6"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Action",
+      "Adventure",
+      "Test"
+    ],
+    "id": 6,
+    "language": "English",
+    "name": "Jungle Quest",
+    "officialSite": null,
+    "premiered": "2024-01-08",
+    "runtime": 45,
+    "status": "Ongoing",
+    "summary": "<p>Jungle Quest follows a team of explorers deep into the heart of the Amazon rainforest in search of a legendary lost city. Facing treacherous terrain and ancient guardians, they must unravel the mysteries of the jungle before it consumes them.</p>",
+    "type": "Scripted",
+    "url": "https://www.junglequest.com/series/6",
+    "weight": 85,
+    "visibility": "PUBLIC&PRIVATE",
+    "externals": {
+      "imdb":"tt7",
+      "thetvdb":"7",
+      "tvrage":"7"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Test"
+    ],
+    "id": 7,
+    "language": "English",
+    "name": "Small Town Shenanigans",
+    "officialSite": null,
+    "premiered": "2023-06-05",
+    "runtime": 40,
+    "status": "Ongoing",
+    "summary": "<p>Small Town Shenanigans follows the quirky residents of Pineville as they navigate the ups and downs of small-town life. From eccentric mayors to loveable misfits, every day brings a new adventure in this charming community.</p>",
+    "type": "Scripted",
+    "url": "https://www.smalltownshenanigans.com/series/7",
+    "weight": 75,
+    "visibility": "PRIVATE|(FOO&BAR)",
+    "externals": {
+      "imdb":"tt9",
+      "thetvdb":"9",
+      "tvrage":"9"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Sci-Fi",
+      "Drama",
+      "Test"
+    ],
+    "id": 8,
+    "language": "English",
+    "name": "Chronicles of Tomorrow",
+    "officialSite": null,
+    "premiered": "2023-10-20",
+    "runtime": 55,
+    "status": "Ongoing",
+    "summary": "<p>Chronicles of Tomorrow explores a future where technology and humanity collide. Follow a group of rebels as they fight against a tyrannical regime, grappling with questions of identity, morality, and the nature of existence.</p>",
+    "type": "Scripted",
+    "url": "https://www.chroniclesoftomorrow.com/series/8",
+    "weight": 80,
+    "visibility": "FOO&(PRIVATE|BAR)",
+    "externals": {
+      "imdb":"tt10",
+      "thetvdb":"10",
+      "tvrage":"10"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Fantasy",
+      "Adventure",
+      "Test"
+    ],
+    "id": 9,
+    "language": "English",
+    "name": "Realm Guardians",
+    "officialSite": null,
+    "premiered": "2023-08-12",
+    "runtime": 50,
+    "status": "Ongoing",
+    "summary": "<p>Realm Guardians follows a group of chosen heroes tasked with protecting the ancient realms from dark forces. With magic and courage, they embark on epic quests, forging bonds that will determine the fate of their world.</p>",
+    "type": "Scripted",
+    "url": "https://www.realmguardians.com/series/9",
+    "weight": 85,
+    "visibility": "PUBLIC&(FOO|BAR)",
+    "externals": {
+      "imdb":"tt11",
+      "thetvdb":"11",
+      "tvrage":"11"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }
+  {
+    "genres": [
+      "Crime",
+      "Drama",
+      "Test"
+    ],
+    "id": 10,
+    "language": "English",
+    "name": "City of Shadows",
+    "officialSite": null,
+    "premiered": "2023-12-09",
+    "runtime": 50,
+    "status": "Ongoing",
+    "summary": "<p>City of Shadows follows detective Sarah Hayes as she investigates the seedy underbelly of a metropolis plagued by crime and corruption. Battling her own demons, Sarah seeks justice in a city where shadows conceal dark secrets.</p>",
+    "type": "Scripted",
+    "url": "https://www.cityofshadows.com/series/10",
+    "weight": 75,
+    "visibility": "PUBLIC&PRIVATE",
+    "externals": {
+      "imdb":"tt12",
+      "thetvdb":"12",
+      "tvrage":"12"
+    },
+    "network": {
+    "name":"custom-tv"
+  }
+  }

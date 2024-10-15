@@ -1,0 +1,39 @@
+dwv-ingest:
+  config:
+    types:
+      - name: myjson
+        flagMakerConfig:
+          liveFolder: myjson
+          bulkFolder: myjson-bulk
+          config:
+            distrubutionArgs: none
+            extraIngestArgs: "-data.name.override=myjson"
+            inputFormat: datawave.ingest.json.mr.input.JsonInputFormat
+            lifo: false
+        properties: 
+          "file.input.format": datawave.ingest.json.mr.input.JsonInputFormat
+          "data.name": myjson
+          "myjson.output.name": tvmaze
+          "myjson.ingest.helper.class": datawave.ingest.json.config.helper.JsonIngestHelper
+          "myjson.reader.class": datawave.ingest.json.mr.input.JsonRecordReader
+          "myjson.handler.classes": "datawave.ingest.json.mr.handler.ContentJsonColumnBasedHandler,datawave.ingest.mapreduce.handler.facet.FacetHandler"
+          "myjson.data.category.uuid.fields": ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB
+          "myjson.data.separator": ","
+          "myjson.data.header": ID,NAME,PREMIERED,RUNTIME,STATUS,SUMMARY,OFFICIALSITE,LANGUAGE,GENRES,WEIGHT,URL,TYPE
+          "myjson.data.process.extra.fields": true
+          "myjson.data.json.flattener.mode": GROUPED_AND_NORMAL
+          "myjson.SUMMARY.data.field.marking": PUBLIC
+          "myjson.data.category.date": PREMIERED
+          "myjson.data.category.marking.visibility.field": VISIBILITY
+          "myjson.data.category.date.formats": yyyy-MM-dd,yyyy-MM-dd'T'HH:mm:ss'Z',yyyy-MM-dd HH:mm:ss
+          "myjson.data.category.index": NAME,ID,ID,EXTERNALS_THETVDB,EXTERNALS_TVRAGE,EXTERNALS_IMDB,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME,EMBEDDED_CAST_PERSON_ID,GENRES,NETWORK_NAME,OFFICIALSITE,TYPE,STATUS,RUNTIME,URL
+          "myjson.data.category.index.reverse": NAME,NETWORK_NAME,OFFICIALSITE,URL
+          "myjson.data.category.token.fieldname.designator": _TOKEN
+          "myjson.data.category.index.tokenize.allowlist": SUMMARY,NETWORK_NAME,NAME,EMBEDDED_CAST_CHARACTER_NAME,EMBEDDED_CAST_PERSON_NAME
+          "myjson.data.category.index.only": SUMMARY_TOKEN,NETWORK_NAME_TOKEN,NAME_TOKEN,EMBEDDED_CAST_CHARACTER_NAME_TOKEN,EMBEDDED_CAST_PERSON_NAME_TOKEN
+          "myjson.data.default.normalization.failure.policy": FAIL
+          "myjson.data.default.type.class": datawave.data.type.LcNoDiacriticsType
+          "myjson.PREMIERED.data.field.type.class": datawave.data.type.DateType
+          "myjson.WEIGHT.data.field.type.class": datawave.data.type.NumberType
+          "myjson.RUNTIME.data.field.type.class": datawave.data.type.NumberType
+          "myjson.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"
