@@ -88,4 +88,3 @@ ports:
 configurationMap:
   meta:
     name: configuration-map
-
