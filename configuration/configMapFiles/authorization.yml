@@ -34,6 +34,8 @@ spring:
         refreshTokenTtl: 86400
         authCodeTtl: 86400
         idTokenTtl: 86400
+{{- if .Values.authorization }}
 {{- with .Values.authorization.additions }}
 {{- toYaml . }}
+{{- end }}
 {{- end }}
