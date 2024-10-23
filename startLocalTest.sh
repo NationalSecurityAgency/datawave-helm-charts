@@ -21,6 +21,14 @@ function start_minikube() {
   minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission && \
   minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]' && \
 
+  # update default storage provisioner, set csi-hostpath-sc as the default storage driver
+  echo "Enabling volumesnapshots and csi-hostpath-driver"
+  minikube addons enable volumesnapshots
+  minikube addons enable csi-hostpath-driver
+  minikube addons disable storage-provisioner
+  minikube addons disable default-storageclass
+  minikube kubectl -- patch storageclass csi-hostpath-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
   #Apply GHCR credentials
   if test -f "${BASEDIR}"/ghcr-image-pull-secret.yaml; then
     minikube kubectl -- apply -f "${BASEDIR}"/ghcr-image-pull-secret.yaml

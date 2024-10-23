@@ -66,6 +66,10 @@ spec:
         volumeMounts:
         - name: accumulo-config
           mountPath: /opt/accumulo/conf
+        {{- if (.Values.config.sharedConfig).claim }}
+        - name: shared-ingest-config
+          mountPath: {{ .Values.config.sharedConfig.path }}
+        {{ end }}
         - name: flag-maker-live
           mountPath: /opt/datawave-ingest/current/config/flag-maker-live.xml
           subPath: flag-maker-live.xml
@@ -94,6 +98,11 @@ spec:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
       volumes:
+      {{- if (.Values.config.sharedConfig).claim }}
+      - name: shared-ingest-config
+        persistentVolumeClaim:
+          claimName: {{ .Values.config.sharedConfig.claim }}
+      {{ end }}
       - name: datawave-general-ingest-config
         configMap:
           name: datawave-general-ingest-config

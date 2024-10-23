@@ -34,6 +34,10 @@ config:
   hadoopConfDif: /usr/local/hadoop/conf
   bulkDataTypes: shardStats
   liveDataTypes: wikipedia,mycsv,myjson,openlib
+  sharedConfig:
+    create: true
+    claim: datawave-ingest-config-pvc
+    path: /opt/datawave-ingest/current/shared-config
 
   files:
   - name: all-config.xml
