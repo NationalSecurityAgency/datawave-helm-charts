@@ -1,0 +1,17 @@
+{{- if (.Values.config.sharedConfig).create }}
+{{- with .Values.config.sharedConfig }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .claim }}
+spec:
+  {{- if .storageClass }}
+  storageClassName: {{ .storageClass }}
+  {{- end }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .size }}
+{{- end }}
+{{- end }}
