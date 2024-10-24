@@ -38,6 +38,8 @@ config:
     create: true
     claim: datawave-ingest-config-pvc
     path: /opt/datawave-ingest/current/shared-config
+    size: 1Gi
+    storageClass: "csi-hostpath-sc"
 
   files:
   - name: all-config.xml
