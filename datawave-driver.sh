@@ -11,7 +11,7 @@ NAMESPACE=default
 
 function ready_helm_charts() {
   while true; do
-    read -p "Enter chart mode (local,remote): [remote]" chart_mode
+    read -p "Enter chart mode (local,remote) [remote]: " chart_mode
     chart_mode=${chart_mode:-remote}
     # Check if input is one of the accepted values
     if [[ -z "$chart_mode" || "$chart_mode" == "" || "$chart_mode" == "local" || "$chart_mode" == "remote" ]]; then
