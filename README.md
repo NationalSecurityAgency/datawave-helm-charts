@@ -33,8 +33,8 @@ Images are now created in [Datawave Stack Docker Images](https://github.com/nati
 
 If you want to use an external Hadoop and/or Zookeeper instance then set the appropriate env var(s) to true.
 ```bash
-export USE_LOCAL_ZOOKEEPER=true
-export USE_LOCAL_HADOOP=true
+export USE_EXISTING_ZOOKEEPER=true
+export USE_EXISTING_HADOOP=true
 ```
 
 And set the path to the installation(s) appropriately for your system.
@@ -45,9 +45,9 @@ export HADOOP_HOME=/opt/hadoop
 
 In order to test changes to helm charts, you can run the following script:
 ```bash
-./startLocalTest.sh
+./datawave-driver.sh
 ```
-This will package all the helm charts from the local directories, and launch the cluster.
+This will package all the helm charts from the local directories, and launch the cluster, either in minikube or using a preconfigured k8s cluster.
 
 ## Updating Helm schemas
 ```bash
