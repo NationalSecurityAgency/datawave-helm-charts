@@ -19,5 +19,6 @@ dependencies:
   - name: common-service-library
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 0.0.2
+    path: ../common-service-library
 
 

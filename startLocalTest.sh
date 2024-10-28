@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+## Support for this script is discontinued. See datawave-driver.sh
+
+
+
 VALUES_FILE=${1:-values.yaml}
 USE_LOCAL_ZOOKEEPER=${USE_LOCAL_ZOOKEEPER:-false}
 USE_LOCAL_HADOOP=${USE_LOCAL_HADOOP:-false}

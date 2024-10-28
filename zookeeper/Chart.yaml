@@ -14,6 +14,7 @@ dependencies:
   tags:
   - bitnami-common
   version: 1.x.x
+  path: charts/common
 
 #################################
 # Basic Metadata for this Chart #
