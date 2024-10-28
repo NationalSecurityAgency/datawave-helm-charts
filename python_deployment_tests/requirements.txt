@@ -1,0 +1,6 @@
+pytest
+pytest-html
+kubernetes
+pandas
+requests
+# datawave_cli

@@ -1,0 +1,25 @@
+{
+  "genres": [
+    "Test"
+  ],
+  "id": 1234,
+  "language": "Enlgish",
+  "name": "The Singles Show",
+  "officialSite": null,
+  "premiered": "2023-05-12",
+  "runtime": 23,
+  "status": "Ongoing",
+  "summary": "</p>A show where singles 'date' each other to end up Ghosting each other.</p>",
+  "type": "Unscripted",
+  "url": "https://www.singles-show.com/series/123",
+  "weight": 75,
+  "visibility": "PUBLIC",
+  "externals": {
+    "imdb":"tt0",
+    "thetvdb":"0",
+    "tvrage":"0"
+  },
+  "network": {
+    "name":"custom-tv"
+  }
+}
