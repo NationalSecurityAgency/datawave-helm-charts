@@ -29,7 +29,8 @@ function ready_helm_charts() {
   else
     echo "Chart mode is local. Proceed to package all dependencies for the umbrella chart and assemble them"
     package_helm_dependencies "${DATAWAVE_STACK}"
-    HELM_CHART="${DATAWAVE_STACK}"/datawave-system*.tgz
+    helm package ${DATAWAVE_STACK}
+    HELM_CHART=datawave-system*.tgz
   fi
 }
 
@@ -44,7 +45,6 @@ package_helm_dependencies() {
 
     for dep in $(yq eval '.dependencies[].name' "$chart_file"); do
         local dep_path=$(yq eval ".dependencies[] | select(.name == \"$dep\") | .path" "$chart_file")
-
         if [ -n "$dep_path" ]; then
             echo "Packaging dependency: $dep"
             package_helm_dependencies "$base_dir/$dep_path"
@@ -133,6 +133,16 @@ function start_minikube() {
   minikube addons enable ingress
   minikube kubectl -- delete -A ValidatingWebhookConfiguration ingress-nginx-admission
   minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]'
+
+
+  # update default storage provisioner, set csi-hostpath-sc as the default storage driver
+  echo "Enabling volumesnapshots and csi-hostpath-driver"
+  minikube addons enable volumesnapshots
+  minikube addons enable csi-hostpath-driver
+  minikube addons disable storage-provisioner
+  minikube addons disable default-storageclass
+  minikube kubectl -- patch storageclass csi-hostpath-sc -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
   echo "Minikube configured successfully"
 }
 
@@ -267,7 +277,7 @@ function helm_install() {
   echo "Starting Helm Deployment"
 
   # shellcheck disable=SC2086
-  helm -n $NAMESPACE install dwv "${DATAWAVE_STACK}"/datawave-system-*.tgz -f ${values_file:-$DATAWAVE_STACK/values.yaml} ${EXTRA_HELM_ARGS} --wait
+  helm -n $NAMESPACE upgrade --install dwv ${HELM_CHART} -f ${values_file:-$DATAWAVE_STACK/values.yaml} ${EXTRA_HELM_ARGS} --wait
   if [ $? -eq 0 ]; then
     echo "Helm install successful."
   else
