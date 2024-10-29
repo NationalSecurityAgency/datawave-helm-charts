@@ -91,6 +91,12 @@ tabletServers:
             values:
             - tserver
         topologyKey: "kubernetes.io/hostname"
+compactors:
+  queues:
+    - compactorQueueName: test
+      serviceName: testCompactionService
+      jsonConfig: "[{\"name\":\"queue1\", \"type\": \"external\", \"queue\":\"test\"}]"
+      plannerClass: org.apache.accumulo.core.spi.compaction.DefaultCompactionPlanner
 scanServers:
   resourceGroups:
   - resourceGroupName: group1
@@ -106,6 +112,12 @@ scanServers:
     tolerations: []
     affinity: {}
 gc:
+  replicaCount: 1
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+coordinator:
   replicaCount: 1
   resources: {}
   nodeSelector: {}
