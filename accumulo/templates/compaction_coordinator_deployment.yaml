@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "accumulo.fullname" . }}-compaction-coordinator
+  labels:
+    {{- include "accumulo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: compaction-coordinator
+spec:
+  replicas: {{ .Values.coordinator.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "accumulo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: compaction-coordinator
+  template:
+    metadata:
+      labels:
+        {{- include "accumulo.labels" . | nindent 8 }}
+        app.kubernetes.io/component: compaction-coordinator
+    spec:
+      securityContext:
+        runAsUser: 1001
+      initContainers:
+      - name: init-accumulo-manager
+        securityContext:
+          runAsUser: 1000
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done"]
+      volumes:
+        - name: hadoop-config
+          configMap:
+            name: {{ .Values.global.hadoopConfigMap }}
+        - name: config
+          configMap:
+            name: {{ .Values.global.accumuloConfigMap }}
+      hostname: accumulo-compaction-coordinator
+      containers:
+      - name: accumulo-compaction-coordinator
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/bash", "-c"]
+        args: ["accumulo compaction-coordinator -a $(hostname -f)" ]
+        volumeMounts:
+        - name: config
+          mountPath: /opt/accumulo/conf
+        env:
+        - name: HADOOP_CONF_DIR
+          value: /usr/local/hadoop/conf
+        - name: HADOOP_CLASSPATH
+          value: {{ .Values.hadoop.classpath }}
+        - name: ACCUMULO_CONF_DIR
+          value: {{ .Values.config.path }}
+        resources:
+          {{- toYaml .Values.coordinator.resources | nindent 10 }}
+      {{- with .Values.coordinator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.coordinator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.coordinator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
