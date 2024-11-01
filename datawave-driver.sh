@@ -28,6 +28,23 @@ function ready_helm_charts() {
     HELM_CHART_VERSION=1.0.0
   else
     echo "Chart mode is local. Proceed to package all dependencies for the umbrella chart and assemble them"
+    if ! command -v yq &> /dev/null
+    then
+        echo "ERROR: yq is not installed or not found in your PATH."
+        echo "To install yq, you can follow these steps:"
+        echo ""
+        echo "For Linux/macOS:"
+        echo "  sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq"
+        echo "  sudo chmod +x /usr/local/bin/yq"
+        echo ""
+        echo "For macOS with Homebrew:"
+        echo "  brew install yq"
+        echo ""
+        echo "For Windows:"
+        echo "  Download the latest release from https://github.com/mikefarah/yq/releases and add it to your PATH."
+        echo ""
+        exit 1
+    fi
     package_helm_dependencies "${DATAWAVE_STACK}"
     helm package ${DATAWAVE_STACK}
     HELM_CHART=datawave-system*.tgz
