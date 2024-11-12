@@ -21,7 +21,7 @@ Prerequisites:
 * minikube (for local testing)
 
 
-If you already have the prerequisites installed you can simply run `./startLocalTest.sh`
+If you already have the prerequisites installed you can simply run `./datawave-driver.sh`
 
 
 
