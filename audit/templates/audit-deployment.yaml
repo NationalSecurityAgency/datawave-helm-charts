@@ -5,7 +5,7 @@ spec:
   template:
     spec:
       initContainers:
-        - name: "{{ .Chart.Name }}-init-authorization"
+        - name: "{{ .Chart.Name }}-init-auth"
           image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
           command: [ "sh", "-c", "until nc -z {{ .Values.global.serviceDns.authorization.name }} {{ .Values.global.serviceDns.authorization.port }}; do echo 'Waiting for Authorization...'; sleep 2; done" ]
         
