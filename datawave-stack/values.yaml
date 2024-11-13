@@ -13,6 +13,8 @@ charts:
     enabled: true
   hadoop:
     enabled: true
+  qms:
+    enabled: true
 external:
   zookeeper:
     hosts:

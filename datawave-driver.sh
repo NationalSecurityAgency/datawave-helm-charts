@@ -55,6 +55,8 @@ package_helm_dependencies() {
     local base_dir="$1"
     local chart_file="$base_dir"/Chart.yaml
 
+    echo "Processing $chart_file"
+
     local dependencies=$(yq eval '.dependencies[]' "$chart_file")
     if [ -z "$dependencies" ]; then
         return

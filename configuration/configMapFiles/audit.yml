@@ -1,14 +1,25 @@
 audit:
+  confirmAckEnabled: false
+  replay:
+    enabled: true
   auditors:
-    accumulo:
+    dump:
       enabled: false
+      pathUri: file:///audit
+    accumulo:
+      enabled: true
+      accumuloConfig:
+          zookeepers: '${accumulo.zookeepers}'
+          instanceName: '${accumulo.instanceName}'
+          username: '${accumulo.username}'
+          password: '${accumulo.password}'
     file:
       enabled: false
       maxFileAgeSeconds: 60
       maxLengthFileMB: 1
-      pathUri: s3a://signus-audits/
+      pathUri: file:///audit
     log:
-      enabled: false
+      enabled: true
 logging:
   level:
     datawave.microservice.audit: DEBUG

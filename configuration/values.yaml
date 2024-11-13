@@ -1,4 +1,17 @@
 global:
+  mysql:
+    user: datawave
+    minIdle: 10
+    maxSize: 10
+    configMap:
+      name: mysql-init-config
+      init:
+      - name: init-db
+        fileName: init-db.sql
+        fileContents: |-
+          create database cachedresults;
+          use cachedresults;
+          GRANT ALL PRIVILEGES ON *.* TO 'datawave'@'%' WITH GRANT OPTION;
   dockerRegistry:
     url: ghcr.io/nationalsecurityagency
   volumes:
@@ -49,7 +62,17 @@ global:
       endpoint: authorization/v1/authorize
     rabbitmq:
       name: rabbitmq
-
+    kafka:
+      name: kafka
+      port: 9092
+    mysql:
+      name: mysql  
+    query:
+      name: query
+      port: 8080
+    metrics:
+      name: query-metrics
+      port: 8080 
 image:
   name: datawave-config-service
   pullPolicy: IfNotPresent

@@ -1,4 +1,30 @@
 hazelcast:
   client:
+    clusterName: cache
     k8s:
       service-dns-name: {{ .Values.global.serviceDns.cache.name }}.{{ .Release.Namespace }}.svc.cluster.local
+      # This template is for configuring your site-specific properties for all microservices.
+system.name: CONTAINERS
+# Define the client certificates (in lower-case subjectDN<issuerDN> form) that are allowed to call a service. Note that you only need to
+# specify one value in the list below.
+# Since enforce-allowed-callers is false, you can skip configuring this section if you want.
+spring:
+  kafka:
+    bootstrap-servers: {{ .Values.global.serviceDns.kafka.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.serviceDns.kafka.port }}
+    consumer:
+      autoOffsetReset: earliest
+      enableAutoCommit: false
+      properties:
+        allow.auto.create.topics: false
+# This is the accumulo configuration we use in services.  These don't map directly to a properties class, but
+# they are here to be used as a reference for other properties.
+accumulo:
+  zookeepers: '{{ .Values.global.zookeeper.quorum }}'
+  instanceName: '{{ .Values.global.accumulo.instanceName }}'
+  username: '{{ .Values.global.accumulo.user }}'
+  password: '{{ .Values.global.accumulo.password }}'
+# Configuration placeholders which 1) determines what backend will be used for transmitting query results
+# and 2) determines the message size limit before claim checks are used with RabbitMQ messaging
+messaging:
+  backend: kafka
+  maxMessageSizeBytes: 536870912
