@@ -98,7 +98,7 @@ spec:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
       volumes:
-      {{- if (.Values.config.sharedConfig).claim }}
+      {{- if (.Values.config.sharedConfig).create }}
       - name: shared-ingest-config
         persistentVolumeClaim:
           claimName: {{ .Values.config.sharedConfig.claim }}
