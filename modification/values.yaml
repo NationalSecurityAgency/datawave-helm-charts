@@ -18,6 +18,7 @@ global:
       port: 8888
     authorization:
       name: authorization
+      port: 8080
     cache:
       name: cache
       port: 8080
@@ -29,7 +30,7 @@ global:
 image:
   name: datawave-modification-service
   pullPolicy: IfNotPresent
-  tag: 1.0.2
+  tag: latest
 args:
 - "--spring.output.ansi.enabled=ALWAYS"
 - "--spring.profiles.active=default,k8s,remoteauth,query"

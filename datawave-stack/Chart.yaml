@@ -42,3 +42,38 @@ dependencies:
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.0
     path: ../datawave-monolith-umbrella
+  - name: dwv-executor
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../executor
+    condition: charts.qms.enabled
+  - name: dwv-kafdrop
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../kafdrop
+    condition: charts.qms.enabled
+  - name: dwv-kafka
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../kafka
+    condition: charts.qms.enabled
+  - name: dwv-modification
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../modification
+    condition: charts.qms.enabled
+  - name: dwv-mr-query
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../mr-query
+    condition: charts.qms.enabled
+  - name: dwv-query-metrics
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../query-metrics
+    condition: charts.qms.enabled
+  - name: dwv-query
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../query
+    condition: charts.qms.enabled

@@ -13,6 +13,7 @@ management:
   endpoints.web.base-path: /mgmt
   endpoints.web.exposure.include: "*"
 server:
+  cdn-uri: /${spring.application.name}/
   non-secure-port: 8080
   outbound-ssl:
     key-store: ${server.ssl.key-store}
@@ -32,6 +33,8 @@ server:
     trust-store-type: '{{ .Values.global.secrets.truststore.type }}'
     trust-store-password: '{{ .Values.global.secrets.truststore.password }}'
 spring:
+  jackson:
+    default-property-include: non_null
   cloud:
     consul:
       enabled: false
@@ -40,10 +43,13 @@ spring:
       enabled: false
       failFast: true
     host: '{{ .Values.global.serviceDns.rabbitmq.name }}'
+    publisher-confirm-type: simple
+    publisher-confirms: true
+    publisher-returns: true
   security:
     datawave:
       enforce-allowed-callers: false
       issuers-required: true
       jwt.ttl: 86400
-      manager-role: Administator,JBossAdministrator
+      manager-roles: Administator,JBossAdministrator
     user.password: passwordNotUsed

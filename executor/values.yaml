@@ -18,6 +18,7 @@ global:
       port: 8888
     authorization:
       name: authorization
+      port: 8080
     cache:
       name: cache
       port: 8080
