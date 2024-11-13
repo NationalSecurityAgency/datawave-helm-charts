@@ -30,11 +30,7 @@ git stglobal:
 image:
   name: datawave-mapreduce-query-service
   pullPolicy: IfNotPresent
-<<<<<<< HEAD
-  tag: latest
-=======
   tag: 1.0.4
->>>>>>> 9cd6ade (Most ms added. Saving work for weekend. Still need query and query metrics)
 args:
 - "--spring.output.ansi.enabled=ALWAYS"
 - "--spring.profiles.active=default,k8s,remoteauth,query"
