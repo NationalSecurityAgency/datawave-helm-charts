@@ -51,5 +51,5 @@ spring:
       enforce-allowed-callers: false
       issuers-required: true
       jwt.ttl: 86400
-      manager-roles: Administator,JBossAdministrator
+      manager-roles: Administrator,JBossAdministrator
     user.password: passwordNotUsed
