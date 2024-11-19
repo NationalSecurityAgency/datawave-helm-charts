@@ -1,4 +1,6 @@
 global:
+  security:
+    userid: 1000
   dockerRegistry:
     url: ghcr.io/nationalsecurityagency
   volumes:
@@ -30,7 +32,7 @@ global:
 image:
   name: datawave-query-executor-service
   pullPolicy: IfNotPresent
-  tag: 1.0.9
+  tag: latest
 args:
 - "--spring.output.ansi.enabled=ALWAYS"
 - "--spring.profiles.active= default,k8s,remoteauth,querymessaging,metricssource,federation,query,pool1"
