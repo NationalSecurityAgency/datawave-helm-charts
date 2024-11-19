@@ -1,4 +1,6 @@
 global:
+  security:
+    userid: 1000
   dockerRegistry:
     url: ghcr.io/nationalsecurityagency
   volumes:

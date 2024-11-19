@@ -1,4 +1,7 @@
-git stglobal:
+
+global:
+  security:
+    userid: 1000
   dockerRegistry:
     url: ghcr.io/nationalsecurityagency
   volumes:
@@ -33,7 +36,7 @@ image:
   tag: 1.0.4
 args:
 - "--spring.output.ansi.enabled=ALWAYS"
-- "--spring.profiles.active=default,k8s,remoteauth,query"
+- "--spring.profiles.active=default,k8s,remoteauth,query,federation"
 livenessProbe:
   delaySeconds: 20
   periodSeconds: 5

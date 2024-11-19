@@ -78,7 +78,7 @@ spec:
       # Containers Associated with this Deployment #
       ##############################################
       securityContext:
-        runAsUser: 1000
+        runAsUser: "{{ .Values.global.security.userid }}"
       containers:
         - name: "{{ .Values.meta.name }}"
           args:

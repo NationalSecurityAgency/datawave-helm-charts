@@ -70,7 +70,7 @@ spec:
       {{- end }}
       {{- end }}
       securityContext:
-        runAsUser: 1000
+        runAsUser: {{ .Values.global.security.userid }}
       restartPolicy: "{{ .Values.restartPolicy }}"
       ##############################################
       # Containers Associated with this Deployment #

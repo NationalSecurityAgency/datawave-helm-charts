@@ -35,11 +35,8 @@ config:
   bulkDataTypes: shardStats
   liveDataTypes: wikipedia,mycsv,myjson,openlib
   sharedConfig:
-    create: true
-    claim: datawave-ingest-config-pvc
-    path: /opt/datawave-ingest/current/shared-config
-    size: 1Gi
-    storageClass: "csi-hostpath-sc"
+    create: false
+   
 
   files:
   - name: all-config.xml
