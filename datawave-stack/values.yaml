@@ -14,7 +14,7 @@ charts:
   hadoop:
     enabled: true
   qms:
-    enabled: true
+    enabled: false
 external:
   zookeeper:
     hosts:

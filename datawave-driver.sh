@@ -311,7 +311,7 @@ function helm_install() {
   echo "Starting Helm Deployment"
 
   # shellcheck disable=SC2086
-  helm -n $NAMESPACE upgrade --install dwv ${HELM_CHART} -f ${values_file:-$DATAWAVE_STACK/values.yaml} ${EXTRA_HELM_ARGS} --wait --timeout 15m0s
+  helm -n $NAMESPACE upgrade --install dwv ${HELM_CHART} -f ${values_file:-$DATAWAVE_STACK/values.yaml} ${EXTRA_HELM_ARGS} --wait --timeout 15m0s 
   if [ $? -eq 0 ]; then
     echo "Helm install successful."
   else
