@@ -70,8 +70,8 @@ spec:
       {{- end }}
       {{- end }}
       securityContext:
-        runAsUser: {{ .Values.global.security.userid }}
-        fsGroup: {{ .Values.global.security.fsgroupid }}
+        runAsUser: {{ .Values.global.security.userid | int64 }}
+        fsGroup: {{ .Values.global.security.fsgroupid | int64 }}
       restartPolicy: "{{ .Values.restartPolicy }}"
       ##############################################
       # Containers Associated with this Deployment #
