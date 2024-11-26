@@ -36,7 +36,7 @@ datawaveDeployment:
   livenessProbe:
     delaySeconds: 60
     periodSeconds: 5
-    port: 8080
+    port: 8080     
     scheme: HTTP
     uri: DataWave/Common/Health/health
   readinessProbe:
@@ -55,7 +55,7 @@ datawaveDeployment:
   restartPolicy: Always
 datawaveRuntimeConfig:
     additions: |
-      /subsystem=ee/managed-executor-service=default:write-attribute(name=max-threads,value=${jboss.managed.executor.service.default.max.threads})
+      /subsystem=ee/managed-executor-service=default:write-attribute(name=max-threads,value=64)
 
 #######################################
 # Default Values for DataWave Service #
