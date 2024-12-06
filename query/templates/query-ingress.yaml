@@ -1,0 +1,45 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+{{- if .Values.global.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-qms-ingress"
+  annotations:
+    {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+
+####################################
+# Ingress Controller Specification #
+####################################
+
+spec:
+
+  ################################################
+  # Transport-Layer Security (TLS) Configuration #
+  ################################################
+
+
+  #########################################
+  # Ingress Controller Rule Configuration #
+  #########################################
+  ingressClassName: "{{ .Values.global.ingress.ingressClassName }}"
+  rules:
+    - host: "{{ .Values.global.ingress.domain }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{ .Values.service.name }}"
+                port: 
+                  number: {{ .Values.ports.https }}
+{{- end }}

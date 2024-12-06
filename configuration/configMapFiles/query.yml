@@ -71,4 +71,4 @@ datawave:
 audit-client:
   discovery:
     enabled: false
-  uri: '${AUDIT_SERVER_URL:http://localhost:11111/audit}'
+  uri: '${AUDIT_SERVER_URL:http://audit-service:8080/audit}'

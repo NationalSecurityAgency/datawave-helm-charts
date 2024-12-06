@@ -6,3 +6,4 @@ dwv-accumulo:
 dwv-hadoop:
   image:
     tag: 3.3.6
+

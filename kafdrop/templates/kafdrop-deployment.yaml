@@ -83,3 +83,6 @@ spec:
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           resources: {}
+          env:
+          - name: KAFKA_BROKERCONNECT
+            value: {{.Values.global.serviceDns.kafka.name }}:{{.Values.global.serviceDns.kafka.port }}
