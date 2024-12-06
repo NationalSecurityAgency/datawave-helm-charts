@@ -15,6 +15,10 @@ global:
   certSecretName: certificates-secret
   pullSecrets:
     - dockerconfigjson-ghcr
+  serviceDns:
+    kafka:
+      name: kafka
+      port: 9092
 
 #######################################
 # Default Values for Audit Deployment #

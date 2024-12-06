@@ -271,11 +271,13 @@ function update_hosts_file_for_hadoop() {
 function configure_etc_hosts(){
   sudo sed -i "/^$/d" /etc/hosts
   sudo sed -i "/.*datawave\.org.*/d" /etc/hosts
+  sudo sed -i "/.*microwave\.org.*/d" /etc/hosts
   sudo sed -i "/.*zookeeper.*/d" /etc/hosts
   sudo sed -i "/.*hdfs.*/d" /etc/hosts
   sudo sed -i "/.*yarn.*/d" /etc/hosts
   echo "$(minikube ip) accumulo.datawave.org" | sudo tee -a /etc/hosts
   echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) query.microwave.org" | sudo tee -a /etc/hosts
   echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts
   
   if ${USE_EXISTING_ZOOKEEPER}; then

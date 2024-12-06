@@ -81,6 +81,12 @@ spec:
         runAsUser: {{ .Values.global.security.userid }}
       containers:
         - name: "{{ .Values.meta.name }}"
+          command:
+          {{ if .Values.command }}
+          {{- range $i, $value := .Values.command }}
+          - {{ $value }}
+          {{- end }}
+          {{- end }}
           args:
           {{- range $i, $value := .Values.args }}
           - {{ $value }}

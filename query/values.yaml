@@ -1,4 +1,10 @@
 global:
+  ingress:
+    enabled: true 
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    ingressClassName: nginx
+    domain: "query.microwave.org"
   security:
     userid: 1000
   dockerRegistry:

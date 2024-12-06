@@ -27,3 +27,15 @@ external:
     hosts:
       - yarn-rm
       - yarn-nm
+dwv-query:
+  command:
+  - java
+  - -agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=n
+  - -jar
+  - app.jar
+dwv-executor:
+  command:
+  - java
+  - -agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=n
+  - -jar
+  - app.jar
