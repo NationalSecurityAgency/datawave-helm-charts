@@ -26,5 +26,5 @@ jobs:
       - name: "Package chart"
         run: |
           cd ${{ strategy.matrix.chart }}
-          /usr/local/bin/helm package
+          /usr/local/bin/helm package .
         
