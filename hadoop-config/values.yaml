@@ -54,12 +54,6 @@ config:
     - name: mapreduce.jobhistory.webapp.address
       value: "0.0.0.0:19888"
       description: Bind RM to all hosts
-    - name: mapreduce.task.profile
-      value: "true"
-      description: "Enable Profiling"
-    - name: mapreduce.task.profile.maps
-      value: "2"
-      description: "This takes 0-2. Not sure what the numbers are, but this is what I expect"
 
   yarnSiteProperties:
     - name: yarn.resourcemanager.hostname
