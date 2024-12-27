@@ -5,3 +5,4 @@ ghcr-image-pull-secret.yaml
 logs
 __pycache__
 .pytest_cache
+data-loader

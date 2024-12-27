@@ -26,6 +26,7 @@ data:
     <flagMakerConfig>
     {{- range $type := .Values.config.types }}
         <flagCfg>
+          <dataName>{{$type.flagMakerConfig.dataName}}</dataName>
           <folder>{{$type.flagMakerConfig.bulkFolder}}</folder>
           <ingestPool>bulk</ingestPool>
       {{- range $k, $v := $type.flagMakerConfig.config }}
@@ -53,6 +54,7 @@ data:
     <flagMakerConfig>
       {{- range $type := .Values.config.types }}
       <flagCfg>
+        <dataName>{{$type.flagMakerConfig.dataName}}</dataName>
         <folder>{{$type.flagMakerConfig.liveFolder}}</folder>
         <ingestPool>live</ingestPool>
       {{- range $k, $v := $type.flagMakerConfig.config }}
