@@ -321,6 +321,7 @@ config:
   types:
     - name: openlib
       flagMakerConfig:
+        dataName: openlib
         liveFolder: openlib
         bulkFolder: openlib-bulk
         config:
@@ -354,6 +355,7 @@ config:
         "openlib.facet.category.name.network": ""  
     - name: myjson
       flagMakerConfig:
+        dataName: myjson
         liveFolder: myjson
         bulkFolder: myjson-bulk
         config:
@@ -390,6 +392,7 @@ config:
         "myjson.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"  
     - name: mycsv
       flagMakerConfig:
+        dataName: mycsv
         liveFolder: mycsv
         bulkFolder: mycsv-bulk
         config:
