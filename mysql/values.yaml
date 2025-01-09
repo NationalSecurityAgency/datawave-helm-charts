@@ -1,3 +1,7 @@
+init:
+  image:
+    name: container-registry.oracle.com/mysql/community-operator
+    tag: 8.4
 clusters:
   - name: mysql-cluster
     secretName: mysql-secret

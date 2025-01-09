@@ -23,9 +23,12 @@ spec:
           env:
             - name: MYSQL_HOST
               value: {{ .name }}
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
       containers:
         - name: mysql-script-runner
-          image: container-registry.oracle.com/mysql/community-operator:latest
+          image: {{ $.Values.init.image.name  }}:{{ $.Values.init.image.tag  }}
           env:
             - name: MYSQL_HOST
               value: {{ .name }}
