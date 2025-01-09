@@ -201,13 +201,22 @@ function configure_repository_credentials(){
 
 function create_secrets(){
   SECRET_NAME=certificates-secret
+  MYSQL_SECRET_NAME=mysql-secret
 
   kubectl  -n $NAMESPACE get secret $SECRET_NAME &> /dev/null
   if [ $? -ne 0 ]; then
     echo "Secret '$SECRET_NAME' does not exist. Creating secret."
-    kubectl  -n $NAMESPACE create secret generic $SECRET_NAME --from-file=keystore.p12="${DATAWAVE_STACK}"/certificates/keystore.p12 --from-file=truststore.jks="${DATAWAVE_STACK}"/certificates/truststore.jks
+    kubectl -n $NAMESPACE create secret generic $SECRET_NAME --from-file=keystore.p12="${DATAWAVE_STACK}"/certificates/keystore.p12 --from-file=truststore.jks="${DATAWAVE_STACK}"/certificates/truststore.jks
   else
     echo "Secret '$SECRET_NAME' already exists."
+  fi
+
+  kubectl  -n $NAMESPACE get secret $MYSQL_SECRET_NAME &> /dev/null
+  if [ $? -ne 0 ]; then
+    echo "Secret '$MYSQL_SECRET_NAME' does not exist. Creating secret."
+    kubectl -n $NAMESPACE create secret generic $MYSQL_SECRET_NAME --from-literal=rootPassword=changeme --from-literal=rootUser=datawave --from-literal=rootHost=%
+  else
+    echo "Secret '$MYSQL_SECRET_NAME' already exists."
   fi
 }
 
@@ -287,6 +296,12 @@ function configure_etc_hosts(){
 
 }
 
+function setup_mysql_operator() {
+  helm repo add mysql-operator https://mysql.github.io/mysql-operator/
+  helm repo update
+  helm install my-mysql-operator mysql-operator/mysql-operator    --namespace mysql-operator --create-namespace
+}
+
 function helm_install() {
   echo "Enter path values file to use [${DATAWAVE_STACK}/values.yaml]: "
   read values_file
@@ -316,6 +331,7 @@ else
     preload_docker_image rabbitmq:3.11.4-alpine
     preload_docker_image mysql:8.0.32
     preload_docker_image busybox:1.28
+    preload_docker_image bitnami/zookeeper:3.6.3
 
     configure_etc_hosts
     update_core_dns
@@ -324,6 +340,7 @@ fi
 configure_repository_credentials
 ghcr_login
 create_secrets
+setup_mysql_operator
 
 helm_install
 

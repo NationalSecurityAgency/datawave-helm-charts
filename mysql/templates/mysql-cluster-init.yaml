@@ -1,0 +1,64 @@
+{{- with .Values.clusters }}
+{{ range .}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .name }}-mysql-script-init
+  labels:
+    app: {{ .name }}
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.28
+          command: ["sh", "-c"]
+          args: [
+            "until nc -z $MYSQL_HOST 3306; do echo waiting for MySQL; sleep 5; done;"
+          ]
+          env:
+            - name: MYSQL_HOST
+              value: {{ .name }}
+      containers:
+        - name: mysql-script-runner
+          image: container-registry.oracle.com/mysql/community-operator:latest
+          env:
+            - name: MYSQL_HOST
+              value: {{ .name }}
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: rootUser
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: rootPassword
+          volumeMounts:
+            - name: init-script
+              mountPath: /scripts
+              readOnly: true
+          command: ["sh", "-c"]
+          args: ["mysqlsh $MYSQL_USER@{{ .name }} --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
+      restartPolicy: Never
+      volumes:
+        - name: init-script
+          configMap:
+            name: {{ .name }}-init-script
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-init-script
+  labels:
+    app: {{ .name }}
+data:
+  script.sql: |
+    {{ .initScript |  nindent 4 }}
+{{- end }}
+{{- end }}
