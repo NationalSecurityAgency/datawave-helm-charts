@@ -1,0 +1,14 @@
+{{- with .Values.clusters }}
+{{ range .}}
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: {{ .name }}
+spec:
+  secretName: {{ .secretName }}
+  tlsUseSelfSigned: {{ .tlsUseSelfSigned }}
+  instances: {{ .instances }}
+  router:
+    instances: {{ .router.instances }}
+{{- end }}
+{{- end }}

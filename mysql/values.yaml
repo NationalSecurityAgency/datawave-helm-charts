@@ -1,54 +1,20 @@
-global:
-  pullSecrets:
-    - dockerconfigjson-ghcr
-############################################
-# Default Values for Generic MySql Config  #
-############################################
-
-configMap:
-  name: mysql-init-config
-  init:
-  - name: init-db
-    fileName: init-db.sql
-    fileContents: |-
+init:
+  image:
+    name: container-registry.oracle.com/mysql/community-operator
+    tag: 8.4
+clusters:
+  - name: mysql-cluster
+    secretName: mysql-secret
+    tlsUseSelfSigned: true
+    instances: 3
+    router:
+      instances: 1
+    databaseUsers:
+    - name: datawave
+      secretName: mysql-secret
+      secretKeyRef: rootPassword
+    # Optional init script content. If specified, this will be used directly.
+    initScript: |
       create database example;
       use example;
       GRANT ALL PRIVILEGES ON example TO 'datawave'@'%' WITH GRANT OPTION;
-user: datawave
-
-##################################
-# Default Values for Deployment  #
-##################################
-
-image:
-  name: mysql
-  pullPolicy: IfNotPresent
-  tag: 8.0.32
-meta:
-  name: mysql
-replication:
-  maxSurge: 1
-  maxUnavailable: 0
-  replicaCount: 1
-  revisionHistoryLimit: 10
-restartPolicy: Always
-livenessProbe:
-  enabled: true
-  initialDelaySeconds: 120
-  timeoutSeconds: 20
-  periodSeconds: 30
-  failureThreshold: 6
-  successThreshold: 1
-readinessProbe:
-  enabled: true
-  initialDelaySeconds: 10
-  timeoutSeconds: 20
-  periodSeconds: 30
-  failureThreshold: 3
-  successThreshold: 1
-
-##############################
-# Default Values for Service #
-###############################
-ports:
-  mysql: 3306
