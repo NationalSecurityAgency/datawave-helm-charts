@@ -14,6 +14,11 @@ spec:
         app: {{ .name }}
     spec:
       initContainers:
+        # - name: chmod-mysqlsh
+        #   image: container-registry.oracle.com/mysql/community-operator:8.4
+        #   command: ['sh', '-c', 'chmod +x /path/to/mysqlsh']
+        #   securityContext:
+        #     runAsUser: 0
         - name: wait-for-mysql
           image: busybox:1.28
           command: ["sh", "-c"]
@@ -47,7 +52,8 @@ spec:
               mountPath: /scripts
               readOnly: true
           command: ["sh", "-c"]
-          args: ["mysqlsh $MYSQL_USER@{{ .name }} --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
+          args: [tail -F 60000]
+          #args: ["mysqlsh $MYSQL_USER@{{ .name }} --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
       restartPolicy: Never
       volumes:
         - name: init-script

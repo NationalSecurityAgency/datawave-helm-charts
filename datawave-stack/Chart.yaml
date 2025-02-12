@@ -42,3 +42,7 @@ dependencies:
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.0
     path: ../datawave-monolith-umbrella
+  # - name: dwv-mysql
+  #   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+  #   version: 1.0.0
+  #   path: ../mysql

@@ -93,5 +93,5 @@ config:
       value: "org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler"
       description: Scheduler Class to use
     - name: yarn.application.classpath
-      value: "/usr/local/hadoop/conf,/usr/lib/hadoop/*,/usr/lib/hadoop/lib/*,/usr/lib/hadoop-hdfs/*,/usr/lib/hadoop-hdfs/lib/*,/usr/lib/hadoop-yarn/*,/usr/lib/hadoop-yarn/lib/*,/usr/lib/hadoop-yarn/timelineservice/*,/usr/lib/hadoop-mapreduce/*,"
+      value: "/tmp/hadoop-config/,/usr/lib/hadoop/*,/usr/lib/hadoop/lib/*,/usr/lib/hadoop-hdfs/*,/usr/lib/hadoop-hdfs/lib/*,/usr/lib/hadoop-yarn/*,/usr/lib/hadoop-yarn/lib/*,/usr/lib/hadoop-yarn/timelineservice/*,/usr/lib/hadoop-mapreduce/*,"
       description: Classpath for Yarn jobs

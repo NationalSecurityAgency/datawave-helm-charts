@@ -8,7 +8,7 @@ fullnameOverride: ""
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-  tag: 7.8.1
+  tag: 7.16.0-bli3
   pullPolicy: IfNotPresent
 deployment:
   replicaCount: 1
@@ -32,7 +32,7 @@ config:
   zookeeper: zookeeper:2181
   instanceName: dev
   hadoopConfDif: /usr/local/hadoop/conf
-  bulkDataTypes: shardStats
+  bulkDataTypes: shardStats,openlib
   liveDataTypes: wikipedia,mycsv,myjson,openlib
   sharedConfig:
     create: true
