@@ -26,6 +26,12 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsNonRoot: true
+      {{- with $.Values.global.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: mysql-script-runner
           image: {{ $.Values.init.image.name  }}:{{ $.Values.init.image.tag  }}
