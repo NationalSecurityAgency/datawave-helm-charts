@@ -5,11 +5,13 @@ config:
     - name: fs.defaultFS
       value: "hdfs://hdfs-nn:9000/"
       description: NameNode URI
-    - name: dfs.permissions.supergroup
-      value: "hadoop"
-      description: Hadoop Super User Group
 
   hdfsSiteProperties:
+    - name: hadoop.user.group.static.mapping.overrides
+      value: datawave=hadoop;accumulo=hadoop
+    - name: dfs.permissions.superusergroup
+      value: "hadoop"
+      description: Hadoop Super User Group
     - name: dfs.webhdfs.enabled
       value: "false"
       description: whether to start webhdfs

@@ -8,7 +8,7 @@ fullnameOverride: ""
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-  tag: 7.8.1
+  tag: 7.17.0-fix-group
   pullPolicy: IfNotPresent
 deployment:
   replicaCount: 1
