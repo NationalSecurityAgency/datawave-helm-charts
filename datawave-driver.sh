@@ -25,7 +25,7 @@ function ready_helm_charts() {
 
   if [ "$chart_mode" == "remote" ]; then
     HELM_CHART=oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts/datawave-system
-    HELM_CHART_VERSION=1.0.0
+    HELM_CHART_VERSION=1.0.2
   else
     echo "Chart mode is local. Proceed to package all dependencies for the umbrella chart and assemble them"
     if ! command -v yq &> /dev/null
