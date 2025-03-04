@@ -34,7 +34,7 @@ dependencies:
     path: ../dictionary
   - name: dwv-rabbitmq
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.2
+    version: 1.0.1
     path: ../rabbitmq
   - name: dwv-authorization
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
