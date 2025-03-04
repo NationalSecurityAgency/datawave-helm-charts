@@ -1,6 +1,9 @@
+global:
+  pullSecrets: 
+  - dockerconfigjson-ghcr
 init:
   image:
-    name: container-registry.oracle.com/mysql/community-operator
+    name: ghcr.io/nationalsecurityagency/datawave-community-operator
     tag: 8.4
 clusters:
   - name: mysql-cluster
