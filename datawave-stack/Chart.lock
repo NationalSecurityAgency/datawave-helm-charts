@@ -1,21 +1,21 @@
 dependencies:
 - name: dwv-ingest
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.1
+  version: 1.0.2
 - name: dwv-hadoop
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.0
+  version: 1.0.1
 - name: dwv-hadoop-config
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.0
+  version: 1.0.1
 - name: dwv-zookeeper
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.0
+  version: 1.0.1
 - name: dwv-accumulo
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.0
+  version: 1.0.1
 - name: datawave-monolith-umbrella
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.0
-digest: sha256:15e2150558d33bedb6124d283fa0cef669dd3b57316e9b9e146fa7fb5d25e68a
-generated: "2024-10-09T00:18:58.063826338Z"
+  version: 1.0.3
+digest: sha256:72f8b2add3a069aa665b11a5663afe8f1129ce0a99a13a4f22f3b6f8fd446d64
+generated: "2025-03-04T16:55:37.734706977Z"
