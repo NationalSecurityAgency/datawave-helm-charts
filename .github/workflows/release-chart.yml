@@ -23,7 +23,7 @@ jobs:
     - name: Get Next Version
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
-        sed -i -E 's/^(version:.*)-*$/\1/' Chart.yaml
+        sed -i -E 's/^(version: [0-9]+\.[0-9]+\.[0-9]+)(-[^-]+)?$/\1/' Chart.yaml
     - name: Get Version
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
