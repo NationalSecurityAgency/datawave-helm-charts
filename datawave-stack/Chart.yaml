@@ -5,7 +5,7 @@
 apiVersion: v2
 name: datawave-system
 type: application
-version: 1.0.2-SNAPSHOT
+version: 1.0.2
 
 #################################
 # Basic Metadata for this Chart #
