@@ -42,7 +42,7 @@ dependencies:
     path: ../authorization
   - name: dwv-web
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.2
+    version: 1.0.3
     path: ../datawave-monolith
   - name: dwv-mysql
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
