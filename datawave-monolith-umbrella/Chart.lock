@@ -19,9 +19,9 @@ dependencies:
   version: 1.0.2
 - name: dwv-web
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-  version: 1.0.2
+  version: 1.0.3
 - name: dwv-mysql
   repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
   version: 1.0.1
-digest: sha256:56a1a497d6f6ad21ffc29150ae96888a11e9e96e6c8a72a7d2f138607e83748e
-generated: "2025-03-04T16:45:49.370646798Z"
+digest: sha256:533b6a9adb63397e895c739556ba832f747f34dbbf2345868d7e4c8885a4a5c2
+generated: "2025-03-04T16:52:57.605954656Z"
