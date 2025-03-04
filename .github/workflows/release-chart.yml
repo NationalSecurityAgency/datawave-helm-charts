@@ -23,7 +23,7 @@ jobs:
     - name: Get Next Version
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
-        sed -i -E 's/^(version:.*)-SNAPSHOT$/\1/' Chart.yaml
+        sed -i -E 's/^(version:.*)-*$/\1/' Chart.yaml
     - name: Get Version
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
@@ -69,13 +69,13 @@ jobs:
         version="${TAG_NAME##*-}"
         IFS='.' read -r major minor patch <<< "${version}"
         next=$((patch + 1))
-        new_version="${major}.${minor}.${next}-SNAPSHOT"
+        new_version="${major}.${minor}.${next}-1"
         sed -i "s/^version:.*/version: ${new_version}/" Chart.yaml  
         
     - name: Commit Snapshot Number
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "datawave@github.com"
-        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set snapshot version."
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set prerelease version."
         git push
 
