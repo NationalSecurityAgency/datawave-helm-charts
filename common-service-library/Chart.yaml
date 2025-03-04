@@ -4,6 +4,6 @@ description: Library chart for use by datawave microservice charts
 
 type: library
 
-version: 0.0.3
+version: 0.0.4-1
 
 appVersion: "1.0.0"
