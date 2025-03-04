@@ -18,33 +18,33 @@ icon: https://code.nsa.gov/datawave/images/datawave-logo.png
 dependencies:
   - name: dwv-audit
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../audit
   - name: dwv-configuration
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../configuration
   - name: dwv-cache
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../cache
   - name: dwv-dictionary
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../dictionary
   - name: dwv-rabbitmq
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../rabbitmq
   - name: dwv-authorization
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../authorization
   - name: dwv-web
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.2
     path: ../datawave-monolith
   - name: dwv-mysql
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.0
+    version: 1.0.1
     path: ../mysql
