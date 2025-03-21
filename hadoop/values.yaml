@@ -9,7 +9,7 @@ nameOverride: hadoop
 # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/manager/image
 image:
   repository: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-  tag: 3.3.6
+  tag: 3.3.5-jmx
   pullPolicy: IfNotPresent
 
 # The version of the hadoop libraries being used in the image.

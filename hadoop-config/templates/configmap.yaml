@@ -7,6 +7,17 @@ metadata:
     chart: {{ include "hadoop.chart" . }}
     release: {{ .Release.Name }}
 data:
+  hadoop-env.sh: |
+    #!/bin/bash
+    export HADOOP_NAMENODE_OPTS="$HADOOP_NAMENODE_OPTS -javaagent:/usr/local/hadoop/lib/jmx_prometheus_javaagent-1.2.0.jar=9999:/etc/hadoop/conf/jmx-exporter.yml";
+    export HADOOP_NAMENODE_OPTS="-Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9999 $HADOOP_NAMENODE_OPTS "
+  jmx-exporter.yml: |
+    ---
+    startDelaySeconds: 0
+    hostPort: localhost:9999
+    ssl: false
+    lowercaseOutputName: false
+    lowercaseOutputLabelNames: false
   bootstrap.sh: |
     #!/bin/bash
 
@@ -21,7 +32,7 @@ data:
 
     # Copy config files from volume mount
 
-    for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml erasure-coding-policies.xml; do
+    for f in slaves hadoop-env.sh jmx-exporter.yml core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml erasure-coding-policies.xml; do
       if [[ -e ${CONFIG_DIR}/$f ]]; then
         cp ${CONFIG_DIR}/$f $HADOOP_HOME/etc/hadoop/$f
       else
@@ -114,9 +125,10 @@ data:
 
   log4j.properties: |
     # Define some default values that can be overridden by system properties
-    hadoop.root.logger=INFO,console
+    hadoop.root.logger=DEBUG,DRFA
     hadoop.log.dir=.
     hadoop.log.file=hadoop.log
+    monitorInterval=30
     
     # Define the root logger to the system property "hadoop.root.logger".
     log4j.rootLogger=${hadoop.root.logger}

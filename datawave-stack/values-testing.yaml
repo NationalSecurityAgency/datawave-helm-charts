@@ -1,8 +1,12 @@
 dwv-accumulo:
   image:
-    tag: 2.1.3
+    tag: 2.1.4-dwv-f297977
   initContainer:
     tag: 3.3.6
 dwv-hadoop:
   image:
     tag: 3.3.6
+dwv-ingest:
+  image:
+    tag: 7.18.0-lpj
+    
