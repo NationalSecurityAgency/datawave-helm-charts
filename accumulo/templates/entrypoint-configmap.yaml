@@ -22,7 +22,7 @@ data:
     	fi
     
     	# If possible, wait until all the HDFS instances that Accumulo will be using are available i.e. not in Safe Mode and directory is writeable
-    	ACCUMULO_VOLUMES="hdfs://hdfs-nn:9000/accumulo"
+    	ACCUMULO_VOLUMES="hdfs://{{ .Values.global.hdfs.namenode }}/accumulo"
     	if [ ! -z "${ACCUMULO_VOLUMES}" ]; then
     		
     		until [ "${ALL_VOLUMES_READY}" == "true" ] || [ $(( ATTEMPTS++ )) -gt 6 ]; do

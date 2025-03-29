@@ -69,7 +69,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
            - "/bin/bash"
-           - "/tmp/hadoop-config/bootstrap.sh"
+           - "{{ .Values.global.volumes.hadoop_bootstrap.destination }}/bootstrap.sh"
            - "-d"
         resources:
           {{ toYaml .Values.hdfs.dataNode.resources | nindent 10 }}
@@ -88,16 +88,13 @@ spec:
         ports:
           - containerPort: 9864
         volumeMounts:
-        - name: hadoop-config
-          mountPath: /tmp/hadoop-config
+        {{- include "hadoop.volumeMount" $.Values.global.volumes.hadoop_bootstrap | nindent 8 }}
         {{- if .Values.persistence.dataNode.enabled }}
         - name: dfs
           mountPath: /usr/local/hadoop/hdfs/
         {{- end }}
       volumes:
-      - name: hadoop-config
-        configMap:
-          name: {{ .Values.global.hadoopConfigMap }}
+      {{- include "hadoop.volume" $.Values.global.volumes.hadoop_bootstrap | nindent 6 }}
   {{- if .Values.persistence.dataNode.enabled }}
   {{- with .Values.persistence.dataNode.definitions }}
   volumeClaimTemplates:

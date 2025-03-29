@@ -37,21 +37,32 @@ spec:
         {{- include "accumulo.labels" $ | nindent 8 }}
         app.kubernetes.io/component: sserver-{{ .resourceGroupName }}
     spec:
+      hostNetwork: {{ coalesce $.Values.hostNetwork.ss $.Values.hostNetwork.default false }}
       securityContext:
         runAsUser: 1001
+      {{- if not (coalesce $.Values.hostNetwork.ss $.Values.hostNetwork.default false) }}
       initContainers:
       - name: init-accumulo-tservers
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
         command: ['sh', '-c', 'until nslookup {{ include "accumulo.fullname" $ }}-tservers; do echo waiting for accumulo; sleep 2; done']
+      {{- else }}
+      initContainers:
+      - name: init-accumulo-manager
+        securityContext:
+          runAsUser: 1000
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        command:
+          - 'sh'
+          - '-c'
+          - until [[ $(/opt/accumulo/bin/accumulo info | grep managers | sed -e 's@.*\[@@' -e 's@\]@@') != "" ]]; do echo waiting for accumulo; sleep 2; done
+        volumeMounts:
+          {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 10 }}
+      {{- end }}
       volumes:
-      - name: hadoop-config
-        configMap:
-          name: {{ $.Values.global.hadoopConfigMap }}
-      - name: config
-        configMap:
-          name: {{ $.Values.global.accumuloConfigMap }}
+        {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 8 }}
+        {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 8 }}
       containers:
       - name: accumulo-sserver
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
@@ -63,19 +74,17 @@ spec:
         args: ["accumulo sserver -a $(hostname -f) -g {{ .resourceGroupName }}" ]
         {{ end }}
         ports:
-          - containerPort: 9997
+          - containerPort: 19997
         volumeMounts:
-        - name: hadoop-config
-          mountPath: /usr/local/hadoop/conf
-        - name: config
-          mountPath: /opt/accumulo/conf
+          {{- include "accumulo.volumeMount" $.Values.global.volumes.hadoop | nindent 10 }}
+          {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 10 }}
         env:
         - name: HADOOP_CLASSPATH
           value: {{ $.Values.hadoop.classpath }}
         - name: HADOOP_CONF_DIR
-          value: /usr/local/hadoop/conf
+          value: {{ $.Values.global.volumes.hadoop.destination }}
         - name: ACCUMULO_CONF_DIR
-          value: {{ $.Values.config.path }}
+          value: {{ $.Values.global.volumes.accumulo.destination }}
         resources:
           {{- toYaml .resources | nindent 10 }}
       {{- with .affinity }}

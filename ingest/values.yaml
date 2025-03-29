@@ -1,8 +1,6 @@
 global:
   pullSecrets:
     - dockerconfigjson-ghcr
-  hadoopConfigMap: hadoop-config
-  accumuloConfigMap: accumulo-config
 nameOverride: ""
 fullnameOverride: ""
 labels: {}

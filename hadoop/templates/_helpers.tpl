@@ -21,3 +21,23 @@ Create chart name and version as used by the chart label.
 {{- define "hadoop.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "hadoop.volumeMount" -}}
+- mountPath: {{ .destination }}
+  name: {{ .name }}
+  {{- if .readOnly }}
+  readOnly: true
+  {{- end }}
+{{- end }}
+
+{{- define "hadoop.volume" -}}
+- name: {{ .name }}
+  {{- if eq .source.type "hostPath" }}
+  hostPath:
+    path: {{ .source.path }}
+    type: Directory
+  {{- else if eq .source.type "configmap" }}
+  configMap:
+    name: {{ .source.name }}
+  {{- end }}
+{{- end }}

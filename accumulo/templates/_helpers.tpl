@@ -84,3 +84,23 @@ Create the name of the service account to use
     {{ required ".Values.hdfs.namenode.hostname needs to be set as .Values.hdfs.enabled = false" .Values.hdfs.namenode.hostname }}
   :{{ .Values.hdfs.namenode.ports.clientRpc }}
 {{- end -}}
+
+{{- define "accumulo.volumeMount" -}}
+- mountPath: {{ .destination }}
+  name: {{ .name }}
+  {{- if .readOnly }}
+  readOnly: true
+  {{- end }}
+{{- end }}
+
+{{- define "accumulo.volume" -}}
+- name: {{ .name }}
+  {{- if eq .source.type "hostPath" }}
+  hostPath:
+    path: {{ .source.path }}
+    type: Directory
+  {{- else if eq .source.type "configmap" }}
+  configMap:
+    name: {{ .source.name }}
+  {{- end }}
+{{- end }}

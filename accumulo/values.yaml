@@ -1,10 +1,27 @@
 global:
   pullSecrets: 
   - dockerconfigjson-ghcr
-  hadoopConfigMap: hadoop-config
-  accumuloConfigMap: accumulo-config
+  volumes:
+    hadoop:
+      name: hadoop
+      destination: /usr/local/hadoop/conf
+      readOnly: true
+      source:
+        type: configmap
+        name: hadoop-config
+    accumulo:
+      name: accumulo
+      destination: /opt/accumulo/conf
+      readOnly: true
+      source:
+        type: configmap
+        name: accumulo-config
+        create: true
   accumulo:
     instanceName: dev
+    zookeepers: zookeeper:2181
+  hdfs:
+    namenode: hdfs-nn:9000
 logging:
   shellRootLevel: debug
   shellAccumuloLevel: trace
@@ -18,6 +35,7 @@ hadoop:
     "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
 entrypointConfigMap: 
   name: accumulo-entrypoint
+hostNetwork: {}
 hdfs:
   volumes:
     - /accumulo

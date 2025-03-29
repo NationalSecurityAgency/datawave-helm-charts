@@ -1,5 +1,13 @@
 global:
-  hadoopConfigMap: hadoop-config
+  volumes:
+    hadoop_bootstrap:
+      name: hadoop
+      destination: /tmp/hadoop-config
+      readOnly: true
+      source:
+        type: configmap
+        name: hadoop-config
+        create: true
 config:
   coreSiteProperties:
     - name: fs.defaultFS
