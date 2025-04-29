@@ -11,6 +11,9 @@ global:
     certificates:
       name: certificates
       destination: /data/certs
+    hadoop:
+      source:
+        name: hadoop-config
   certSecretName: certificates-secret
   certificates:
     keystore:
