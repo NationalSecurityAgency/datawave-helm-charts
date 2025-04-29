@@ -134,10 +134,10 @@ spec:
           name: "{{ .Chart.Name }}-genders"
       - name: hadoop-config
         configMap:
-          name: {{ .Values.global.hadoopConfigMap }}
+          name: {{ .Values.global.volumes.hadoop.source.name }}
       - name: accumulo-config
         configMap:
-          name: {{ .Values.global.accumuloConfigMap }}
+          name: {{ .Values.global.volumes.accumulo.source.name }}
       - name: cmds
         secret:
           secretName: {{ include "datawave.fullname" . }}-cmds

@@ -27,10 +27,8 @@ spec:
     imagePullPolicy: {{ .Values.image.pullPolicy }}
     command: ["/bin/bash", "/cmds/run.sh"]
     volumeMounts:
-    - name: hadoop-config
-      mountPath: /usr/local/hadoop/conf
-    - name: config
-      mountPath: /opt/accumulo/conf
+    {{- include "accumulo.volumeMount" $.Values.global.volumes.hadoop | nindent 4 }}
+    {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 4 }}
     - name: cmds
       mountPath: /cmds
       readOnly: true
@@ -38,18 +36,14 @@ spec:
     - name: HADOOP_CLASSPATH
       value: {{ .Values.hadoop.classpath }}
     - name: HADOOP_CONF_DIR
-      value: /usr/local/hadoop/conf
+      value: {{ $.Values.global.volumes.hadoop.destination }}
     - name: ACCUMULO_CONF_DIR
-      value: {{ .Values.config.path }}
+      value: {{ $.Values.global.volumes.accumulo.destination }}
     resources:
       {{- toYaml .Values.cmds.resources | nindent 6 }}
   volumes:
-  - name: hadoop-config
-    configMap:
-      name: {{ .Values.global.hadoopConfigMap }}
-  - name: config
-    configMap:
-      name: {{ .Values.global.accumuloConfigMap }}
+  {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 2 }}
+  {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 2 }}
   - name: cmds
     secret:
       secretName: {{ include "accumulo.fullname" . }}-cmds

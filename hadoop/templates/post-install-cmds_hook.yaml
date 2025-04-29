@@ -30,8 +30,7 @@ spec:
     - name: cmds
       mountPath: /cmds
       readOnly: true
-    - name: hadoop-config
-      mountPath: /tmp/hadoop-config
+    {{- include "hadoop.volumeMount" $.Values.global.volumes.hadoop_bootstrap | nindent 4 }}
     resources:
       {{- toYaml .Values.cmds.resources | nindent 6 }}
   volumes:
@@ -39,9 +38,7 @@ spec:
     secret:
       secretName: {{ include "hadoop.fullname" . }}-cmds
       optional: false
-  - name: hadoop-config
-    configMap:
-      name: {{ .Values.global.hadoopConfigMap }}
+  {{- include "hadoop.volume" $.Values.global.volumes.hadoop_bootstrap | nindent 2 }}
      
   {{- with .Values.cmds.affinity }}
   affinity:

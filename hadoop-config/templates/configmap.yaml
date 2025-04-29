@@ -1,7 +1,8 @@
+{{- if and (eq .Values.global.volumes.hadoop_bootstrap.source.type "configmap") .Values.global.volumes.hadoop_bootstrap.source.create }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.global.hadoopConfigMap }}
+  name: {{ .Values.global.volumes.hadoop_bootstrap.source.name }}
   labels:
     app: {{ include "hadoop.appName" . }}
     chart: {{ include "hadoop.chart" . }}
@@ -17,7 +18,7 @@ data:
     . $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 
     # Directory to find config artifacts
-    CONFIG_DIR="/tmp/hadoop-config"
+    CONFIG_DIR="{{ .Values.global.volumes.hadoop_bootstrap.destination }}"
 
     # Copy config files from volume mount
 
@@ -512,3 +513,5 @@ data:
       </policy>
     </policies>
     </configuration>
+
+{{- end }}

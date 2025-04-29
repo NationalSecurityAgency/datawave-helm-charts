@@ -11,6 +11,9 @@ global:
     certificates:
       name: certificates
       destination: /data/certs
+    hadoop:
+      source:
+        name: hadoop-config
   certSecretName: certificates-secret
   certificates:
     keystore:
@@ -19,8 +22,6 @@ global:
     password: ThisP@ssw0rd1sBANANAS
   zookeeper:
     quorum: zookeeper:2181
-  hadoopConfigMap: hadoop-config
-  accumuloConfigMap: accumulo-config
   pullSecrets:
     - dockerconfigjson-ghcr
 

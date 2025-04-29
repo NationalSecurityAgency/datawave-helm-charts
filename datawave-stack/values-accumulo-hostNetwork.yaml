@@ -1,0 +1,67 @@
+######################################
+# Default Values for Docker Registry #
+######################################
+
+global:
+  accumulo:
+    zookeepers: minikube:2181
+  hdfs:
+    namenode: minikube:9000
+  hadoopConfigMap: dwv-hadoop-config
+  volumes:
+    hadoop:
+      source:
+        name: dwv-hadoop-config
+    hadoop_bootstrap:
+      source:
+        name: dwv-hadoop-config
+    accumulo:
+      source:
+        name: dwv-accumulo-config
+dockerRegistry:
+  url: ghcr.io/nationalsecurityagency/
+charts:
+  zookeeper:
+    enabled: true
+  hadoop:
+    enabled: true
+external:
+  zookeeper:
+    hosts:
+      - zookeeper
+  hdfs:
+    hosts:
+      - hdfs-nn
+      - hdfs-dn
+  yarn:
+    hosts:
+      - yarn-rm
+      - yarn-nm
+
+dwv-accumulo:
+  tabletServers:
+    replicaCount: 1
+  monitor:
+    # cant access the nginx ingress running with a patch inside the system without this
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: minikube.k8s.io/primary
+                  operator: In
+                  values:
+                    - "true"
+  manager:
+    # cant access the nginx ingress running with a patch inside the system without this
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: minikube.k8s.io/primary
+              operator: In
+              values:
+              - "true"
+  hostNetwork:
+    default: true

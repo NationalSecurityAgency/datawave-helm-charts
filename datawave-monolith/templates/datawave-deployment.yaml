@@ -148,7 +148,7 @@ spec:
             optional: false
         - name: hadoop-config
           configMap:
-            name: "{{ .Values.global.hadoopConfigMap }}"
+            name: "{{ .Values.global.volumes.hadoop.source.name }}"
         - name: "{{ .Chart.Name }}-web-runtime-config"
           configMap:
             name: "{{ .Chart.Name }}-web-runtime-config"

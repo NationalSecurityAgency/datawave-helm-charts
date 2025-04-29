@@ -1,7 +1,8 @@
+{{- if and (eq $.Values.global.volumes.accumulo.source.type "configmap") $.Values.global.volumes.accumulo.source.create }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.global.accumuloConfigMap }}
+  name: {{ .Values.global.volumes.accumulo.source.name }}
   labels:
     app: accumulo
     chart: accumulo
@@ -9,7 +10,7 @@ metadata:
 data:
   accumulo-client.properties: |
     instance.name={{ .Values.global.accumulo.instanceName }}
-    instance.zookeepers=zookeeper:2181
+    instance.zookeepers={{ .Values.global.accumulo.zookeepers }}
     auth.principal=root
     auth.token={{ .Values.config.userManagement.rootPassword }}
    
@@ -167,10 +168,10 @@ data:
 
   accumulo.properties: |
     ## Sets location in HDFS where Accumulo will store data
-    instance.volumes=hdfs://hdfs-nn:9000/accumulo
+    instance.volumes=hdfs://{{ .Values.global.hdfs.namenode }}/accumulo
     
     ## Sets location of Zookeepers
-    instance.zookeeper.host=zookeeper:2181
+    instance.zookeeper.host={{ .Values.global.accumulo.zookeepers }}
     
     ## Change secret before initialization. All Accumulo servers must have same secret
     instance.secret=DEFAULT
@@ -194,7 +195,7 @@ data:
     
     general.classpaths=$ACCUMULO_HOME/lib/accumulo-server.jar,$ACCUMULO_HOME/lib/accumulo-core.jar,$ACCUMULO_HOME/lib/accumulo-start.jar,$ACCUMULO_HOME/lib/accumulo-fate.jar,$ACCUMULO_HOME/lib/accumulo-proxy.jar,$ACCUMULO_HOME/lib/[^.].*.jar,$ZOOKEEPER_HOME/lib/zookeeper[^.].*.jar,$HADOOP_CONF_DIR,$HADOOP_HOME/share/hadoop/client/[^.].*.jar,$HADOOP_HOME/share/hadoop/common/lib/(?!slf4j)[^.].*.jar
     
-    general.vfs.context.classpath.datawave=hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath/.*.jar
+    general.vfs.context.classpath.datawave=hdfs://{{ .Values.global.hdfs.namenode }}/datawave/accumulo-vfs-classpath/.*.jar
 
     general.micrometer.enabled=true
 
@@ -280,3 +281,4 @@ data:
     logger.hadoop.level = warn
     
     rootLogger.level = {{ .Values.logging.shellRootLevel }}
+  {{- end }}

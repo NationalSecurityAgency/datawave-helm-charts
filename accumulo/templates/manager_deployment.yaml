@@ -31,6 +31,7 @@ spec:
         {{- include "accumulo.labels" . | nindent 8 }}
         app.kubernetes.io/component: manager
     spec:
+      hostNetwork: {{ coalesce .Values.hostNetwork.ma .Values.hostNetwork.default false }}
       securityContext:
         runAsUser: 1001
       initContainers:
@@ -40,7 +41,7 @@ spec:
           runAsUser: 1000
         command: 
         - "/bin/sh"
-        args: ["-c", "while [ `hdfs dfs -ls hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
+        args: ["-c", "while [ `hdfs dfs -ls hdfs://{{ .Values.global.hdfs.namenode }}/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
       hostname: accumulo-manager
       containers:
       - name: accumulo-manager
@@ -52,9 +53,9 @@ spec:
           - containerPort: 9999
         env:
         - name: HADOOP_CONF_DIR
-          value: /usr/local/hadoop/conf
+          value: {{ $.Values.global.volumes.hadoop.destination }}
         - name: ACCUMULO_CONF_DIR
-          value: {{ .Values.config.path }}
+          value: {{ $.Values.global.volumes.accumulo.destination }}
         - name: ACCUMULO_INSTANCE_NAME
           value: {{ .Values.global.accumulo.instanceName }}
         - name: HADOOP_CLASSPATH
@@ -62,10 +63,8 @@ spec:
         - name: ACCUMULO_ROOT_PASSWORD
           value: {{ .Values.config.userManagement.rootPassword }}
         volumeMounts:
-          - name: hadoop-config
-            mountPath: /usr/local/hadoop/conf
-          - name: config
-            mountPath: /opt/accumulo/conf
+          {{- include "accumulo.volumeMount" $.Values.global.volumes.hadoop | nindent 10 }}
+          {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 10 }}
           - name: cmds
             mountPath: /cmds
             readOnly: true
@@ -79,13 +78,8 @@ spec:
           configMap:
             name: {{ .Values.entrypointConfigMap.name }}
             defaultMode: 0777
-
-        - name: hadoop-config
-          configMap:
-            name: {{ .Values.global.hadoopConfigMap }}
-        - name: config
-          configMap:
-            name: {{ .Values.global.accumuloConfigMap }}
+        {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 8 }}
+        {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 8 }}
         - name: cmds
           secret:
             secretName: {{ include "accumulo.fullname" . }}-cmds

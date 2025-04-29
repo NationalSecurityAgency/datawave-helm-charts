@@ -71,7 +71,7 @@ spec:
           name: history-server
         command:
            - "/bin/bash"
-           - "/tmp/hadoop-config/bootstrap.sh"
+           - "{{ .Values.global.volumes.hadoop_bootstrap.destination }}/bootstrap.sh"
            - "-d"
         resources:
 {{ toYaml .Values.yarn.resourceManager.resources | indent 10 }}
@@ -88,9 +88,6 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 2
         volumeMounts:
-        - name: hadoop-config
-          mountPath: /tmp/hadoop-config
+        {{- include "hadoop.volumeMount" $.Values.global.volumes.hadoop_bootstrap | nindent 8 }}
       volumes:
-      - name: hadoop-config
-        configMap:
-          name: {{ .Values.global.hadoopConfigMap }}
+      {{- include "hadoop.volume" $.Values.global.volumes.hadoop_bootstrap | nindent 6 }}
