@@ -30,6 +30,10 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
+  - name: jmx-metrics
+    protocol: TCP
+    port: 10101
+    targetPort: 10101
 
 
 

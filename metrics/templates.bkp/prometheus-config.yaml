@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "metrics.fullname" . }}-conf
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "metrics.labels" . | nindent 4 }}
+data:
+  prometheus.yml: |-
+    global:
+      scrape_interval: {{ .Values.prometheus.scrape.interval | default "15s" }}
+      evaluation_interval: {{ .Values.prometheus.scrape.interval | default "15s" }}
+    
+    rule_files:
+      # - "first.rules"
+      # - "second.rules"
+    
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ["localhost:9090"]
+      
+        {{- range $target := .Values.prometheus.scrape.targets }}
+      - job_name: {{ $target.name }}
+        {{- if $target.interval }}
+        scrape_interval: {{ $target.interval }}
+        {{- end }}
+        {{- if $target.scheme }}
+        scheme: {{ $target.scheme }}
+        {{- end }}
+        {{- if $target.metrics_path }}
+        metrics_path: {{ $target.metrics_path }}
+        {{- end }}
+        {{- if eq ($target.type | default "") "statefulset" }}
+        # StatefulSet target configuration - generates targets for each pod
+        static_configs:
+          - targets:
+            {{- $statefulset := $target.statefulset }}
+             {{- $name := $statefulset.name }}
+            {{- $namespace := $statefulset.namespace }}
+            {{- $port := $statefulset.port }}
+            {{- range $i := until (int $statefulset.count) }}
+            - "{{ $name }}-{{ $i }}.{{ $name }}.{{ $namespace }}.svc.cluster.local:{{ $port }}"
+            {{- end }}
+        {{- else }}
+        # Regular service targets
+        static_configs:
+          - targets:
+            {{- range $service := $target.services }}
+            - "{{ $service }}"
+            {{- end }}
+        {{- end }}
+    {{- end }}
+

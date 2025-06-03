@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+  namespace: {{ .Values.namespace}}
+spec:
+  serviceAccountName: prometheus
+  replicas: 1
+  serviceMonitorSelector:
+    matchLabels:
+      team: datawave
+  alerting:
+    alertmanagers:
+    - namespace: {{ .Values.namespace}}
+      name: alertmanager-service
+      port: web

@@ -166,15 +166,15 @@ function start_minikube() {
 # Function to perform Helm operations
 function preload_docker_image() {
   image=$1
-  echo "Pulling $image"
-  docker pull $image
-  if [ $? -eq 0 ]; then
-    echo "$image pulled successfuly"
-  else
-    echo "Failed to pull required image. Exiting."
-    exit 1
-  fi
-
+  #echo "Pulling $image"
+  #docker pull $image
+  #if [ $? -eq 0 ]; then
+  #  echo "$image pulled successfuly"
+  #else
+  #  echo "Failed to pull required image. Exiting."
+  #  exit 1
+ # fi
+#
   minikube image load $image 
   if [ $? -eq 0 ]; then
     echo "$image loaded into minikube successfully."
@@ -290,6 +290,7 @@ function configure_etc_hosts(){
     echo "$(minikube ip | cut -f1,2,3 -d .).1 namenode.datawave.org" | sudo tee -a /etc/hosts
     echo "$(minikube ip | cut -f1,2,3 -d .).1 resourcemanager.datawave.org" | sudo tee -a /etc/hosts
     echo "$(minikube ip | cut -f1,2,3 -d .).1 historyserver.datawave.org" | sudo tee -a /etc/hosts
+    echo "$(minikube ip | cut -f1,2,3 -d .).1 metrics.datawave.org" | sudo tee -a /etc/hosts
   else
     update_hosts_file_for_hadoop
   fi
@@ -300,6 +301,17 @@ function setup_mysql_operator() {
   helm repo add mysql-operator https://mysql.github.io/mysql-operator/
   helm repo update
   helm install my-mysql-operator mysql-operator/mysql-operator    --namespace mysql-operator --create-namespace
+}
+
+function setup_grafana_operator(){
+  kubectl create namespace grafana
+  helm upgrade -i grafana-operator oci://ghcr.io/grafana/helm-charts/grafana-operator --version v5.17.0 -n grafana
+}
+
+
+function setup_prom_operator() {
+  kubectl create namespace prometheus
+  kubectl create -k prom-operator
 }
 
 function helm_install() {
@@ -332,15 +344,22 @@ else
     preload_docker_image mysql:8.0.32
     preload_docker_image busybox:1.28
     preload_docker_image bitnami/zookeeper:3.6.3
+#    preload_docker_image prom/prometheus:latest
+#    preload_docker_image containeryard.evoforge.org/warehouses/datawave-stack-hadoop:3.4.1 
+#    preload_docker_image ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes:7.22.0-SNAPSHOT
+
 
     configure_etc_hosts
     update_core_dns
 fi
 
+
 configure_repository_credentials
 ghcr_login
 create_secrets
 setup_mysql_operator
+setup_prom_operator
+setup_grafana_operator
 
 helm_install
 

@@ -1,0 +1,21 @@
+{{- if and .Values.accumulo.manager.metrics.enabled .Values.accumulo.manager.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: accumulo-manager-metrics
+  namespace: {{ .Values.accumulo.manager.namespace }}
+  labels:
+    app.kubernetes.io/component: manager
+    team: datawave
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: manager
+  endpoints:
+    - port: jmx-metrics
+      path: "/prometheus"
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.accumulo.namespace }}
+{{- end }}
+

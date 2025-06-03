@@ -127,7 +127,7 @@ data:
       "-Dotel.service.name=${cmd}${ACCUMULO_SERVICE_INSTANCE}"
       "${JAVA_OPTS[@]}"
     )
-    
+    JAVA_OPTS=('-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005' "${JAVA_OPTS[@]}")
     ## Optionally setup OpenTelemetry SDK AutoConfigure
     ## See https://github.com/open-telemetry/opentelemetry-java/tree/main/sdk-extensions/autoconfigure
     #JAVA_OPTS=('-Dotel.traces.exporter=jaeger' '-Dotel.metrics.exporter=none' '-Dotel.logs.exporter=none' "${JAVA_OPTS[@]}")
@@ -197,6 +197,9 @@ data:
     general.vfs.context.classpath.datawave=hdfs://hdfs-nn:9000/datawave/accumulo-vfs-classpath/.*.jar
 
     general.micrometer.enabled=true
+
+    general.micrometer.factory=datawave.prometheus.DatawavePrometheusMeterRegistry
+    general.custom.metrics.opts.prometheus.registry.port=10101
 
   client.conf: |
      instance.zookeeper.host=zookeeper:2181

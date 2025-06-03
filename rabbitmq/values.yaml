@@ -1,4 +1,6 @@
 global:
+  pullSecrets:
+    - dockerconfigjson-ghcr
   volumes:
     rabbitmq:
       name: rabbitmq

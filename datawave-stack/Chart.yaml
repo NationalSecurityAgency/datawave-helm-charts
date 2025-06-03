@@ -38,7 +38,11 @@ dependencies:
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.1
     path: ../accumulo
-  - name: datawave-monolith-umbrella
-    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.3
-    path: ../datawave-monolith-umbrella
+      #- name: datawave-monolith-umbrella
+    #repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+      #version: 1.0.3
+      # path: ../datawave-monolith-umbrella
+      # - name: metrics
+    # repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+      # version: 0.0.1-1
+      #    path: ../metrics

@@ -1,0 +1,16 @@
+#################################
+# Core Helm Chart Configuration #
+#################################
+
+apiVersion: v2
+name: metrics
+type: application
+version: 0.0.1-1
+
+#################################
+# Basic Metadata for this Chart #
+#################################
+
+appVersion: latest
+description: Deploys Prometheus for metrics monitoring
+

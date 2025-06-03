@@ -1,0 +1,102 @@
+#######################################
+# DWV-Metrics Prometheus Installation #
+#######################################
+
+Thank you for installing {{ .Chart.Name }} chart!
+
+Your release is named "{{ .Release.Name }}" and has been deployed to namespace "{{ .Values.namespace }}".
+
+##################################
+# 1. Accessing Prometheus        #
+##################################
+
+Prometheus server has been deployed with the following configuration:
+- Image: {{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}
+- Replica count: {{ .Values.prometheus.replicaCount }}
+- Service type: {{ .Values.prometheus.service.type | default "ClusterIP" }}
+- Persistent storage: {{ .Values.prometheus.storage.persistentVolume.enabled | ternary "enabled" "disabled" }}
+
+The Prometheus UI is available within your cluster at:
+  http://{{ include "metrics.fullname" . }}.{{ .Values.namespace }}.svc.cluster.local:{{ .Values.prometheus.service.port }}
+
+##################################
+# 2. Port-Forwarding Commands    #
+##################################
+
+To access the Prometheus UI from your local machine:
+
+{{- if contains "ClusterIP" (default "ClusterIP" .Values.prometheus.service.type) }}
+  kubectl port-forward --namespace {{ .Values.namespace }} svc/{{ include "metrics.fullname" . }} {{ .Values.prometheus.service.port }}:{{ .Values.prometheus.service.port }}
+  
+  Then access Prometheus at http://localhost:{{ .Values.prometheus.service.port }}/
+{{- else if contains "NodePort" .Values.prometheus.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Values.namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "metrics.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Values.namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  
+  Then access Prometheus at http://$NODE_IP:$NODE_PORT/
+{{- else if contains "LoadBalancer" .Values.prometheus.service.type }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Values.namespace }} {{ include "metrics.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  
+  Then access Prometheus at http://$SERVICE_IP:{{ .Values.prometheus.service.port }}/
+{{- end }}
+
+##################################
+# 3. Configuration Customization #
+##################################
+
+You can customize this Prometheus deployment by modifying the values.yaml file and upgrading your release:
+
+  helm upgrade {{ .Release.Name }} ./dwv-metrics -f custom-values.yaml
+
+Important configuration options:
+
+- Scrape interval: {{ .Values.prometheus.scrape.interval }}
+- Storage size: {{ .Values.prometheus.storage.size }}
+- Persistent Volume: {{ .Values.prometheus.storage.persistentVolume.enabled | ternary "enabled" "disabled" }}
+
+##################################
+# 4. Common Customizations       #
+##################################
+
+Common customizations through values.yaml:
+
+1. Enable persistent storage:
+   ```yaml
+   prometheus:
+     storage:
+       persistentVolume:
+         enabled: true
+         storageClass: "standard"  # Use appropriate storage class
+   ```
+
+2. Add custom scrape targets:
+   ```yaml
+   prometheus:
+     scrape:
+       targets:
+         - name: my-application
+           metrics_path: "/metrics"
+           services:
+             - "my-app.default.svc.cluster.local:8080"
+   ```
+
+3. Adjust resource limits:
+   ```yaml
+   prometheus:
+     resources:
+       requests:
+         memory: 512Mi
+         cpu: 200m
+       limits:
+         memory: 1Gi
+         cpu: 500m
+   ```
+
+4. Change service type for external access:
+   ```yaml
+   prometheus:
+     service:
+       type: NodePort  # or LoadBalancer
+   ```
+
+For more information, please refer to the chart's documentation.

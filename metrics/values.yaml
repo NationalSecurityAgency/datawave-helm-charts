@@ -1,0 +1,130 @@
+##################################
+# RBAC configuration
+##################################
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+global:
+  pullSecrets:
+    - dockerconfigjson-ghcr
+
+##################################
+# Deployment Configuration      #
+##################################
+
+# Namespace to deploy Prometheus
+namespace: default
+# Whether to create the namespace (only if namespace != default)
+createNamespace: false
+hadoop:
+  namespace: default
+  namenode:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+  datanode:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+accumulo:
+  namespace: default
+  manager:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+  tserver:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+ingress:
+  enabled: true
+  host: "metrics.datawave.org"
+
+# Service account configuration
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# General configuration
+prometheus:
+  name: prometheus
+  
+  # Image configuration
+  image:
+    repository: prom/prometheus
+    tag: latest
+    pullPolicy: IfNotPresent
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 9090
+    nodePort: null
+  
+  # Replica count
+  replicaCount: 1
+  
+  # Resource limits and requests
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 200m
+  
+  # Storage configuration
+  storage:
+    size: 10Gi
+    persistentVolume:
+      enabled: false
+      storageClass: ""
+      accessModes:
+        - ReadWriteOnce
+  
+  # Scrape configuration
+  scrape:
+    interval: 15s
+    timeout: 10s
+    kubernetes_nodes: true
+    # Define targets to scrape (examples)
+    targets:
+      # - name: kubernetes-nodes
+      #   interval: 30s
+      #   services:
+      #     - "kubernetes.default.svc.cluster.local:10250"
+      # - name: kubernetes-pods
+      #   interval: 30s
+      #   services:
+      #     - "kube-state-metrics.kube-system.svc.cluster.local:8080"
+      - name: hdfs-namenode
+        metrics_path: "/metrics"
+        services:
+          - "hdfs-nn.default.svc.cluster.local:9999"     
+      - name: hdfs-datanode
+        metrics_path: "/metrics"
+        services:
+          - "hdfs-dn-0.hdfs-dn.default.svc.cluster.local:9999"
+          - "hdfs-dn-1.hdfs-dn.default.svc.cluster.local:9999"
+      - name: accumulo-tservers
+        metrics_path: "/prometheus"
+        services:
+          - "accumulo-tservers-0.accumulo-tservers.default.svc.cluster.local:10101"
+          - "accumulo-tservers-1.accumulo-tservers.default.svc.cluster.local:10101"
+          - "accumulo-tservers-2.accumulo-tservers.default.svc.cluster.local:10101"
+      - name: accumulo-manager
+        metrics_path: "/prometheus"
+        services:
+          - "accumulo-manager.default.svc.cluster.local:10101"

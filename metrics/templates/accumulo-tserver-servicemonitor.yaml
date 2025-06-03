@@ -1,0 +1,21 @@
+{{- if and .Values.accumulo.tserver.metrics.enabled .Values.accumulo.tserver.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: accumulo-tserver-metrics
+  namespace: {{ .Values.accumulo.tserver.namespace }}
+  labels:
+    app.kubernetes.io/component: tserver
+    team: datawave
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: tserver
+  endpoints:
+    - port: jmx-metrics
+      path: "/prometheus"
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.accumulo.namespace }}
+{{- end }}
+

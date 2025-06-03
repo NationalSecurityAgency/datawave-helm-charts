@@ -25,3 +25,10 @@ external:
     hosts:
       - yarn-rm
       - yarn-nm
+# dwv-accumulo:
+#   image:
+#     tag: 2.1.4-8c3812bb3-metrics
+# dwv-hadoop:
+#   image:
+#     repository: containeryard.evoforge.org/warehouses/datawave-stack-hadoop
+#     tag: 3.4.1

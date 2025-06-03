@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "metrics.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "metrics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: prometheus
+spec:
+  replicas: {{ .Values.prometheus.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "metrics.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: prometheus
+  template:
+    metadata:
+      labels:
+        {{- include "metrics.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: prometheus
+    spec:
+      {{- with .Values.global.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "metrics.serviceAccountName" . }}
+      containers:
+        - name: prometheus
+          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
+          imagePullPolicy: {{ .Values.prometheus.image.pullPolicy }}
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus/"
+          ports:
+            - name: http
+              containerPort: 9090
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.prometheus.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+            - name: storage-volume
+              mountPath: /prometheus
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534  # nobody user
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "metrics.fullname" . }}-conf
+            defaultMode: 420
+        - name: storage-volume
+          {{- if and .Values.prometheus.storage.persistentVolume .Values.prometheus.storage.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "metrics.fullname" . }}-storage
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      securityContext:
+        fsGroup: 65534  # nobody group
+

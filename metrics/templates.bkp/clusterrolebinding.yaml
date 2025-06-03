@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "metrics.fullname" . }}
+  labels:
+    {{- include "metrics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "metrics.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "metrics.serviceAccountName" . }}
+    namespace: {{ .Values.namespace }}
+{{- end }}
+

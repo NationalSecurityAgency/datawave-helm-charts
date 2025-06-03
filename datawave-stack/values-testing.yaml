@@ -5,7 +5,8 @@ dwv-accumulo:
     tag: 3.3.6
 dwv-hadoop:
   image:
-    tag: 3.3.6
+    repository: containeryard.evoforge.org/warehouses/datawave-stack-hadoop
+    tag: 3.4.1
 dwv-ingest:
   image:
     tag: 7.18.0-lpj

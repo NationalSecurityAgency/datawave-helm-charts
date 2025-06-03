@@ -50,8 +50,8 @@ spec:
       - name: accumulo-monitor
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: 
-         - monitor
+        command: ["/bin/bash", "-c"]
+        args: ["  accumulo monitor" ]
         volumeMounts:
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf

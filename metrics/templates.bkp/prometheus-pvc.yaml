@@ -1,0 +1,26 @@
+{{- if .Values.prometheus.storage.persistentVolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "metrics.fullname" . }}-storage
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "metrics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: prometheus
+spec:
+  accessModes:
+    {{- range .Values.prometheus.storage.persistentVolume.accessModes }}
+    - {{ . }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.prometheus.storage.size }}
+  {{- if .Values.prometheus.storage.persistentVolume.storageClass }}
+  {{- if (eq "-" .Values.prometheus.storage.persistentVolume.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.prometheus.storage.persistentVolume.storageClass }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+

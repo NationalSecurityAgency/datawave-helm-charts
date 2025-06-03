@@ -1,0 +1,21 @@
+{{- if and .Values.hadoop.namenode.metrics.enabled .Values.hadoop.namenode.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hadoop-namenode-metrics
+  namespace: {{ .Values.hadoop.namenode.namespace }}
+  labels:
+    component: hdfs-nn
+    team: datawave
+spec:
+  selector:
+    matchLabels:
+      component: hdfs-nn
+  endpoints:
+    - port: jmx-metrics
+      path: "/metrics"
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.hadoop.namespace }}
+{{- end }}
+

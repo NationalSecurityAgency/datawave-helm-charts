@@ -7,6 +7,9 @@ config:
       description: NameNode URI
 
   hdfsSiteProperties:
+    - name: dfs.namenode.fs-limits.min-block-size
+      value: "16"
+      description: Set min block size low for testing
     - name: hadoop.user.group.static.mapping.overrides
       value: datawave=hadoop;accumulo=hadoop
     - name: dfs.permissions.superusergroup

@@ -8,7 +8,7 @@ fullnameOverride: ""
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-  tag: 7.17.0
+  tag: 7.22.0-SNAPSHOT
   pullPolicy: IfNotPresent
 deployment:
   replicaCount: 1
@@ -20,6 +20,7 @@ libs: "/lib/hadoop-mapreduce/hadoop-mapreduce-client-core.jar:/lib/hadoop-hdfs/h
 hadoop:
   classpath:
     "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
+
 config:
   lockFileDir: /var/run/datawave
   hadoopHome: /usr/local/hadoop
@@ -34,12 +35,12 @@ config:
   hadoopConfDif: /usr/local/hadoop/conf
   bulkDataTypes: shardStats
   liveDataTypes: wikipedia,mycsv,myjson,openlib
-  sharedConfig:
-    create: true
-    claim: datawave-ingest-config-pvc
-    path: /opt/datawave-ingest/current/shared-config
-    size: 1Gi
-    storageClass: "csi-hostpath-sc"
+  sharedConfig: {}
+  #   create: true
+  #   claim: datawave-ingest-config-pvc
+  #   path: /opt/datawave-ingest/current/shared-config
+  #   size: 1Gi
+  #   storageClass: "csi-hostpath-sc"
 
   files:
   - name: all-config.xml

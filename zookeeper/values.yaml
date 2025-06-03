@@ -659,7 +659,8 @@ volumePermissions:
     ## pullSecrets:
     ##   - myRegistryKeySecretName
     ##
-    pullSecrets: []
+    pullSecrets:
+      - dockerconfigjson-ghcr
   ## Init container resource requests and limits
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ## @param volumePermissions.resources.limits Init container volume-permissions resource limits
