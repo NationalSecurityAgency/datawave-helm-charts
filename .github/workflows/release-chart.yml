@@ -7,6 +7,9 @@ on:
       RELEASE_CHART_NAME:
         required: true
         description: "Folder name of chart to release."
+      TAG_NAME:
+        required: true
+        description: "Tag to Release."
     
 env:
   RELEASE_CHART_NAME: ${{ github.event.inputs.RELEASE_CHART_NAME || 'common-service-library' }}
@@ -20,64 +23,25 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: Get Next Version
-      run: |
-        cd ${{ env.RELEASE_CHART_NAME }}
-        sed -i -E 's/^(version: [0-9]+\.[0-9]+\.[0-9]+)(-[^-]+)?$/\1/' Chart.yaml
-    - name: Get Version
-      run: |
-        cd ${{ env.RELEASE_CHART_NAME }}
-        cat Chart.yaml | grep "^version:" | awk '{print "TAG_NAME=${{ env.RELEASE_CHART_NAME }}-"$NF}' >> $GITHUB_ENV
-    - name: Print Version
-      run: echo $TAG_NAME
-    - name: Commit Non Snapshot and Create Tag
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "datawave@github.com"
-        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
-        git tag $TAG_NAME
-        git push --tags
     - name: Set environment variables
       id: set-variables
       run: |
-          echo "REPOSITORY=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
           echo "VERSION=$(yq -r .version ${{ env.RELEASE_CHART_NAME}}/Chart.yaml)" >> "$GITHUB_OUTPUT"          
 
     - name: Env variable output
       id: test-variables
       run: |
-          echo ${{ steps.set-variables.outputs.REPOSITORY }}
           echo ${{ steps.set-variables.outputs.VERSION }}          
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ github.token }}
 
     - name: Package and push helm chart
       run: |
         source /secrets/helm-secrets
         helm repo add self-hosted-repo ${HELM_REPO_URL} --username ${HELM_REPO_USER} --password ${HELM_REPO_PASSWORD}
+        
+        git checkout ${{ env.TAG_NAME}}
+
         cd ${{ env.RELEASE_CHART_NAME}}
         export CHART_NAME=$(cat Chart.yaml | grep "^name:" | awk '{print $NF}' )
         helm package . --version ${{ steps.set-variables.outputs.VERSION }} --dependency-update
-        helm push ${CHART_NAME}-${{ steps.set-variables.outputs.VERSION }}.tgz oci://${{ steps.set-variables.outputs.REPOSITORY }}/charts
         helm push ${CHART_NAME}-${{ steps.set-variables.outputs.VERSION }}.tgz self-hosted-repo
-    - name: Update Version Number
-      run: |
-        cd ${{ env.RELEASE_CHART_NAME }}
-        version="${TAG_NAME##*-}"
-        IFS='.' read -r major minor patch <<< "${version}"
-        next=$((patch + 1))
-        new_version="${major}.${minor}.${next}-1"
-        sed -i "s/^version:.*/version: ${new_version}/" Chart.yaml  
-        
-    - name: Commit Snapshot Number
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "datawave@github.com"
-        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set prerelease version."
-        git push
-
