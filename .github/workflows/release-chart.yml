@@ -58,12 +58,13 @@ jobs:
 
     - name: Package and push helm chart
       run: |
+        source /secrets/helm-secrets
+        helm repo add self-hosted-repo ${HELM_REPO_URL} --username ${HELM_REPO_USER} --password ${HELM_REPO_PASSWORD}
         cd ${{ env.RELEASE_CHART_NAME}}
         export CHART_NAME=$(cat Chart.yaml | grep "^name:" | awk '{print $NF}' )
         helm package . --version ${{ steps.set-variables.outputs.VERSION }} --dependency-update
         helm push ${CHART_NAME}-${{ steps.set-variables.outputs.VERSION }}.tgz oci://${{ steps.set-variables.outputs.REPOSITORY }}/charts
         helm push ${CHART_NAME}-${{ steps.set-variables.outputs.VERSION }}.tgz self-hosted-repo
-        
     - name: Update Version Number
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
