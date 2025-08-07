@@ -4,7 +4,7 @@ global:
   volumes:
     hadoop:
       source:
-        name: hadoop-config
+        name: dwv-hadoop-config
     accumulo:
       source:
         name: accumulo-config

@@ -13,7 +13,7 @@ global:
       destination: /data/certs
     hadoop:
       source:
-        name: hadoop-config
+        name: dwv-hadoop-config
   certSecretName: certificates-secret
   certificates:
     keystore:

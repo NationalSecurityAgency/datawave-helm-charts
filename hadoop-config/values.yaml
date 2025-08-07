@@ -6,7 +6,7 @@ global:
       readOnly: true
       source:
         type: configmap
-        name: hadoop-config
+        name: dwv-hadoop-config
         create: true
 config:
   coreSiteProperties:

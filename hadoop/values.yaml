@@ -8,7 +8,7 @@ global:
       readOnly: true
       source:
         type: configmap
-        name: hadoop-config
+        name: dwv-hadoop-config
         create: true
 
 nameOverride: hadoop
@@ -119,7 +119,7 @@ yarn:
         cpu: "1000m"
       limits:
         memory: "4096Mi"
-        cpu: "1000m"
+        cpu: "4000m"
 cmds:
   resources: {}
   nodeSelector: {}
