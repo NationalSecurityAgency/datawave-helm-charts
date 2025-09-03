@@ -11,13 +11,13 @@ global:
   volumes:
     hadoop:
       source:
-        name: dwv-hadoop-config
+        name: hadoop-config
     hadoop_bootstrap:
       source:
-        name: dwv-hadoop-config
+        name: hadoop-config
     accumulo:
       source:
-        name: dwv-accumulo-config
+        name: accumulo-config
 dockerRegistry:
   url: ghcr.io/nationalsecurityagency/
 charts:
