@@ -94,7 +94,7 @@ spec:
               value: "{{ .Values.global.secrets.keystore.password }}"
             - name: MESSAGING_SERVER_HOSTNAME
               value: "{{ .Values.global.serviceDns.rabbitmq.name }}"
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
             - containerPort: 8888
