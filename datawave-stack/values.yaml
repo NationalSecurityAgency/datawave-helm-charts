@@ -1,8 +1,9 @@
 ######################################
 # Default Values for Docker Registry #
 ######################################
-dockerRegistry:
-  url: ghcr.io/nationalsecurityagency/
+global:
+  dockerRegistry:
+    url: ""
 charts:
   zookeeper:
     enabled: true
