@@ -331,7 +331,7 @@ else
     preload_docker_image rabbitmq:3.11.4-alpine
     preload_docker_image mysql:8.0.32
     preload_docker_image busybox:1.28
-    preload_docker_image bitnami/zookeeper:3.6.3
+    preload_docker_image bitnamilegacy/zookeeper:3.6.4
 
     configure_etc_hosts
     update_core_dns
