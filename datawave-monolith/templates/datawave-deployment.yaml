@@ -90,7 +90,11 @@ spec:
       containers:
 
         - name: "{{ .Values.datawaveDeployment.meta.name }}"
+          {{- if .Values.datawaveDeployment.imageTagOverride }}
+          image: {{ .Values.datawaveDeployment.imageTagOverride }}
+          {{- else }}
           image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.datawaveDeployment.image.name }}:{{ .Values.datawaveDeployment.image.tag }}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.datawaveDeployment.image.pullPolicy }}"
           livenessProbe:
             httpGet:
