@@ -133,8 +133,9 @@ persistence:
     - metadata:
         name: dfs
       spec:
-        accessModes: ReadWriteOnce
-        storageClassName: managed-csi-driver
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ""
         resources:
           requests:
             storage: 50Gi
@@ -146,8 +147,9 @@ persistence:
     - metadata:
         name: dfs
       spec:
-        accessModes: ReadWriteOnce
-        storageClassName: managed-csi-driver
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ""
         resources:
           requests:
             storage: 200Gi
