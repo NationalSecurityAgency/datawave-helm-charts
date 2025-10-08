@@ -109,6 +109,10 @@ spec:
           ports:
             - containerPort: 8080
             - containerPort: 8443
+          {{- if .Values.datawaveDeployment.jvm.debug.enabled }}
+            - containerPort: {{ .Values.datawaveDeployment.jvm.debug.port }}
+              name: debug
+          {{- end }}
           resources: {}
           env:
             - name: ACCUMULO_PASSWORD
@@ -126,7 +130,13 @@ spec:
             - name: TRUSTSTORE_TYPE
               value: JKS
             - name: TRUSTSTORE_PASSWORD
-              value: {{ .Values.global.certificates.truststorePassword }} 
+              value: {{ .Values.global.certificates.truststorePassword }}
+            {{- if .Values.datawaveDeployment.jvm.debug.enabled }}
+            - name: DEBUG
+              value: "true"
+            - name: DEBUG_PORT
+              value: "{{ .Values.datawaveDeployment.jvm.debug.port }}"
+            {{- end }}
           volumeMounts:
             - name: "{{ .Values.global.volumes.certificates.name }}"
               mountPath: "{{ .Values.global.volumes.certificates.destination }}"
