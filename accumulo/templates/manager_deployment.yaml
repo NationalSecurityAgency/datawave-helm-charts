@@ -35,13 +35,11 @@ spec:
       securityContext:
         runAsUser: 1001
       initContainers:
-      - name: check-hadoop-jars
-        image: "{{ .Values.initContainer.image }}:{{ .Values.initContainer.tag }}"
+      - name: init-hdfs-nn
         securityContext:
           runAsUser: 1000
-        command: 
-        - "/bin/sh"
-        args: ["-c", "while [ `hdfs dfs -ls hdfs://{{ .Values.global.hdfs.namenode }}/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs; sleep 2; done"]
       hostname: accumulo-manager
       containers:
       - name: accumulo-manager

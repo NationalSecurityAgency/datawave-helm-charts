@@ -25,3 +25,35 @@ external:
     hosts:
       - yarn-rm
       - yarn-nm
+
+dwv-hadoop:
+  persistence:
+    nameNode:
+      enabled: true
+      definitions:
+        - metadata:
+            name: dfs
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: "csi-hostpath-sc"
+            resources:
+              requests:
+                storage: 5Gi
+            selector:
+    dataNode:
+      enabled: true
+      definitions:
+        - metadata:
+            name: dfs
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: "csi-hostpath-sc"
+            resources:
+              requests:
+                storage: 5Gi
+            selector:
+dwv-zookeeper:
+  persistence:
+    enabled: true
