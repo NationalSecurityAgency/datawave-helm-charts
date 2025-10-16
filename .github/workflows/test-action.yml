@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        chart: [accumulo, audit, authorization, cache, configuration, datawave-monolith, dictionary, hadoop, ingest, mysql, rabbitmq, zookeeper]
+        chart: [accumulo, audit, authorization, cache, configuration, datawave-monolith, dictionary, hadoop, ingest, rabbitmq, zookeeper]
 
     steps:
       - name: Checkout code
