@@ -23,9 +23,9 @@ data:
     <configuration>
     {{ range $val := .properties }}
       <property>
-        <name>{{ $val.name }}</name>
-        <value>{{ $val.value }}</value>
-        <description>{{ $val.description }}</description>
+        <name>{{ $val.name| default ""  }}</name>
+        <value>{{ $val.value| default ""  | toString | nindent 8}}</value>
+        <description>{{ $val.description | default "none" | toString | nindent 8 }}</description>
       </property>  
     {{ end }}
     </configuration>

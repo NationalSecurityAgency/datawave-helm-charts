@@ -299,7 +299,7 @@ function configure_etc_hosts(){
 function setup_mysql_operator() {
   helm repo add mysql-operator https://mysql.github.io/mysql-operator/
   helm repo update
-  helm install my-mysql-operator mysql-operator/mysql-operator    --namespace mysql-operator --create-namespace
+  helm install dwv mysql-operator/mysql-operator    --namespace $NAMESPACE --create-namespace
 }
 
 function helm_install() {
