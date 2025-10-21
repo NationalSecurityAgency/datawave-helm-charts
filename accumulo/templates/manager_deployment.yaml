@@ -34,14 +34,6 @@ spec:
       hostNetwork: {{ coalesce .Values.hostNetwork.ma .Values.hostNetwork.default false }}
       securityContext:
         runAsUser: 1001
-      initContainers:
-      - name: check-hadoop-jars
-        image: "{{ .Values.initContainer.image }}:{{ .Values.initContainer.tag }}"
-        securityContext:
-          runAsUser: 1000
-        command: 
-        - "/bin/sh"
-        args: ["-c", "while [ `hdfs dfs -ls hdfs://{{ .Values.global.hdfs.namenode }}/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
       hostname: accumulo-manager
       containers:
       - name: accumulo-manager
