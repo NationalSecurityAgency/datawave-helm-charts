@@ -106,17 +106,19 @@ data:
           fooRole: FOO
           privateRole: PRIVATE
           PublicRole: PUBLIC
-        per-user-roles-to-auths:
+        mockUsers:
           '[cn=test a. user, ou=example developers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us>]':
-            Administrator: DW_ADMIN
-            AuthorizedUser: DW_USER
-            JBossAdministrator: JBOSS_ADMIN
-            PRivateRole: PRIVATE
-            PublicRole: PUBLIC
+            roles-to-auths:
+              Administrator: DW_ADMIN
+              AuthorizedUser: DW_USER
+              JBossAdministrator: JBOSS_ADMIN
+              PrivateRole: PRIVATE
+              PublicRole: PUBLIC
           '[cn=testserver.example.com, ou=servers, o=example corp, c=us<cn=example corp ca, o=example corp, c=us]':
-            AuthorizedServer: DW_SERV
-            PublicRole: PUBLIC
-            PrivateRole: PRIVATE
+            roles-to-auths:
+              AuthorizedServer: DW_SERV
+              PublicRole: PUBLIC
+              PrivateRole: PRIVATE
         server-DN-regex: '.*server.*'
     server:
       ssl:
