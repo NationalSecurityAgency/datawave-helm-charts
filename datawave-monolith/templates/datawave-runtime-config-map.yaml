@@ -18,21 +18,6 @@ data:
     /system-property=dw.metrics.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
     /system-property=dw.uuid.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
 
-    /system-property=dw.mapreduce.securitydomain.keyStoreURL:remove
-    /system-property=dw.mapreduce.securitydomain.keyStoreType:remove
-    /system-property=dw.mapreduce.securitydomain.keyStorePassword:remove
-    /system-property=dw.mapreduce.securitydomain.trustStoreURL:remove
-    /system-property=dw.mapreduce.securitydomain.trustStoreType:remove
-    /system-property=dw.mapreduce.securitydomain.trustStorePassword:remove
-    
-    /system-property=dw.mapreduce.securitydomain.keyStoreURL:add(value=file://${env.KEYSTORE})
-    /system-property=dw.mapreduce.securitydomain.keyStoreType:add(value="${env.KEYSTORE_TYPE}")
-    /system-property=dw.mapreduce.securitydomain.keyStorePassword:add(value="${env.KEYSTORE_PASSWORD}")
-    /system-property=dw.mapreduce.securitydomain.trustStoreURL:add(value=file://${env.TRUSTSTORE})
-    /system-property=dw.mapreduce.securitydomain.trustStoreType:add(value="${env.TRUSTSTORE_TYPE}")
-    /system-property=dw.mapreduce.securitydomain.trustStorePassword:add(value="${env.TRUSTSTORE_PASSWORD}")
-    
-
     # /core-service=management/security-realm=SSLRealm/server-identity=ssl/:remove
     # /core-service=management/security-realm=SSLRealm/authentication=truststore/:remove
     # /subsystem=security/security-domain=datawave/jsse=classic:remove
@@ -43,7 +28,7 @@ data:
 
     /system-property=dw.remoteDatawaveUserService.host:add(value={{ .Values.authorizationService.dnsName }})
     {{ .Values.datawaveRuntimeConfig.additions}}
-
+    
     # Run the batch commands (MUST BE LAST)
     run-batch
 
