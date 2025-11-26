@@ -196,7 +196,8 @@ data:
     general.classpaths=$ACCUMULO_HOME/lib/accumulo-server.jar,$ACCUMULO_HOME/lib/accumulo-core.jar,$ACCUMULO_HOME/lib/accumulo-start.jar,$ACCUMULO_HOME/lib/accumulo-fate.jar,$ACCUMULO_HOME/lib/accumulo-proxy.jar,$ACCUMULO_HOME/lib/[^.].*.jar,$ZOOKEEPER_HOME/lib/zookeeper[^.].*.jar,$HADOOP_CONF_DIR,$HADOOP_HOME/share/hadoop/client/[^.].*.jar,$HADOOP_HOME/share/hadoop/common/lib/(?!slf4j)[^.].*.jar
     
     general.vfs.context.classpath.datawave=hdfs://{{ .Values.global.hdfs.namenode }}/datawave/accumulo-vfs-classpath/.*.jar
-
+    table.class.loader.context=datawave
+    
     general.micrometer.enabled=true
 
   client.conf: |

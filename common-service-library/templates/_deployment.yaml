@@ -88,7 +88,7 @@ spec:
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.global.serviceDns.configuration.name }}:{{ .Values.global.serviceDns.configuration.port }}/configserver"
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
             httpGet:

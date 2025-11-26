@@ -1,13 +1,9 @@
 ######################################
 # Default Values for Docker Registry #
 ######################################
-
 global:
-  hadoopConfigMap: dwv-hadoop-config
-  accumuloConfigMap: dwv-accumulo-config
-
-dockerRegistry:
-  url: ghcr.io/nationalsecurityagency/
+  dockerRegistry:
+    url: ""
 charts:
   zookeeper:
     enabled: true
