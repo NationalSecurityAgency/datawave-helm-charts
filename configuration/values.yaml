@@ -51,7 +51,7 @@ global:
       name: rabbitmq
 
 image:
-  name: datawave-config-service
+  name: ghcr.io/nationalsecurityagency/datawave-config-service
   pullPolicy: IfNotPresent
   tag: 4.0.1
 livenessProbe:

@@ -23,7 +23,7 @@ global:
 # Default Values for Cache Deployment #
 #######################################
 image:
-  name: datawave-hazelcast-service
+  name: ghcr.io/nationalsecurityagency/datawave-hazelcast-service
   pullPolicy: IfNotPresent
   tag: 4.0.2
 

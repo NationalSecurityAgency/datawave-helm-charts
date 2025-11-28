@@ -13,7 +13,7 @@ fullnameOverride: ""
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-  tag: 7.17.0
+  tag: 7.32.2
   pullPolicy: IfNotPresent
 deployment:
   replicaCount: 1
