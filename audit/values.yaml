@@ -27,7 +27,7 @@ global:
 # Default Values for Audit Deployment #
 #######################################
 image:
-  name: datawave-audit-service
+  name: ghcr.io/nationalsecurityagency/datawave-audit-service
   pullPolicy: IfNotPresent
   tag: 4.0.2
 args:

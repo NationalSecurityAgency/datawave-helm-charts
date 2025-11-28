@@ -29,7 +29,7 @@ args:
 - "--spring.output.ansi.enabled=ALWAYS"
 - "--spring.profiles.active=default,mock,k8s"
 image:
-  name: datawave-authorization-service
+  name: ghcr.io/nationalsecurityagency/datawave-authorization-service
   pullPolicy: IfNotPresent
   tag: 4.0.3
 livenessProbe:

@@ -31,9 +31,9 @@ global:
 
 datawaveDeployment:
   image:
-    name: datawave/webservice-kubernetes
+    name: ghcr.io/nationalsecurityagency/datawave/webservice-kubernetes
     pullPolicy: Always
-    tag: 7.17.0
+    tag: 7.32.2
   livenessProbe:
     delaySeconds: 60
     periodSeconds: 5
