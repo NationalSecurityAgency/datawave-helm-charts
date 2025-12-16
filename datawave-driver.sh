@@ -166,16 +166,24 @@ function start_minikube() {
 # Function to perform Helm operations
 function preload_docker_image() {
   image=$1
-  echo "Pulling $image"
-  docker pull $image
+
+  echo "Checking for local image $image"
+  docker image ls "$image"
   if [ $? -eq 0 ]; then
-    echo "$image pulled successfuly"
+    echo "$image exists locally, skipping pull.."
   else
-    echo "Failed to pull required image. Exiting."
-    exit 1
+    echo "$image does not exist locally, pulling.."
+    docker pull "$image"
+    if [ $? -eq 0 ]; then
+      echo "$image pulled successfully"
+    else
+      echo "Failed to pull required image $image. Exiting."
+      exit 1
+    fi
   fi
 
-  minikube image load $image 
+  echo "Loading $image into minikube"
+  minikube image load "$image"
   if [ $? -eq 0 ]; then
     echo "$image loaded into minikube successfully."
   else
@@ -332,7 +340,6 @@ else
     preload_docker_image mysql:8.0.32
     preload_docker_image busybox:1.28
     preload_docker_image bitnamilegacy/zookeeper:3.6.4
-
     configure_etc_hosts
     update_core_dns
 fi
