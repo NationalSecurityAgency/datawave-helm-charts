@@ -11,12 +11,19 @@ data:
     /system-property=dw.remoteDatawaveUserService.host:remove
 
     /system-property=dw.warehouse.accumulo.password:remove
+    /system-property=dw.warehouse.accumulo.userName:remove
+    /system-property=dw.metrics.accumulo.userName:remove
     /system-property=dw.metrics.accumulo.password:remove
+    /system-property=dw.uuid.accumulo.userName:remove
     /system-property=dw.uuid.accumulo.password:remove
 
+    /system-property=dw.warehouse.accumulo.userName:add(value=root)
     /system-property=dw.warehouse.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
     /system-property=dw.metrics.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
     /system-property=dw.uuid.accumulo.password:add(value=${env.ACCUMULO_PASSWORD})
+
+    /system-property=dw.metrics.accumulo.userName:add(value=root)
+    /system-property=dw.uuid.accumulo.userName:add(value=root)
 
     # /core-service=management/security-realm=SSLRealm/server-identity=ssl/:remove
     # /core-service=management/security-realm=SSLRealm/authentication=truststore/:remove
@@ -27,6 +34,7 @@ data:
     # /subsystem=security/security-domain=datawave/jsse=classic:add(keystore={type="${env.KEYSTORE_TYPE}",password="${env.KEYSTORE_PASSWORD}",url="file://${env.KEYSTORE}"},truststore={type="${env.TRUSTSTORE_TYPE}",password="${env.TRUSTSTORE_PASSWORD}",url="file://${env.TRUSTSTORE}"})
 
     /system-property=dw.remoteDatawaveUserService.host:add(value={{ .Values.authorizationService.dnsName }})
+    /subsystem=messaging-activemq/server=default:write-attribute(name=security-enabled,value=false)
     {{ .Values.datawaveRuntimeConfig.additions}}
     
     # Run the batch commands (MUST BE LAST)

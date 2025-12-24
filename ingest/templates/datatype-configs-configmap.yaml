@@ -23,8 +23,8 @@ data:
     <configuration>
     {{ range $prop,$val := .properties }}
       <property>
-        <name>{{ $prop }}</name>
-        <value>{{ $val }}</value>
+        <name>{{- $prop -}}</name>
+        <value>{{- $val -}}</value>
       </property>  
     {{ end }}
     </configuration>

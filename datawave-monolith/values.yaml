@@ -30,10 +30,11 @@ global:
 ##########################################
 
 datawaveDeployment:
+  waitForIngest: true
   image:
     name: ghcr.io/nationalsecurityagency/datawave/webservice-kubernetes
     pullPolicy: Always
-    tag: 7.32.2
+    tag: 7.33.1
   livenessProbe:
     delaySeconds: 60
     periodSeconds: 5

@@ -13,7 +13,7 @@ fullnameOverride: ""
 labels: {}
 image:
   repository: ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes
-  tag: 7.32.2
+  tag: 7.33.1
   pullPolicy: IfNotPresent
 deployment:
   replicaCount: 1
@@ -52,7 +52,10 @@ config:
     echo "Seeding Splits"
     
     echo "Create Query Metrics S table"
-    /opt/accumulo/bin/accumulo shell -u root -p {{ .Values.config.accumuloPassword }} -e "createtable datawave.queryMetrics_s"
+    /opt/accumulo/bin/accumulo shell -e "createtable datawave.queryMetrics_s"
+    
+    echo "Create Query Metrics M table"
+    /opt/accumulo/bin/accumulo shell -e "createtable datawave.queryMetrics_m"
     
     echo "Create Splits"
     /opt/datawave-ingest/current/bin/ingest/create-shards-since.sh $(date --date='$10 days ago' +%y%m%d)
@@ -64,11 +67,6 @@ config:
     
     echo "Generate Splits File"
     /opt/datawave-ingest/current/bin/ingest/generate-splits-file.sh
-    
-    {{- if (.Values.config.sharedConfig).claim }}
-    echo "synchronizing shared config to pvc {{ .Values.config.sharedConfig.claim }} at {{ .Values.config.sharedConfig.path }}"
-    cp -Lr /opt/datawave-ingest/current/config/* {{ .Values.config.sharedConfig.path }}
-    {{- end }}
       
     echo "Starting datawave ingest"
     /opt/datawave-ingest/current/bin/system/start-all.sh
