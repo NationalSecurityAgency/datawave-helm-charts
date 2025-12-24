@@ -47,6 +47,10 @@ datawaveDeployment:
     port: 8080
     scheme: HTTP
     uri: DataWave/Common/Health/health
+  jvm:
+    debug:
+      enabled: false
+      port: 8787
   meta:
     name: datawave-monolith
   replication:
