@@ -83,6 +83,14 @@ spec:
             runAsNonRoot: true
           image: busybox:1.28
           command: ['sh', '-c', "until nslookup authorization; do echo waiting for auth service; sleep 2; done"]
+      {{- if .Values.datawaveDeployment.waitForIngest }}
+        - name: init-ingest
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup ingestmanager; do echo waiting for ingest; sleep 2; done"]
+      {{- end }}
      #TODO: Add this in after making it work. Will require updates in datawave
       # securityContext:
         # runAsUser: 1000
@@ -92,7 +100,7 @@ spec:
           {{- if .Values.datawaveDeployment.imageTagOverride }}
           image: {{ .Values.datawaveDeployment.imageTagOverride }}
           {{- else }}
-          image: "{{ .Values.global.dockerRegistry.url }}/{{ .Values.datawaveDeployment.image.name }}:{{ .Values.datawaveDeployment.image.tag }}"
+          image: "{{ .Values.datawaveDeployment.image.name }}:{{ .Values.datawaveDeployment.image.tag }}"
           {{- end }}
           imagePullPolicy: "{{ .Values.datawaveDeployment.image.pullPolicy }}"
           livenessProbe:

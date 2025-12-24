@@ -21,7 +21,7 @@ global:
     cache:
       name: cache
 image:
-  name: datawave-dictionary-service
+  name: ghcr.io/nationalsecurityagency/datawave-dictionary-service
   pullPolicy: IfNotPresent
   tag: 4.0.3
 args:

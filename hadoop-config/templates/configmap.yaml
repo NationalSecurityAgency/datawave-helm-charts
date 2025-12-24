@@ -232,9 +232,9 @@ data:
       {{- with .Values.config.coreSiteProperties }}
       {{- range . }}
       <property>
-          <name>{{ .name }}</name>
-          <value>{{ .value }}</value>
-          <description>{{ .description }}</description>
+          <name>{{- .name -}}</name>
+          <value>{{- .value -}}</value>
+          <description>{{- .description -}}</description>
       </property>
       {{- end }}
       {{- end }}
@@ -247,8 +247,8 @@ data:
       {{- with .Values.config.hdfsSiteProperties }}
       {{- range . }}
       <property>
-          <name>{{ .name }}</name>
-          <value>{{ .value }}</value>
+          <name>{{- .name -}}</name>
+          <value>{{- .value -}}</value>
       </property>
       {{- end }}
       {{- end }}
@@ -263,8 +263,8 @@ data:
       {{- with .Values.config.mapredSiteProperties }}
       {{- range . }}
       <property>
-          <name>{{ .name }}</name>
-          <value>{{ .value }}</value>
+          <name>{{- .name -}}</name>
+          <value>{{- .value -}}</value>
       </property>
       {{- end }}
       {{- end }}
@@ -359,8 +359,8 @@ data:
       {{- with .Values.config.yarnSiteProperties }}
       {{- range . }}
       <property>
-          <name>{{ .name }}</name>
-          <value>{{ .value }}</value>
+          <name>{{- .name -}}</name>
+          <value>{{- .value -}}</value>
       </property>
       {{- end }}
       {{- end }}
