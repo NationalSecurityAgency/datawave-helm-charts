@@ -33,11 +33,12 @@ jobs:
       run: echo $TAG_NAME
     - name: Commit Non Snapshot and Create Tag
       run: |
-        /usr/bin/git config --global user.name "GitHub Actions"
-        /usr/bin/git config --global user.email "datawave@github.com"
-        /usr/bin/git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
-        /usr/bin/git tag $TAG_NAME
-        /usr/bin/git push --tags
+        export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "datawave@github.com"
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
+        git tag $TAG_NAME
+        git push --tags
     - name: Set environment variables
       id: set-variables
       run: |
@@ -64,10 +65,11 @@ jobs:
         
     - name: Commit Snapshot Number
       run: |
-        /usr/bin/git config --global user.name "GitHub Actions"
-        /usr/bin/git config --global user.email "datawave@github.com"
-        /usr/bin/git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set prerelease version."
-        /usr/bin/git push
+        export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "datawave@github.com"
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set prerelease version."
+        git push
 
 
 
