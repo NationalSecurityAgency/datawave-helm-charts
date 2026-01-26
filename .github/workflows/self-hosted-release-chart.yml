@@ -31,6 +31,10 @@ jobs:
         cat Chart.yaml | grep "^version:" | awk '{print "TAG_NAME=${{ env.RELEASE_CHART_NAME }}-"$NF}' >> $GITHUB_ENV
     - name: Print Version
       run: echo $TAG_NAME
+    - name: Ensure git is available
+      run: |
+        sudo yum install -y git || true
+        which git || echo "Git not found in PATH"
     - name: Commit Non Snapshot and Create Tag
       run: |
         export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
