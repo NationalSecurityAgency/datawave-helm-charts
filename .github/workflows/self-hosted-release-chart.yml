@@ -10,6 +10,7 @@ on:
     
 env:
   RELEASE_CHART_NAME: ${{ github.event.inputs.RELEASE_CHART_NAME || 'common-service-library' }}
+  PATH: /usr/local/bin:/usr/bin:/bin
 
 
 jobs:
