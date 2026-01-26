@@ -1,0 +1,72 @@
+---
+name: Self Hosted Repo Release Chart
+    
+on:
+  workflow_dispatch:
+    inputs:
+      RELEASE_CHART_NAME:
+        required: true
+        description: "Folder name of chart to release."
+    
+env:
+  RELEASE_CHART_NAME: ${{ github.event.inputs.RELEASE_CHART_NAME || 'common-service-library' }}
+
+
+jobs:
+  release-chart:
+    runs-on: self-hosted
+
+    permissions: write-all
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Get Next Version
+      run: |
+        cd ${{ env.RELEASE_CHART_NAME }}
+        sed -i -E 's/^(version: [0-9]+\.[0-9]+\.[0-9]+)(-[^-]+)?$/\1/' Chart.yaml
+    - name: Get Version
+      run: |
+        cd ${{ env.RELEASE_CHART_NAME }}
+        cat Chart.yaml | grep "^version:" | awk '{print "TAG_NAME=${{ env.RELEASE_CHART_NAME }}-"$NF}' >> $GITHUB_ENV
+    - name: Print Version
+      run: echo $TAG_NAME
+    - name: Commit Non Snapshot and Create Tag
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "datawave@github.com"
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
+        git tag $TAG_NAME
+        git push --tags
+    - name: Set environment variables
+      id: set-variables
+      run: |
+          echo "VERSION=$(yq -r .version ${{ env.RELEASE_CHART_NAME}}/Chart.yaml)" >> "$GITHUB_OUTPUT"          
+
+    - name: Env variable output
+      id: test-variables
+      run: |
+          echo ${{ steps.set-variables.outputs.VERSION }}
+    - name: Package and push helm chart
+      run: |
+        cd ${{ env.RELEASE_CHART_NAME}}
+        export CHART_NAME=$(cat Chart.yaml | grep "^name:" | awk '{print $NF}' )
+        helm package . --version ${{ steps.set-variables.outputs.VERSION }} --dependency-update
+        curl -udatawave-token:${{ secrets.SELF_HOSTED_HELM_REPO_TOKEN }} -T *.tgz "https://artifactory.adv.evoforge.org/artifactory/y341-helm/" -v
+    - name: Update Version Number
+      run: |
+        cd ${{ env.RELEASE_CHART_NAME }}
+        version="${TAG_NAME##*-}"
+        IFS='.' read -r major minor patch <<< "${version}"
+        next=$((patch + 1))
+        new_version="${major}.${minor}.${next}-1"
+        sed -i "s/^version:.*/version: ${new_version}/" Chart.yaml  
+        
+    - name: Commit Snapshot Number
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "datawave@github.com"
+        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set prerelease version."
+        git push
+
+
+
