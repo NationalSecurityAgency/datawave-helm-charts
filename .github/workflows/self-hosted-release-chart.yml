@@ -16,7 +16,8 @@ env:
 jobs:
   release-chart:
     runs-on: self-hosted
-
+    env:
+      PATH: /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
     permissions: write-all
     steps:
     - name: Checkout code
@@ -37,7 +38,8 @@ jobs:
         which git || echo "Git not found in PATH"
     - name: Commit Non Snapshot and Create Tag
       run: |
-        export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+        export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+        which git
         git config --global user.name "GitHub Actions"
         git config --global user.email "datawave@github.com"
         git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
@@ -69,7 +71,8 @@ jobs:
         
     - name: Commit Snapshot Number
       run: |
-        export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+        export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+        which git
         git config --global user.name "GitHub Actions"
         git config --global user.email "datawave@github.com"
         git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}} -- Set prerelease version."
