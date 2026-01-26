@@ -67,6 +67,7 @@ jobs:
       run: |
         cd ${{ env.RELEASE_CHART_NAME}}
         export CHART_NAME=$(cat Chart.yaml | grep "^name:" | awk '{print $NF}' )
+        cat Chart.yaml
         helm package . --version ${{ steps.set-variables.outputs.VERSION }} --dependency-update
         curl -udatawave-token:${{ secrets.SELF_HOSTED_HELM_REPO_TOKEN }} -T *.tgz "https://artifactory.adv.evoforge.org/artifactory/y341-helm/" -v
     - name: Update Version Number
