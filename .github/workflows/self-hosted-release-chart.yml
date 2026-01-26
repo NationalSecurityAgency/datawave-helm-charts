@@ -26,6 +26,13 @@ jobs:
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
         sed -i -E 's/^(version: [0-9]+\.[0-9]+\.[0-9]+)(-[^-]+)?$/\1/' Chart.yaml
+        if git diff --quiet; then
+          echo "No snapshot suffix to remove, version already clean"
+          echo "HAS_CHANGES=false" >> $GITHUB_ENV
+        else
+          echo "Removed snapshot suffix from version"
+          echo "HAS_CHANGES=true" >> $GITHUB_ENV
+        fi
     - name: Get Version
       run: |
         cd ${{ env.RELEASE_CHART_NAME }}
@@ -42,7 +49,9 @@ jobs:
         which git
         git config --global user.name "GitHub Actions"
         git config --global user.email "datawave@github.com"
-        git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
+        if [ "${{ env.HAS_CHANGES }}" = "true" ]; then
+          git commit -am "Automated Release of ${{ env.RELEASE_CHART_NAME}}"
+        fi
         git tag $TAG_NAME
         git push --tags
     - name: Set environment variables
