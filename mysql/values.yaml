@@ -12,6 +12,15 @@ clusters:
     instances: 3
     router:
       instances: 1
+    backup:
+      enabled: false
+      name: myBackup
+      excludeTables: []
+      claimName: backup-pvc
+      schedule:
+        name: nightly
+        cron: "0 1 * * *"
+        enabled: true
     databaseUsers:
     - name: datawave
       secretName: mysql-secret
