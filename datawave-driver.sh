@@ -336,10 +336,12 @@ set_namespace
 if [ "$USING_MINIKUBE" = "false" ]; then
     echo "Skipping image preload since minikube cluster was not started with this deployment."
 else
-    preload_docker_image rabbitmq:3.11.4-alpine
-    preload_docker_image mysql:8.0.32
-    preload_docker_image busybox:1.28
-    preload_docker_image bitnamilegacy/zookeeper:3.6.4
+    preload_docker_image rabbitmq:3.11.4-alpine &
+    preload_docker_image mysql:8.0.32 &
+    preload_docker_image busybox:1.28 &
+    preload_docker_image bitnamilegacy/zookeeper:3.6.4 &
+    preload_docker_image ghcr.io/nationalsecurityagency/datawave/ingest-kubernetes:7.36.0-SNAPSHOT &
+    wait
     configure_etc_hosts
     update_core_dns
 fi

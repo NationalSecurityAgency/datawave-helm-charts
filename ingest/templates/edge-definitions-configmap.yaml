@@ -1,0 +1,21 @@
+####################################
+# Core Helm Template Configuration #
+####################################
+
+apiVersion: v1
+kind: ConfigMap
+
+######################################
+# Basic Metadata for this Deployment #
+######################################
+
+metadata:
+  name: "{{ .Chart.Name }}-edge-definitions-configmap"
+
+##########################
+# Configuration Map Data #
+##########################
+
+data:
+  edge-definitions.xml: |
+{{ .Values.config.edgeDefinitionsXml | indent 4 }}

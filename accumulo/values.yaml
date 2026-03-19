@@ -101,14 +101,16 @@ tabletServers:
   tolerations: []
   affinity: 
     podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: "app.kubernetes.io/component"
-            operator: In
-            values:
-            - tserver
-        topologyKey: "kubernetes.io/hostname"
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: "app.kubernetes.io/component"
+              operator: In
+              values:
+              - tserver
+          topologyKey: "kubernetes.io/hostname"
 compactors:
   queues:
     - compactorQueueName: test

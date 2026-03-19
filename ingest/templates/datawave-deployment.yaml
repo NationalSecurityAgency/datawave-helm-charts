@@ -87,6 +87,9 @@ spec:
           mountPath: /opt/datawave-ingest/current/config/{{ .name }}-ingest-config.xml
           subPath: {{ .name }}-ingest-config.xml
         {{ end }}
+        - name: edge-definitions
+          mountPath: /opt/datawave-ingest/current/config/edge-definitions.xml
+          subPath: edge-definitions.xml
         - name: datawave-general-ingest-config
           mountPath: /opt/datawave-ingest/mounted-config/
         - name: genders
@@ -103,6 +106,10 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.config.sharedConfig.claim }}
       {{ end }}
+      - name: edge-definitions
+        configMap:
+          name: "{{ .Chart.Name }}-edge-definitions-configmap"
+          defaultMode: 0775
       - name: datawave-general-ingest-config
         configMap:
           name: datawave-general-ingest-config

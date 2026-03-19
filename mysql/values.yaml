@@ -9,7 +9,9 @@ clusters:
   - name: mysql-cluster
     secretName: mysql-secret
     tlsUseSelfSigned: true
-    instances: 3
+    claimTemplateOverride: 
+      enabled: false
+    instances: 1
     router:
       instances: 1
     backup:

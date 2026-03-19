@@ -10,6 +10,15 @@ spec:
   instances: {{ .instances }}
   router:
     instances: {{ .router.instances }}
+{{- if .claimTemplateOverride.enabled }}
+  datadirVolumeClaimTemplate:
+    storageClassName: {{ .claimTemplateOverride.storageClass }}
+    accessModes: 
+      - {{ .claimTemplateOverride.accessMode }}
+    resources:
+      requests:
+        storage: {{ .claimTemplateOverride.size }}
+{{- end }}
   {{- if .backup.enabled }}
   backupProfiles:
     - name: {{ .backup.name }}
