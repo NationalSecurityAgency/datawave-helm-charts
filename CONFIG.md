@@ -25,12 +25,12 @@ When performing an upgrade that contains any datatype changes, you may need to r
 ##### Checking the datatype folders were created
 1) remote into the hadoop-nn pod (any of them if there is more than 1)
 1) run the following cmd: `hdfs dfs -ls hdfs://hdfs-nn:9000/data`
-3) verify all the datatype folders exists
+3) verify all the datatype folders exist
 
 ### New Datatype Configuration Help
 <details>
 <summary>Example of what to add</summary>
-The new sction will need to follow the following format:
+The new section will need to follow the following format:
 
 ```yaml
 - name: <name of the datatype>
@@ -38,7 +38,7 @@ The new sction will need to follow the following format:
           liveFolder: <name of datatype>
           bulkFolder: <name of datatype>-bulk
           config:
-            distrubutionArgs: none
+            distributionArgs: none
             extraIngestArgs: "-data.name.override=<name of datatype>"
             inputFormat: datawave.ingest.json.mr.input.JsonInputFormat
             lifo: false
