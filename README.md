@@ -5,7 +5,7 @@ Running this stack uses images in the ghcr repository which are not public. The 
 Through the GitHub UI, generate a PAT with at least read packages
 
 ```bash
-./create-image-pull-secrets.sh <github username> <gihub PAT>
+./create-image-pull-secrets.sh <github username> <github PAT>
 ```
 
 
