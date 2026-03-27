@@ -79,13 +79,19 @@ metadata:
     app: {{ .name }}
 data:
   script.sql: |
-    {{- range .databaseUsers }}
+    {{- $users := (.databaseUsers | default (list)) }}
+    {{- range $users }}
     {{- $dbUser := .name }}
     CREATE USER IF NOT EXISTS '{{ .name }}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_{{ .name | upper | replace "-" "_" }}}';
     {{- range .databases }}
+    CREATE DATABASE IF NOT EXISTS {{ . }};
     GRANT ALL PRIVILEGES ON {{ . }}.* TO '{{ $dbUser }}'@'%' WITH GRANT OPTION;
     {{- end }}
     {{- end }}
+    {{- if .initScript }}
     {{ .initScript |  nindent 4 }}
+    {{- else if not $users }}
+    SELECT 1;
+    {{- end }}
 {{- end }}
 {{- end }}
