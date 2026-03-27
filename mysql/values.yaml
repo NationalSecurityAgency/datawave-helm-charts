@@ -25,6 +25,8 @@ clusters:
     - name: datawave
       secretName: mysql-secret
       secretKeyRef: rootPassword
+      databases:
+      - example
     # Optional init script content. If specified, this will be used directly.
     initScript: |
       create database example;
