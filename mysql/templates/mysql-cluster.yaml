@@ -10,5 +10,20 @@ spec:
   instances: {{ .instances }}
   router:
     instances: {{ .router.instances }}
+  {{- if .backup.enabled }}
+  backupProfiles:
+    - name: {{ .backup.name }}
+      dumpInstance:
+        dumpOptions:
+          excludeTables: {{ .backup.excludeTables }}
+        storage:
+          persistentVolumeClaim:
+            claimName: {{ .backup.claimName }}
+  backupSchedules:
+    - name: {{ .backup.schedule.name }}
+      schedule: {{ .backup.schedule.cron }}
+      backupProfileName: {{ .backup.name }}
+      enabled: {{ .backup.schedule.enabled }}
+  {{- end }}
 {{- end }}
 {{- end }}
