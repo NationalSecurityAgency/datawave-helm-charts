@@ -8,6 +8,15 @@ spec:
   secretName: {{ .secretName }}
   tlsUseSelfSigned: {{ .tlsUseSelfSigned }}
   instances: {{ .instances }}
+  {{- with .claimTemplateOverride }}
+  datadirVolumeClaimTemplate:
+    accessModes:
+      {{ .accessModes }}
+    storageClassName: {{ .storageClassName }}
+    resources:
+      requests:
+        storage: {{ .size }}
+  {{- end }}
   router:
     instances: {{ .router.instances }}
   {{- if .backup.enabled }}

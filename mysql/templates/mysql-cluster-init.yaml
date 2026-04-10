@@ -22,12 +22,12 @@ spec:
           ]
           env:
             - name: MYSQL_HOST
-              value: {{ .name }}
-        - name: create-cluster-users
+              value: {{ .serviceName }}
+        - name: sql-init
           image: {{ $.Values.init.image.name  }}:{{ $.Values.init.image.tag  }}
           env:
             - name: MYSQL_HOST
-              value: {{ .name }}
+              value: {{ .serviceName }}
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
@@ -46,7 +46,7 @@ spec:
                   key: {{ .secretKeyRef }}
           {{- end }}
           command: ["sh", "-c"]
-          args: ["mysqlsh $MYSQL_USER@{{ .name }} --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
+          args: ["mysqlsh $MYSQL_USER@$MYSQL_HOST --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
           volumeMounts:
             - name: init-script
               mountPath: /scripts
@@ -79,6 +79,7 @@ metadata:
     app: {{ .name }}
 data:
   script.sql: |
+    SET GLOBAL read_only = OFF;
     {{- $users := (.databaseUsers | default (list)) }}
     {{- range $users }}
     {{- $dbUser := .name }}
