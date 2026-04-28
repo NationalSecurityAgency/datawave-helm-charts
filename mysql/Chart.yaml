@@ -5,13 +5,13 @@
 apiVersion: v2
 name: dwv-mysql
 type: application
-version: 1.0.2-1
+version: 2.1.0-1
 
 #################################
 # Basic Metadata for this Chart #
 #################################
 
-appVersion: 8.0.42
+appVersion: 9.4.0
 description: Deploys a mysql instance for use in DataWave Web
 icon: https://labs.mysql.com/common/themes/sakila/favicon.ico
 

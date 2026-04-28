@@ -22,22 +22,12 @@ spec:
           ]
           env:
             - name: MYSQL_HOST
-              value: {{ .name }}
-      securityContext:
-        runAsUser: 1000
-        runAsNonRoot: true
-      {{- with $.Values.global.pullSecrets }}
-      imagePullSecrets:
-      {{- range . }}
-      - name: {{ . }}
-      {{- end }}
-      {{- end }}
-      containers:
-        - name: mysql-script-runner
+              value: {{ .serviceName }}
+        - name: sql-init
           image: {{ $.Values.init.image.name  }}:{{ $.Values.init.image.tag  }}
           env:
             - name: MYSQL_HOST
-              value: {{ .name }}
+              value: {{ .serviceName }}
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
@@ -48,12 +38,33 @@ spec:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: rootPassword
+          {{- range .databaseUsers }}
+            - name: MYSQL_PASSWORD_{{ .name | upper | replace "-" "_" }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: {{ .secretKeyRef }}
+          {{- end }}
+          command: ["sh", "-c"]
+          args: ["mysqlsh $MYSQL_USER@$MYSQL_HOST --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
           volumeMounts:
             - name: init-script
               mountPath: /scripts
               readOnly: true
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+      {{- with $.Values.global.pullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: mysql-init-complete
+          image: busybox:1.28
           command: ["sh", "-c"]
-          args: ["mysqlsh $MYSQL_USER@{{ .name }} --sql --password=$MYSQL_PASSWORD -f /scripts/script.sql"]
+          args: ["echo mysql initialization complete"]
       restartPolicy: Never
       volumes:
         - name: init-script
@@ -68,6 +79,20 @@ metadata:
     app: {{ .name }}
 data:
   script.sql: |
+    SET GLOBAL read_only = OFF;
+    {{- $users := (.databaseUsers | default (list)) }}
+    {{- range $users }}
+    {{- $dbUser := .name }}
+    CREATE USER IF NOT EXISTS '{{ .name }}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_{{ .name | upper | replace "-" "_" }}}';
+    {{- range .databases }}
+    CREATE DATABASE IF NOT EXISTS {{ . }};
+    GRANT ALL PRIVILEGES ON {{ . }}.* TO '{{ $dbUser }}'@'%' WITH GRANT OPTION;
+    {{- end }}
+    {{- end }}
+    {{- if .initScript }}
     {{ .initScript |  nindent 4 }}
+    {{- else if not $users }}
+    SELECT 1;
+    {{- end }}
 {{- end }}
 {{- end }}

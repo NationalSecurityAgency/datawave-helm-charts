@@ -7,6 +7,7 @@ init:
     tag: 8.4
 clusters:
   - name: mysql-cluster
+    serviceName: mysql-cluster
     secretName: mysql-secret
     tlsUseSelfSigned: true
     instances: 3
@@ -25,6 +26,8 @@ clusters:
     - name: datawave
       secretName: mysql-secret
       secretKeyRef: rootPassword
+      databases:
+      - example
     # Optional init script content. If specified, this will be used directly.
     initScript: |
       create database example;
