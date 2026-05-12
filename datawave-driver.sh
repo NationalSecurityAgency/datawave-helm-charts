@@ -138,7 +138,7 @@ function start_minikube() {
   else
       echo "Minikube cluster not purged."
   fi
-  minikube start --nodes 3 --cpus 4 --memory 15960 --disk-size 20480 
+  minikube start --nodes 3 --cpus 4 --memory 15960 --disk-size 20480 --kubernetes-version=v1.33.11
   if [ $? -eq 0 ]; then
     echo "Minikube started successfully."
   else
@@ -349,7 +349,7 @@ ghcr_login
 create_secrets
 setup_mysql_operator
 
-helm_install
+#helm_install
 
 
 
