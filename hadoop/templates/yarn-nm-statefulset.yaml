@@ -69,9 +69,6 @@ spec:
       - name: yarn-nm
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-        ports:
-        - containerPort: 8088
-          name: web
         command:
            - "/bin/bash"
            - "{{ .Values.global.volumes.hadoop_bootstrap.destination }}/bootstrap.sh"
