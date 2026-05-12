@@ -18,18 +18,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
           fetch-depth: 0
       - name: Install Helm
-        uses: azure/setup-helm@v4.2.0
+        uses: azure/setup-helm@v5
         with:
           version: '3.12.0' # default is latest (stable)
         id: install
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -51,7 +51,7 @@ jobs:
           cd ..
 
       - name: Scan yaml files with kube-linter
-        uses: stackrox/kube-linter-action@v1.0.5
+        uses: stackrox/kube-linter-action@v1.0.7
         id: kube-linter-action-scan
         with:
           # Adjust this directory to the location where your kubernetes resources and helm charts are located.
