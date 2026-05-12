@@ -1,0 +1,16 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: configuration
+  namespace: default
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ./configuration
+      sourceRef:
+        kind: GitRepository
+        name: datawave-helm-charts
+        namespace: flux-system
+      interval: 5m
+  values: {}

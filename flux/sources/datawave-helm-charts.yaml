@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: datawave-helm-charts
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: https://github.com/NationalSecurityAgency/datawave-helm-charts
+  ref:
+    branch: flux-capacitor
