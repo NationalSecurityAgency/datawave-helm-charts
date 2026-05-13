@@ -1,3 +1,4 @@
+{{- if .Values.manager.enabled }}
 # Copyright 2020 Crown Copyright
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +21,7 @@ metadata:
     {{- include "accumulo.labels" . | nindent 4 }}
     app.kubernetes.io/component: manager
 spec:
-  replicas: 1
+  replicas: {{ .Values.manager.replicaCount }}
   selector:
     matchLabels:
       {{- include "accumulo.selectorLabels" . | nindent 6 }}
@@ -107,3 +108,4 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
+{{- end }}

@@ -58,6 +58,9 @@
                 "auths": {
                     "type": "string"
                 },
+                "chartProvides": {
+                    "type": "boolean"
+                },
                 "files": {
                     "properties": {},
                     "type": "object"
@@ -124,6 +127,9 @@
         },
         "entrypointConfigMap": {
             "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -138,6 +144,9 @@
                 "affinity": {
                     "properties": {},
                     "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "nodeSelector": {
                     "properties": {},
@@ -274,9 +283,15 @@
                     "properties": {},
                     "type": "object"
                 },
+                "enabled": {
+                    "type": "boolean"
+                },
                 "nodeSelector": {
                     "properties": {},
                     "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
                 },
                 "resources": {
                     "properties": {},
@@ -293,6 +308,9 @@
                 "affinity": {
                     "properties": {},
                     "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "ingress": {
                     "properties": {
@@ -330,6 +348,9 @@
         },
         "scanServers": {
             "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
                 "resourceGroups": {
                     "items": {
                         "properties": {
@@ -409,6 +430,9 @@
                         }
                     },
                     "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "nodeSelector": {
                     "properties": {},

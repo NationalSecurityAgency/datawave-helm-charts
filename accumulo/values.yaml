@@ -33,7 +33,8 @@ labels: {}
 hadoop:
   classpath:
     "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
-entrypointConfigMap: 
+entrypointConfigMap:
+  enabled: true
   name: accumulo-entrypoint
 hostNetwork: {}
 hdfs:
@@ -51,6 +52,7 @@ hdfs:
 zookeeper:
   externalHosts: "zookeeper"
 config:
+  chartProvides: true
   auths: "JBOSS_ADMIN,DW_ADMIN,AUTH_USER,BAR,FOO,PRIVATE,PUBLIC"
   path: /opt/accumulo/conf
   files: {}
@@ -90,11 +92,14 @@ image:
   
   pullPolicy: IfNotPresent
 manager:
+  enabled: true
+  replicaCount: 1
   resources: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
 tabletServers:
+  enabled: true
   replicaCount: 3
   resources: {}
   nodeSelector: {}
@@ -110,12 +115,14 @@ tabletServers:
             - tserver
         topologyKey: "kubernetes.io/hostname"
 compactors:
+  enabled: true
   queues:
     - compactorQueueName: test
       serviceName: testCompactionService
       jsonConfig: "[{\"name\":\"queue1\", \"type\": \"external\", \"queue\":\"test\"}]"
       plannerClass: org.apache.accumulo.core.spi.compaction.DefaultCompactionPlanner
 scanServers:
+  enabled: true
   resourceGroups:
   - resourceGroupName: group1
     replicaCount: 1
@@ -130,12 +137,14 @@ scanServers:
     tolerations: []
     affinity: {}
 gc:
+  enabled: true
   replicaCount: 1
   resources: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
 coordinator:
+  enabled: true
   replicaCount: 1
   resources: {}
   nodeSelector: {}
@@ -147,6 +156,7 @@ cmds:
   tolerations: []
   affinity: {}
 monitor:
+  enabled: true
   replicaCount: 1
   resources: {}
   nodeSelector: {}
