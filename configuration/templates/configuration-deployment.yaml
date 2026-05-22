@@ -96,6 +96,21 @@ spec:
               value: "{{ .Values.global.serviceDns.rabbitmq.name }}"
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          livenessProbe:
+            httpGet:
+              path: "{{ .Values.livenessProbe.uri }}"
+              port: {{ .Values.livenessProbe.port }}
+              scheme: "{{ .Values.livenessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.livenessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.readinessProbe.uri }}"
+              port: {{ .Values.readinessProbe.port }}
+              scheme: "{{ .Values.readinessProbe.scheme }}"
+            initialDelaySeconds: {{ .Values.readinessProbe.delaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           ports:
             - containerPort: 8888
           resources: {}
