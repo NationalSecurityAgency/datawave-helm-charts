@@ -88,6 +88,9 @@ spec:
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.global.serviceDns.configuration.name }}:{{ .Values.global.serviceDns.configuration.port }}/configserver"
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
@@ -114,6 +117,9 @@ spec:
             - name: "{{ .Values.global.volumes.certificates.name }}"
               mountPath: "{{ .Values.global.volumes.certificates.destination }}"
               readOnly: true
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
 
       #############################################################
       # Initialization Containers Associated with this Deployment #
@@ -130,6 +136,9 @@ spec:
           secret:
             secretName: {{ .Values.global.certSecretName}}
             optional: false
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
 {{- end -}}
 {{- define "common-service-library.deployment" -}}
 {{- include "common-service-library.util.merge" (append . "common-service-library.deployment.tpl") -}}

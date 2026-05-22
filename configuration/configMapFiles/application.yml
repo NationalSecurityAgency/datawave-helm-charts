@@ -9,7 +9,7 @@ logging:
   level:
     root: DEBUG
 management:
-  endpoint.health.show-details: when-authorized
+  endpoint.health.show-details: always
   endpoints.web.base-path: /mgmt
   endpoints.web.exposure.include: "*"
 server:

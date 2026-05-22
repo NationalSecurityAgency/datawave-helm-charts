@@ -1,0 +1,89 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    accumuloManager:
+      name: accumulo-manager
+    cache:
+      name: cache
+
+#############################################
+# Default Values for Query Metric Deployment #
+#############################################
+image:
+  name: ghcr.io/nationalsecurityagency/datawave-query-metric-service
+  pullPolicy: IfNotPresent
+  tag: 4.1.11-SNAPSHOT
+args:
+- "--spring.output.ansi.enabled=ALWAYS"
+- "--spring.profiles.active=default,k8s,remoteauth"
+livenessProbe:
+  delaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 60
+  port: 8080
+  scheme: HTTP
+  uri: querymetric/mgmt/health
+meta:
+  name: query-metric
+readinessProbe:
+  delaySeconds: 34
+  periodSeconds: 5
+  port: 8080
+  scheme: HTTP
+  uri: querymetric/mgmt/health
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+
+extraEnv:
+  - name: HADOOP_USER_NAME
+    value: datawave
+
+extraVolumes:
+  - name: logs
+    emptyDir: {}
+  - name: passwd
+    emptyDir: {}
+
+extraVolumeMounts:
+  - name: logs
+    mountPath: /logs
+  - name: passwd
+    mountPath: /etc/passwd
+    subPath: passwd
+    readOnly: true
+
+############################################
+# Default Values for Query Metric Service  #
+############################################
+ports:
+  http: 8080
+  https: 8443
+
+############################################
+# Default Values for Query Metric Ingress  #
+############################################
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  queryMetric:
+    domain: "querymetric.datawave.org"

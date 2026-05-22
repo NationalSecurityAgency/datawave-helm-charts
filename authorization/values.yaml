@@ -31,7 +31,7 @@ args:
 image:
   name: ghcr.io/nationalsecurityagency/datawave-authorization-service
   pullPolicy: IfNotPresent
-  tag: 4.0.3
+  tag: 4.0.7-SNAPSHOT
 livenessProbe:
   delaySeconds: 60
   periodSeconds: 5

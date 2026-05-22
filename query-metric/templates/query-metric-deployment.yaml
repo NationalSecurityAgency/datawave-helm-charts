@@ -1,0 +1,22 @@
+{{- include "common-service-library.deployment" (list . "query-metric.deployment") -}}
+{{- define "query-metric.deployment" -}}
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: "{{ .Chart.Name }}-init-passwd"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "cp /etc/passwd /passwd/passwd && echo 'datawave:x:1000:1000:datawave:/home/datawave:/bin/bash' >> /passwd/passwd" ]
+          volumeMounts:
+            - name: passwd
+              mountPath: /passwd
+        - name: "{{ .Chart.Name }}-init-cache"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", " until nslookup {{ .Values.global.serviceDns.cache.name }}; do echo 'Waiting for Cache...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-accumulo"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.accumuloManager.name }}; do echo 'Waiting for Accumulo...'; sleep 2; done" ]
+{{- end -}}

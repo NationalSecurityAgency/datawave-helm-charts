@@ -1,0 +1,4 @@
+{{- include "common-service-library.service" (list . "query-metric.service") -}}
+{{- define "query-metric.service" -}}
+#overrides go here
+{{- end -}}

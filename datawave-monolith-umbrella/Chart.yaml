@@ -48,3 +48,7 @@ dependencies:
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.1
     path: ../mysql
+  - name: dwv-query-metric
+    repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
+    version: 1.0.3-1
+    path: ../query-metric

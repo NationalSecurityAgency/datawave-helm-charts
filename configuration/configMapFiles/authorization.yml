@@ -1,3 +1,9 @@
+datawave:
+  authorization:
+    health:
+      enabled: true
+      subject-dn: "cn=test a. user, ou=example developers, o=example corp, c=us"
+      issuer-dn: "cn=example corp ca, o=example corp, c=us"
 logging:
   level:
     datawave.microservice.authorization: DEBUG
