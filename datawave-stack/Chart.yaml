@@ -40,5 +40,5 @@ dependencies:
     path: ../accumulo
   - name: datawave-monolith-umbrella
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
-    version: 1.0.3
+    version: 1.0.4-1
     path: ../datawave-monolith-umbrella

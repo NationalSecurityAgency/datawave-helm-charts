@@ -1,0 +1,18 @@
+sonicweb:
+  annotation-service-impl: cache
+  features:
+    transcript-updates: true
+
+hazelcast:
+  client:
+    cluster-name: annotation-cache
+
+server:
+  ssl:
+    client-auth: NEED
+
+logging:
+  level:
+    root: TRACE
+    datawave.microservice.sonicweb: TRACE
+    io.undertow.request: TRACE

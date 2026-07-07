@@ -1,0 +1,10 @@
+{{- include "common-service-library.deployment" (list . "annotation-cache.deployment") -}}
+{{- define "annotation-cache.deployment" -}}
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+{{- end -}}

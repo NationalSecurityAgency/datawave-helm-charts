@@ -1,0 +1,80 @@
+global:
+  dockerRegistry:
+    url: ghcr.io/nationalsecurityagency
+  volumes:
+    certificates:
+      name: certificates
+      destination: /data/certs
+  initialization:
+    image:
+      name: busybox
+      tag: 1.28
+  certSecretName: certificates-secret
+  pullSecrets:
+    - dockerconfigjson-ghcr
+  serviceDns:
+    configuration:
+      name: configuration
+      port: 8888
+    annotationCache:
+      name: annotation-cache
+
+
+
+#######################################
+# Default Values for Cache Deployment #
+#######################################
+image:
+  name: ghcr.io/nationalsecurityagency/datawave/sonicweb-service
+  pullPolicy: IfNotPresent
+  tag: 1.4.0-SNAPSHOT
+
+env:
+  - name: JAVA_TOOL_OPTIONS
+    value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5011"
+
+args:
+- "--spring.output.ansi.enabled=ALWAYS"
+- "--spring.profiles.active=default,k8s,remoteauth"
+- "-Dhazelcast.diagnostics.enabled=true"
+- "--log4j.rootLogger=debug, stdout"
+- "--log4j.appender.stdout=org.apache.log4j.ConsoleAppender"
+- "--log4j.appender.stdout.Target=System.out"
+- "--log4j.appender.stdout.layout=org.apache.log4j.PatternLayout"
+- "--log4j.appender.stdout.layout.ConversionPattern=%t %-5p %c{2} - %m%n"
+
+livenessProbe:
+  delaySeconds: 40
+  periodSeconds: 15
+  port: 8080
+  scheme: HTTP
+  uri: sonicweb/mgmt/health
+meta:
+  name: sonicweb
+readinessProbe:
+  delaySeconds: 40
+  periodSeconds: 15
+  port: 8080
+  scheme: HTTP
+  uri: sonicweb/mgmt/health
+replication:
+  maxSurge: 2
+  maxUnavailable: 1
+  replicaCount: 1
+  revisionHistoryLimit: 10
+restartPolicy: Always
+dependencies:
+  annotationCache:
+    name: "Annotation Cache Service"
+    service: annotation-cache
+    port: 8080
+    path: mgmt/health
+  authorization:
+    name: "Authorization Service"
+    service: authorization
+    port: 8080
+    path: mgmt/health
+ports:
+  http: 8080
+  https: 8443
+  debug: 5011

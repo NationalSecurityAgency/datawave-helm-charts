@@ -22,6 +22,16 @@ external:
       - yarn-rm
       - yarn-nm
 
+datawave-monolith-umbrella:
+  dwv-annotation-cache:
+    image:
+      name: nationalsecurityagency/datawave/annotation-cache-service
+      tag: 1.0.0-SNAPSHOT
+  sonicweb:
+    image:
+      name: nationalsecurityagency/datawave/sonicweb-service
+      tag: 1.4.0-SNAPSHOT
+
 dwv-hadoop:
   persistence:
     nameNode:
