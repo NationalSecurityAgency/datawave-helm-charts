@@ -88,6 +88,9 @@ spec:
           env:
             - name: CONFIG_SERVER_URL
               value: "http://{{ .Values.global.serviceDns.configuration.name }}:{{ .Values.global.serviceDns.configuration.port }}/configserver"
+            {{- if .Values.env }}
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           livenessProbe:
