@@ -12,6 +12,8 @@ spring:
     template:
       mandatory: true
   cloud:
+    function:
+      definition: loadCache;busConsumer
     stream:
       # This ensures binder connection/channel errors bubble up to your application
       binding-retry-state-by-binder: true
@@ -40,6 +42,10 @@ spring:
           producer:
             required-groups:
               - cache
+        loadCache-in-0:
+          destination: annotation
+          group: cache
+          content-type: application/x-protobuf
 
 hazelcast:
   server:
