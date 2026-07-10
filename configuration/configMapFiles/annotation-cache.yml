@@ -27,12 +27,10 @@ spring:
               use-confirm-header: true
       bindings:
         persisted-out-0:
+          # exchange to push messages to
           destination: annotation
+          # we are using protobuf, this forces the conversion
           content-type: application/x-protobuf
-          # I think this doesn't belong here move to stream.rabbit.bindings
-          producer:
-            # 3. Ensures the producer fails if the message cannot be routed to a queue
-            error-channel-enabled: false
 
 hazelcast:
   server:
