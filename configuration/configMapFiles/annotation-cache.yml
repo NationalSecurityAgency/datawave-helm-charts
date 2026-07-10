@@ -15,22 +15,31 @@ spring:
     stream:
       # This ensures binder connection/channel errors bubble up to your application
       binding-retry-state-by-binder: true
+      # settings directly for rabbit
       rabbit:
         bindings:
           persisted-out-0:
             producer:
+              # create the exchange
               declareExchange: true
+              # set it to durable
+              durable: true
               # this forces inline errors
               error-channel-enabled: false
               # 4. Mandatory flag triggers the 'publisher-returns' when there is no queue bound
               confirm-ack-channel-enabled: true
               use-confirm-header: true
+      # settings for the binding layer regardless of impl
       bindings:
         persisted-out-0:
           # exchange to push messages to
           destination: annotation
           # we are using protobuf, this forces the conversion
           content-type: application/x-protobuf
+          # auto create a queue
+          producer:
+            required-groups:
+              - cache
 
 hazelcast:
   server:
