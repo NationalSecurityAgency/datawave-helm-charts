@@ -64,6 +64,9 @@ spec:
       - name: yarn-rm
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        - name: HADOOP_YARN_HOME
+          value: /usr/local/hadoop-yarn
         ports:
         - containerPort: 8088
           name: web
