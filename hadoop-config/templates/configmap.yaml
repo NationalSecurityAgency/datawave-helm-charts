@@ -299,16 +299,8 @@ data:
     bin=`dirname "${BASH_SOURCE-$0}"`
     bin=`cd "$bin"; pwd`
 
-    DEFAULT_LIBEXEC_DIR="$bin"/../libexec
-    HADOOP_LIBEXEC_DIR=${HADOOP_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
-    . $HADOOP_LIBEXEC_DIR/yarn-config.sh
-
-    # start resourceManager
-    # "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start resourcemanager
     # start nodeManager
-    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start nodemanager
-    # start proxyserver
-    #"$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start proxyserver
+    "$bin"/../bin/yarn --daemon start nodemanager
 
   start-yarn-rm.sh: |
     #!/usr/bin/env bash
@@ -336,20 +328,14 @@ data:
     bin=`dirname "${BASH_SOURCE-$0}"`
     bin=`cd "$bin"; pwd`
 
-    DEFAULT_LIBEXEC_DIR="$bin"/../libexec
-    HADOOP_LIBEXEC_DIR=${HADOOP_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
-    . $HADOOP_LIBEXEC_DIR/yarn-config.sh
-
     # start resourceManager
-    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start resourcemanager
-    # start nodeManager
-    # "$bin"/yarn-daemons.sh --config $YARN_CONF_DIR  start nodemanager
+    "$bin"/../bin/yarn --daemon start resourcemanager
     # start proxyserver
-    "$bin"/yarn-daemon.sh --config $YARN_CONF_DIR  start proxyserver
+    "$bin"/../bin/yarn --daemon start proxyserver
 
     sleep 60
     # start history server
-    "$bin"/../bin/mapred --config $HADOOP_CONF_DIR  --daemon start historyserver
+    ${HADOOP_MAPRED_HOME:-/usr/local/hadoop-mapreduce}/bin/mapred --daemon start historyserver
 
   yarn-site.xml: |
     <?xml version="1.0"?>
