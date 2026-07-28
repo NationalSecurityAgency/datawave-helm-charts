@@ -1,3 +1,4 @@
+{{- if .Values.coordinator.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -79,3 +80,4 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
+{{- end }}

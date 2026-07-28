@@ -24,6 +24,60 @@
             },
             "type": "object"
         },
+        "compactors": {
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "queues": {
+                    "items": {
+                        "properties": {
+                            "compactorQueueName": {
+                                "type": "string"
+                            },
+                            "jsonConfig": {
+                                "type": "string"
+                            },
+                            "plannerClass": {
+                                "type": "string"
+                            },
+                            "serviceName": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "coordinator": {
+            "properties": {
+                "affinity": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "nodeSelector": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
+                },
+                "resources": {
+                    "properties": {},
+                    "type": "object"
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
         "config": {
             "properties": {
                 "accumuloSite": {
@@ -57,6 +111,9 @@
                 },
                 "auths": {
                     "type": "string"
+                },
+                "chartProvides": {
+                    "type": "boolean"
                 },
                 "files": {
                     "properties": {},
@@ -124,6 +181,9 @@
         },
         "entrypointConfigMap": {
             "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -138,6 +198,9 @@
                 "affinity": {
                     "properties": {},
                     "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "nodeSelector": {
                     "properties": {},
@@ -274,9 +337,15 @@
                     "properties": {},
                     "type": "object"
                 },
+                "enabled": {
+                    "type": "boolean"
+                },
                 "nodeSelector": {
                     "properties": {},
                     "type": "object"
+                },
+                "replicaCount": {
+                    "type": "integer"
                 },
                 "resources": {
                     "properties": {},
@@ -293,6 +362,9 @@
                 "affinity": {
                     "properties": {},
                     "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "ingress": {
                     "properties": {
@@ -330,6 +402,9 @@
         },
         "scanServers": {
             "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
                 "resourceGroups": {
                     "items": {
                         "properties": {
@@ -409,6 +484,9 @@
                         }
                     },
                     "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "nodeSelector": {
                     "properties": {},
