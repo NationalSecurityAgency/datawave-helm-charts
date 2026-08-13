@@ -13,6 +13,10 @@ Through the GitHub UI, generate a PAT with at least read packages
 
 This repository holds Helm charts and Docker files used to deploy Datawave locally for testing. 
 
+For an opt-in workflow that builds and reloads local DataWave ingest and web
+code without building container images, see [Fast DataWave integration
+testing](development/FAST_DATAWAVE_DEVELOPMENT.md).
+
 Prerequisites:
 
 * docker
