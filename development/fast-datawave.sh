@@ -12,6 +12,7 @@ COMMAND=""
 KUBECTL=(kubectl)
 MAVEN_COMMAND="${MAVEN_COMMAND:-mvn}"
 TEMP_DIR=""
+WEB_ROOT_INCREMENTAL=false
 
 cleanup() {
     if [[ -n "${TEMP_DIR}" && -d "${TEMP_DIR}" ]]; then
@@ -142,6 +143,12 @@ build_changed_module() {
 }
 
 build_web() {
+    if [[ "${MODULE}" == "web-services/web-root" || "${MODULE}" == ":datawave-ws-web-root" || "${MODULE}" == "datawave-ws-web-root" ]]; then
+        ${SKIP_BUILD} || build_changed_module
+        WEB_ROOT_INCREMENTAL=true
+        log "The changed web-root WAR will be inserted into the running baseline EAR"
+        return 0
+    fi
     ${SKIP_BUILD} && return 0
     build_changed_module
     log "Assembling the DataWave web EAR (no container build)"
@@ -152,6 +159,92 @@ build_web() {
     fi
 }
 
+sync_web_root() {
+    local pod="$1"
+    local container="$2"
+    local local_war remote_dir baseline_ear remote_ear remote_upload ear_entry remote_war
+    local_war="${DATAWAVE_SOURCE}/web-services/web-root/target/datawave-ws-web-root.war"
+    [[ -f "${local_war}" ]] || fail "The web-root WAR was not created: ${local_war}"
+    remote_dir=/opt/jboss/wildfly/standalone/deployments
+    baseline_ear="$(kube exec "${pod}" -c "${container}" -- /bin/bash -ec \
+        "ls -1 '${remote_dir}'/*.ear | head -n1")"
+    [[ -n "${baseline_ear}" ]] || fail "No baseline EAR is deployed in ${pod}"
+    ear_entry="$(kube exec "${pod}" -c "${container}" -- /bin/bash -ec \
+        "jar tf '${baseline_ear}' | grep 'datawave-ws-web-root.*\\.war$' | head -n1")"
+    [[ -n "${ear_entry}" && "${ear_entry}" != */* ]] || fail \
+        "Could not identify the web-root WAR inside ${baseline_ear}"
+    remote_ear="${remote_dir}/datawave-ws-deploy-application-fast-dev.ear"
+    remote_upload="${remote_dir}/.fast-dev.ear.uploading"
+    remote_war="/tmp/${ear_entry}"
+
+    log "Uploading $(basename "${local_war}") to ${pod}"
+    kube cp "${local_war}" "${pod}:${remote_war}" -c "${container}"
+    log "Replacing ${ear_entry} inside the running baseline EAR"
+    kube exec "${pod}" -c "${container}" -- /bin/bash -ec \
+        "cp '${baseline_ear}' '${remote_upload}'; cd /tmp; jar uf '${remote_upload}' '${ear_entry}'; rm -f '${remote_war}'; rm -f '${remote_dir}'/datawave-ws-deploy-application-*.ear '${remote_dir}'/datawave-ws-deploy-application-*.ear.*; mv '${remote_upload}' '${remote_ear}'"
+    restart_web_container "${pod}" "${container}"
+    wait_for_web_deployment "${pod}" "${container}" "${remote_ear}"
+}
+
+restart_web_container() {
+    local pod="$1"
+    local container="$2"
+    local before after=""
+    before="$(kube get pod "${pod}" -o jsonpath='{.status.containerStatuses[0].restartCount}')"
+
+    # A full EAR hot deployment temporarily holds both applications in this
+    # memory-constrained development container. Starting a fresh JVM is faster
+    # and avoids that transient heap spike; the pod-local overlay survives.
+    log "Restarting the web container to load the staged EAR"
+    kube exec "${pod}" -c "${container}" -- /bin/bash -c 'kill -TERM 1' \
+        >/dev/null 2>&1 || true
+    for _ in $(seq 1 60); do
+        after="$(kube get pod "${pod}" -o jsonpath='{.status.containerStatuses[0].restartCount}' 2>/dev/null || true)"
+        if [[ "${after}" =~ ^[0-9]+$ ]] && ((after > before)); then
+            return 0
+        fi
+        sleep 1
+    done
+    fail "The web container did not restart after staging the EAR"
+}
+
+wait_for_web_deployment() {
+    local pod="$1"
+    local container="$2"
+    local remote_ear="$3"
+    local status=""
+    log "Waiting for WildFly to deploy the EAR"
+    for _ in $(seq 1 90); do
+        if kube exec "${pod}" -c "${container}" -- test -f "${remote_ear}.failed" \
+            >/dev/null 2>&1; then
+            fail "WildFly rejected the EAR. Inspect ${remote_ear}.failed and the pod logs."
+        fi
+        if kube exec "${pod}" -c "${container}" -- test -f "${remote_ear}.deployed" \
+            >/dev/null 2>&1; then
+            status=deployed
+            break
+        fi
+        sleep 2
+    done
+    [[ "${status}" == deployed ]] || fail "Timed out waiting for WildFly to deploy the EAR"
+
+    status=""
+    log "Waiting for the DataWave health endpoint"
+    for _ in $(seq 1 90); do
+        if kube exec "${pod}" -c "${container}" -- \
+            curl -fsS http://localhost:8080/DataWave/Common/Health/health \
+            >/dev/null 2>&1; then
+            status=healthy
+            break
+        fi
+        sleep 2
+    done
+    [[ "${status}" == healthy ]] || fail "The EAR deployed, but DataWave did not become healthy"
+    log "Waiting for Kubernetes to mark the web pod ready"
+    kube wait --for=condition=Ready "pod/${pod}" --timeout=180s >/dev/null
+    log "Web code is running from the local artifact"
+}
+
 newest_web_ear() {
     find "${DATAWAVE_SOURCE}/web-services/deploy/application/target" -maxdepth 1 -type f \
         -name 'datawave-ws-deploy-application-*-dev.ear' -printf '%T@ %p\n' 2>/dev/null \
@@ -159,10 +252,14 @@ newest_web_ear() {
 }
 
 sync_web() {
-    local pod container ear remote_dir remote_ear remote_upload status
+    local pod container ear remote_dir remote_ear remote_upload
     pod="$(find_running_pod 'application=datawave-monolith')"
     require_overlay "${pod}"
     container="$(kube get pod "${pod}" -o jsonpath='{.spec.containers[0].name}')"
+    if ${WEB_ROOT_INCREMENTAL}; then
+        sync_web_root "${pod}" "${container}"
+        return 0
+    fi
     ear="$(newest_web_ear)"
     [[ -f "${ear}" ]] || fail "No dev EAR found. Run without --skip-build first."
     remote_dir=/opt/jboss/wildfly/standalone/deployments
@@ -172,22 +269,10 @@ sync_web() {
     log "Uploading $(basename "${ear}") to ${pod}"
     kube cp "${ear}" "${pod}:${remote_upload}" -c "${container}"
     kube exec "${pod}" -c "${container}" -- /bin/bash -ec \
-        "rm -f '${remote_dir}'/datawave-ws-deploy-application-*.ear '${remote_dir}'/datawave-ws-deploy-application-*.ear.*; mv '${remote_upload}' '${remote_ear}'; touch '${remote_ear}.dodeploy'"
+        "rm -f '${remote_dir}'/datawave-ws-deploy-application-*.ear '${remote_dir}'/datawave-ws-deploy-application-*.ear.*; mv '${remote_upload}' '${remote_ear}'"
 
-    log "Waiting for WildFly to deploy the EAR"
-    status=""
-    for _ in $(seq 1 90); do
-        if kube exec "${pod}" -c "${container}" -- test -f "${remote_ear}.failed"; then
-            fail "WildFly rejected the EAR. Inspect ${remote_ear}.failed and the pod logs."
-        fi
-        if kube exec "${pod}" -c "${container}" -- test -f "${remote_ear}.deployed"; then
-            status=deployed
-            break
-        fi
-        sleep 2
-    done
-    [[ "${status}" == deployed ]] || fail "Timed out waiting for WildFly to deploy the EAR"
-    log "Web code is running from the local EAR"
+    restart_web_container "${pod}" "${container}"
+    wait_for_web_deployment "${pod}" "${container}" "${remote_ear}"
 }
 
 build_ingest() {

@@ -21,8 +21,8 @@ initialize it from the normal image, and mount it over the application's
 artifact directory. The helper script then transfers a complete local artifact
 set with `kubectl`:
 
-- Web: atomically places the assembled EAR in WildFly's deployment directory
-  and waits for the `.deployed` marker.
+- Web: atomically stages the assembled EAR, restarts only the container in the
+  same pod, and waits for the `.deployed` marker and health endpoint.
 - Ingest: stops the ingest processes, replaces the assembled library trees,
   refreshes the Accumulo VFS classpath and MapReduce job cache in HDFS, and
   restarts ingest.
@@ -64,6 +64,26 @@ NAME` when the desired cluster is not the current context.
 
 ## Daily workflow
 
+To demonstrate the entire browser-visible loop, run:
+
+```bash
+./development/demo-fast-web-iteration.sh
+```
+
+The guided demo opens with the application URL, changes the DataWave root web
+page, builds and hot-deploys the result, and tells the user when to refresh.
+It preserves the original source beside the page until
+`./development/demo-fast-web-iteration.sh reset` is run.
+
+For `web-services/web-root`, the helper builds only that WAR and inserts it into
+a copy of the EAR already running in the pod. This avoids rebuilding every EAR
+dependency and keeps the unchanged libraries aligned with the baseline image.
+The helper deliberately restarts the web container after staging the EAR. A
+WildFly hot deployment briefly retains both 300 MB applications and can exhaust
+the development container's heap. The artifact overlay is pod-local and
+survives a container restart, so the fresh JVM loads the local EAR without a
+Docker build, image pull, Helm release, or replacement pod.
+
 For a web change:
 
 ```bash
@@ -89,7 +109,10 @@ only the deployable application:
 Artifact transfer and reload can be repeated without rebuilding:
 
 ```bash
-./development/fast-datawave.sh --skip-build web
+./development/fast-datawave.sh \
+  --module web-services/web-root \
+  --skip-build \
+  web
 ```
 
 `DATAWAVE_SOURCE=/path/to/datawave` changes the source checkout. Set
