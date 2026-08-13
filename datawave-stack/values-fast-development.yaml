@@ -4,9 +4,13 @@ dwv-ingest:
   development:
     artifactOverlay:
       enabled: true
+    configReload:
+      enabled: true
 
 datawave-monolith-umbrella:
   dwv-web:
     development:
       artifactOverlay:
+        enabled: true
+      configReload:
         enabled: true

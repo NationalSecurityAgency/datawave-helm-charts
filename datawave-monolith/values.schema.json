@@ -159,6 +159,14 @@
                         }
                     },
                     "type": "object"
+                },
+                "configReload": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
                 }
             },
             "type": "object"

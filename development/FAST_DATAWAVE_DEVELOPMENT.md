@@ -2,8 +2,9 @@
 
 This opt-in workflow loads locally built DataWave ingest and web artifacts into
 an existing local Kubernetes stack. It does not build, load, or publish a
-container image. The normal charts and image-based deployment remain the
-default.
+container image. It can also render and reload chart-managed web and ingest
+configuration through a separate writable layer. The normal charts and
+image-based deployment remain the default.
 
 The intended edit/build/reload loop is under five minutes after Maven
 dependencies and the local build cache are warm. A first full build can take
@@ -75,6 +76,23 @@ page, builds and hot-deploys the result, and tells the user when to refresh.
 It preserves the original source beside the page until
 `./development/demo-fast-web-iteration.sh reset` is run.
 
+To demonstrate an ingest Java edit, focused JAR build, runtime reload, and
+verification of the changed class in the running pod, run:
+
+```bash
+./development/demo-fast-ingest-iteration.sh
+```
+
+The ingest demo targets `warehouse/ingest-json`, refreshes the Hadoop job cache,
+and confirms that the timestamped class marker in the deployed JAR exactly
+matches the source change. Restore its source backup with
+`./development/demo-fast-ingest-iteration.sh reset`.
+
+The first focused ingest build may spend about a minute installing its reactor
+dependencies, including test-classifier artifacts required by DataWave's Maven
+model. Later edits package only `ingest-json`; the helper disables Maven's
+reactor-wide build-cache checksum calculation for that single-module command.
+
 For `web-services/web-root`, the helper builds only that WAR and inserts it into
 a copy of the EAR already running in the pod. This avoids rebuilding every EAR
 dependency and keeps the unchanged libraries aligned with the baseline image.
@@ -94,6 +112,15 @@ For an ingest change:
 
 ```bash
 ./development/fast-datawave.sh ingest
+```
+
+For an `ingest-json` change, select the module to use the focused JAR path and
+avoid assembling the full ingest distribution:
+
+```bash
+./development/fast-datawave.sh \
+  --module warehouse/ingest-json \
+  ingest
 ```
 
 For the shortest incremental build, name the Maven module containing the
@@ -118,6 +145,58 @@ Artifact transfer and reload can be repeated without rebuilding:
 `DATAWAVE_SOURCE=/path/to/datawave` changes the source checkout. Set
 `MAVEN_COMMAND` if Maven is installed under a nonstandard command name.
 
+## Fast configuration reloads
+
+`values-fast-development.yaml` enables writable runtime copies of the
+chart-managed configuration. The chart ConfigMaps remain the source used to
+render the files; the writable copies avoid modifying Kubernetes' read-only
+`subPath` mounts.
+
+After editing local web chart values or `datawaveRuntimeConfig.additions`,
+render and reload `runtime-config.cli` with:
+
+```bash
+./development/fast-datawave.sh \
+  --namespace datawave-fast-dev \
+  web-config
+```
+
+After editing local ingest chart values under `config`, reload the general,
+datatype, flag-maker, ingest, and ingest-environment configuration with:
+
+```bash
+./development/fast-datawave.sh \
+  --namespace datawave-fast-dev \
+  ingest-config
+```
+
+Use `config` to perform both reloads. An additional root-stack values file can
+be tested without changing chart defaults:
+
+```bash
+./development/fast-datawave.sh \
+  --namespace datawave-fast-dev \
+  --values /path/to/change.yaml \
+  config
+```
+
+The helper starts with the Helm release's explicitly supplied values, merges
+each `--values` file in command-line order, and renders the local child chart.
+It applies only the relevant ConfigMaps. Web restarts in the same pod. Ingest
+processes stop, the exact ConfigMap data is copied into the writable overlay,
+the Hadoop job cache is refreshed, and ingest restarts. Every copied file is
+checksum-verified before success is reported.
+
+This path covers configuration produced by the web and ingest child charts. It
+does not reload Secrets, certificates, Hadoop/Accumulo ConfigMaps, pod
+environment variables, image entrypoint files, or changes to volume/layout
+definitions; those still use the normal Helm deployment workflow.
+
+These fast ConfigMap applications intentionally do not create a Helm revision.
+A later Helm upgrade reconciles them from its values. Keep repeatable changes
+in chart defaults or a checked-in values file and pass that same file to the
+normal deployment workflow.
+
 ## Behavior and recovery
 
 The overlay is intentionally ephemeral. A container restart in the same pod
@@ -133,8 +212,7 @@ workflow replaces the complete assembled library trees to prevent duplicate
 DataWave versions, but it cannot make an older operating-system/Hadoop/WildFly
 image compatible with source that requires a different runtime.
 
-The first phase supports Java artifact changes in monolith web and ingest.
-Changes to image packages, operating-system libraries, WildFly configuration,
-or ingest shell/configuration layout still require the existing image build and
-deployment workflow. Microservice artifact reloads can use the same pattern in
-a later phase.
+The first phase supports Java artifact and chart-managed configuration changes
+in monolith web and ingest. Changes to image packages, operating-system
+libraries, or configuration layout still require the existing image build and
+deployment workflow. Microservice reloads can use the same pattern later.

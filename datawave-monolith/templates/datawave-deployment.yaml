@@ -61,7 +61,7 @@ spec:
     #######################################
 
     spec:
-      {{- if .Values.development.artifactOverlay.enabled }}
+      {{- if or .Values.development.artifactOverlay.enabled .Values.development.configReload.enabled }}
       securityContext:
         fsGroup: 1000
       {{- end }}
@@ -96,6 +96,16 @@ spec:
           volumeMounts:
             - name: development-artifact-overlay
               mountPath: /development-overlay
+      {{- end }}
+      {{- if .Values.development.configReload.enabled }}
+        - name: initialize-config-reload
+          image: busybox:1.28
+          command: ['sh', '-ec', 'cp /config-source/runtime-config.cli /config-reload/runtime-config.cli && chmod 0664 /config-reload/runtime-config.cli']
+          volumeMounts:
+            - name: "{{ .Chart.Name }}-web-runtime-config"
+              mountPath: /config-source
+            - name: development-config-reload
+              mountPath: /config-reload
       {{- end }}
         - name: init-authorization
           securityContext:
@@ -174,9 +184,15 @@ spec:
               readOnly: true
             - name: hadoop-config
               mountPath: /etc/hadoop/conf
+            {{- if .Values.development.configReload.enabled }}
+            - name: development-config-reload
+              mountPath: /opt/jboss/wildfly/runtime-config.cli
+              subPath: runtime-config.cli
+            {{- else }}
             - name: "{{ .Chart.Name }}-web-runtime-config"
               mountPath: /opt/jboss/wildfly/runtime-config.cli
               subPath: runtime-config.cli
+            {{- end }}
             {{- if .Values.development.artifactOverlay.enabled }}
             - name: development-artifact-overlay
               mountPath: /opt/jboss/wildfly/standalone/deployments
@@ -189,6 +205,10 @@ spec:
       volumes:
         {{- if .Values.development.artifactOverlay.enabled }}
         - name: development-artifact-overlay
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.development.configReload.enabled }}
+        - name: development-config-reload
           emptyDir: {}
         {{- end }}
         - name: "{{ .Values.global.volumes.certificates.name }}"

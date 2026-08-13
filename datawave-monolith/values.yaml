@@ -64,6 +64,9 @@ datawaveDeployment:
 development:
   artifactOverlay:
     enabled: false
+  # Opt-in writable copy of runtime-config.cli for same-pod configuration reloads.
+  configReload:
+    enabled: false
 datawaveRuntimeConfig:
     additions: ""
 

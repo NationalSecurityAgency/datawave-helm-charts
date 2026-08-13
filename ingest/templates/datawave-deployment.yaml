@@ -1,5 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
+{{- if and .Values.development.configReload.enabled (not .Values.development.artifactOverlay.enabled) }}
+{{- fail "development.configReload.enabled requires development.artifactOverlay.enabled" }}
+{{- end }}
 metadata:
   name: {{ include "datawave.fullname" . }}-ingest
   labels:
@@ -32,10 +35,40 @@ spec:
         command:
         - /bin/bash
         - -ec
-        - cp -RL /opt/datawave-ingest/current/. /development-overlay/
+        - cp -RL /opt/datawave-ingest/current/. /development-overlay/ && find /development-overlay -mindepth 1 -exec chmod u+w {} +
         volumeMounts:
         - name: development-artifact-overlay
           mountPath: /development-overlay
+      {{- end }}
+      {{- if .Values.development.configReload.enabled }}
+      - name: initialize-config-reload
+        securityContext:
+          runAsUser: 1002
+          runAsNonRoot: true
+        image: busybox:1.28
+        command:
+        - sh
+        - -ec
+        - |
+          cp -f /config-source/flag-maker/* /development-overlay/config/
+          cp -f /config-source/ingest-config/* /development-overlay/config/
+          cp -f /config-source/data-types/* /development-overlay/config/
+          cp -f /config-source/general/* /development-overlay/config/
+          cp -f /config-source/ingest-env/ingest-env.sh /development-overlay/bin/ingest/ingest-env.sh
+          chmod u+w /development-overlay/config/* /development-overlay/bin/ingest/ingest-env.sh
+        volumeMounts:
+        - name: development-artifact-overlay
+          mountPath: /development-overlay
+        - name: flag-maker-live
+          mountPath: /config-source/flag-maker
+        - name: ingest-config
+          mountPath: /config-source/ingest-config
+        - name: data-types-config
+          mountPath: /config-source/data-types
+        - name: datawave-general-ingest-config
+          mountPath: /config-source/general
+        - name: ingest-env
+          mountPath: /config-source/ingest-env
       {{- end }}
       - name: accumulo-classpath-loader
         securityContext:
@@ -89,6 +122,7 @@ spec:
         - name: shared-ingest-config
           mountPath: {{ .Values.config.sharedConfig.path }}
         {{ end }}
+        {{- if not .Values.development.configReload.enabled }}
         - name: flag-maker-live
           mountPath: /opt/datawave-ingest/current/config/flag-maker-live.xml
           subPath: flag-maker-live.xml
@@ -106,6 +140,7 @@ spec:
           mountPath: /opt/datawave-ingest/current/config/{{ .name }}-ingest-config.xml
           subPath: {{ .name }}-ingest-config.xml
         {{ end }}
+        {{- end }}
         - name: datawave-general-ingest-config
           mountPath: /opt/datawave-ingest/mounted-config/
         - name: genders
@@ -134,12 +169,19 @@ spec:
         configMap:
           name: datawave-general-ingest-config
           defaultMode: 0775
+      {{- if .Values.development.configReload.enabled }}
+      - name: data-types-config
+        configMap:
+          name: "{{ .Chart.Name }}-data-types-configmap"
+          defaultMode: 0775
+      {{- else }}
       {{ range .Values.config.types }}
       - name: {{ .name }}
         configMap:
           name: "{{ $.Chart.Name }}-data-types-configmap"
           defaultMode: 0775
       {{ end }}
+      {{- end }}
       - name: ingest-env
         configMap:
           name: "{{ .Chart.Name }}-ingest-env-configmap"

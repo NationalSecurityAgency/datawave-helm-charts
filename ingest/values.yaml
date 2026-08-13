@@ -27,6 +27,10 @@ deployment:
 development:
   artifactOverlay:
     enabled: false
+  # Requires artifactOverlay. Chart-managed ingest files are copied into that
+  # writable layer so the helper can reload them without replacing the pod.
+  configReload:
+    enabled: false
 libs: "/lib/hadoop-mapreduce/hadoop-mapreduce-client-core.jar:/lib/hadoop-hdfs/hadoop-hdfs-client.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-yarn/hadoop-yarn-client.jar:/lib/hadoop-yarn/hadoop-yarn-common.jar:/lib/hadoop-yarn/hadoop-yarn-api.jar:/lib/hadoop-yarn/lib/websocket-api-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-client-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-common-9.4.48.v20220622.jar"
 hadoop:
   classpath:
