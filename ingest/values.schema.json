@@ -312,6 +312,19 @@
             },
             "type": "object"
         },
+        "development": {
+            "properties": {
+                "artifactOverlay": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
         "fullnameOverride": {
             "type": "string"
         },

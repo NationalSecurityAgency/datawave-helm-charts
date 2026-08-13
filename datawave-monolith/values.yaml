@@ -59,6 +59,11 @@ datawaveDeployment:
     replicaCount: 1
     revisionHistoryLimit: 10
   restartPolicy: Always
+# Opt-in support for hot-deploying a locally built EAR. The writable deployment
+# directory is initialized from the configured image on every new pod.
+development:
+  artifactOverlay:
+    enabled: false
 datawaveRuntimeConfig:
     additions: ""
 

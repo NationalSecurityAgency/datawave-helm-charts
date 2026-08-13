@@ -150,6 +150,19 @@
             },
             "type": "object"
         },
+        "development": {
+            "properties": {
+                "artifactOverlay": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
         "global": {
             "properties": {
                 "accumulo": {

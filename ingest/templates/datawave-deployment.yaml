@@ -22,6 +22,21 @@ spec:
         securityContext:
           runAsUser: 1000
         command: ['sh', '-c', "until nslookup hdfs-nn; do echo waiting for hdfs; sleep 2; done"]
+      {{- if .Values.development.artifactOverlay.enabled }}
+      - name: initialize-artifact-overlay
+        securityContext:
+          runAsUser: 1002
+          runAsNonRoot: true
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /bin/bash
+        - -ec
+        - cp -RL /opt/datawave-ingest/current/. /development-overlay/
+        volumeMounts:
+        - name: development-artifact-overlay
+          mountPath: /development-overlay
+      {{- end }}
       - name: accumulo-classpath-loader
         securityContext:
           runAsUser: 1000
@@ -33,6 +48,10 @@ spec:
           readOnly: true
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
+        {{- if .Values.development.artifactOverlay.enabled }}
+        - name: development-artifact-overlay
+          mountPath: /opt/datawave-ingest/current
+        {{- end }}
         env:
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
@@ -97,7 +116,15 @@ spec:
           readOnly: true
         - name: hadoop-config
           mountPath: /usr/local/hadoop/conf
+        {{- if .Values.development.artifactOverlay.enabled }}
+        - name: development-artifact-overlay
+          mountPath: /opt/datawave-ingest/current
+        {{- end }}
       volumes:
+      {{- if .Values.development.artifactOverlay.enabled }}
+      - name: development-artifact-overlay
+        emptyDir: {}
+      {{- end }}
       {{- if (.Values.config.sharedConfig).claim }}
       - name: shared-ingest-config
         persistentVolumeClaim:

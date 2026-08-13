@@ -21,6 +21,12 @@ deployment:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+# Opt-in support for replacing locally built DataWave artifacts without building
+# a container image. The emptyDir is initialized from the configured image, so
+# disabling this setting retains the existing deployment exactly as-is.
+development:
+  artifactOverlay:
+    enabled: false
 libs: "/lib/hadoop-mapreduce/hadoop-mapreduce-client-core.jar:/lib/hadoop-hdfs/hadoop-hdfs-client.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-yarn/hadoop-yarn-client.jar:/lib/hadoop-yarn/hadoop-yarn-common.jar:/lib/hadoop-yarn/hadoop-yarn-api.jar:/lib/hadoop-yarn/lib/websocket-api-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-client-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-common-9.4.48.v20220622.jar"
 hadoop:
   classpath:
@@ -769,4 +775,4 @@ config:
         "mycsv.PREMIERED.data.field.type.class": datawave.data.type.DateType
         "mycsv.WEIGHT.data.field.type.class": datawave.data.type.NumberType
         "mycsv.RUNTIME.data.field.type.class": datawave.data.type.NumberType
-        "mycsv.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"    
+        "mycsv.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"

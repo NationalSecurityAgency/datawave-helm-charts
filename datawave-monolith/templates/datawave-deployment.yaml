@@ -61,6 +61,10 @@ spec:
     #######################################
 
     spec:
+      {{- if .Values.development.artifactOverlay.enabled }}
+      securityContext:
+        fsGroup: 1000
+      {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -77,6 +81,22 @@ spec:
       # Containers Associated with this Deployment #
       ##############################################
       initContainers:
+      {{- if .Values.development.artifactOverlay.enabled }}
+        - name: initialize-artifact-overlay
+          {{- if .Values.datawaveDeployment.imageTagOverride }}
+          image: {{ .Values.datawaveDeployment.imageTagOverride }}
+          {{- else }}
+          image: "{{ .Values.datawaveDeployment.image.name }}:{{ .Values.datawaveDeployment.image.tag }}"
+          {{- end }}
+          imagePullPolicy: "{{ .Values.datawaveDeployment.image.pullPolicy }}"
+          command:
+            - /bin/bash
+            - -ec
+            - cp -RL /opt/jboss/wildfly/standalone/deployments/. /development-overlay/
+          volumeMounts:
+            - name: development-artifact-overlay
+              mountPath: /development-overlay
+      {{- end }}
         - name: init-authorization
           securityContext:
             runAsUser: 1000
@@ -157,12 +177,20 @@ spec:
             - name: "{{ .Chart.Name }}-web-runtime-config"
               mountPath: /opt/jboss/wildfly/runtime-config.cli
               subPath: runtime-config.cli
+            {{- if .Values.development.artifactOverlay.enabled }}
+            - name: development-artifact-overlay
+              mountPath: /opt/jboss/wildfly/standalone/deployments
+            {{- end }}
 
       ###########################################
       # Volumes Associated with this Deployment #
       ###########################################
 
       volumes:
+        {{- if .Values.development.artifactOverlay.enabled }}
+        - name: development-artifact-overlay
+          emptyDir: {}
+        {{- end }}
         - name: "{{ .Values.global.volumes.certificates.name }}"
           secret:
             secretName: "{{ .Values.global.certSecretName }}"
@@ -173,4 +201,3 @@ spec:
         - name: "{{ .Chart.Name }}-web-runtime-config"
           configMap:
             name: "{{ .Chart.Name }}-web-runtime-config"
-
