@@ -1,0 +1,40 @@
+# Opt-in settings required by development/smoke-test.sh. Add this after the
+# normal values file; standard deployment defaults remain unchanged.
+dwv-hadoop:
+  # The current DataWave ingest image uses Hadoop 3.3.x clients. Keep the local
+  # YARN/HDFS runtime binary-compatible for an end-to-end ingest smoke test.
+  image:
+    tag: 3.3.6
+  hadoopVersion: 3.3.6
+
+dwv-accumulo:
+  initContainer:
+    tag: 3.3.6
+  config:
+    javaOpts: -Dcom.google.protobuf.use_unsafe_pre22_gencode=true
+
+dwv-ingest:
+  config:
+    fieldMarkingOverrides:
+      myjson.data.category.marking.default: PUBLIC
+  deployment:
+    podAnnotations:
+      datawave.nsa.gov/smoke-hadoop-runtime: 3.3-public-data
+
+datawave-monolith-umbrella:
+  dwv-configuration:
+    podAnnotations:
+      datawave.nsa.gov/smoke-audit-config: bindings-v3
+    audit:
+      accumulo:
+        enabled: true
+        tableName: QueryAuditTable
+  dwv-audit:
+    podAnnotations:
+      datawave.nsa.gov/smoke-audit-config: bindings-v3
+  dwv-web:
+    datawaveDeployment:
+      podAnnotations:
+        datawave.nsa.gov/smoke-audit-config: bindings-v3
+    auditService:
+      enabled: true

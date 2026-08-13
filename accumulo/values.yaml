@@ -51,6 +51,7 @@ hdfs:
 zookeeper:
   externalHosts: "zookeeper"
 config:
+  javaOpts: ""
   auths: "JBOSS_ADMIN,DW_ADMIN,AUTH_USER,BAR,FOO,PRIVATE,PUBLIC"
   path: /opt/accumulo/conf
   files: {}

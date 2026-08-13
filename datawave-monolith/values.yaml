@@ -96,6 +96,13 @@ rabbitmqService:
 authorizationService:
   dnsName: authorization
 
+# Queries continue to use the existing non-audited behavior unless this is
+# explicitly enabled (for example by values-smoke-testing.yaml).
+auditService:
+  enabled: false
+  dnsName: audit-service
+  port: 8443
+
 hadoop:
   classpath:
     "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"

@@ -17,6 +17,7 @@ metadata:
 ##########################
 
 data: 
+{{- $root := . }}
 {{ range .Values.config.types}}
   {{ .name }}-ingest-config.xml: 
     <?xml version="1.0" encoding="UTF-8" standalone="no"?><?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -24,7 +25,7 @@ data:
     {{ range $prop,$val := .properties }}
       <property>
         <name>{{- $prop -}}</name>
-        <value>{{- $val -}}</value>
+        <value>{{- get $root.Values.config.fieldMarkingOverrides $prop | default $val -}}</value>
       </property>  
     {{ end }}
     </configuration>

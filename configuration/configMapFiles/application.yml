@@ -40,6 +40,11 @@ spring:
       enabled: false
       failFast: true
     host: '{{ .Values.global.serviceDns.rabbitmq.name }}'
+    {{- if .Values.audit.accumulo.enabled }}
+    publisher-confirm-type: simple
+    publisher-confirms: true
+    publisher-returns: true
+    {{- end }}
   security:
     datawave:
       enforce-allowed-callers: false

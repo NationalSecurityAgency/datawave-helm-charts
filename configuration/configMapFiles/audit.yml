@@ -1,7 +1,13 @@
 audit:
   auditors:
     accumulo:
-      enabled: false
+      enabled: {{ .Values.audit.accumulo.enabled }}
+      tableName: '{{ .Values.audit.accumulo.tableName }}'
+      accumuloConfig:
+        zookeepers: '{{ .Values.global.zookeeper.quorum }}'
+        instanceName: '{{ .Values.global.accumulo.instanceName }}'
+        username: '{{ .Values.global.accumulo.user }}'
+        password: '{{ .Values.global.accumulo.password }}'
     file:
       enabled: false
       maxFileAgeSeconds: 60
@@ -16,22 +22,23 @@ spring:
   cloud:
     stream:
       bindings:
-        accumuloAuditSink:
+        accumuloAuditSink-in-0:
           destination: audit
           group: accumulo
-        auditSource:
+        auditSource-out-0:
           destination: audit
-        logAuditSink:
+          producer:
+            errorChannelEnabled: true
+        logAuditSink-in-0:
           destination: audit
           group: log
       rabbit:
         bindings:
-          accumuloAuditSink:
+          accumuloAuditSink-in-0:
             consumer:
               autoBindDlq: true
-          auditSource:
-            producer:
-              repbulishToDlq: true
-          logAuditSink:
+          logAuditSink-in-0:
             consumer:
               autoBindDlq: true
+    function:
+      definition: auditSource;accumuloAuditSink;busConsumer

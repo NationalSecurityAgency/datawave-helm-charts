@@ -2,28 +2,23 @@
 USE_EXISTING_ZOOKEEPER=${USE_EXISTING_ZOOKEEPER:-false}
 USE_EXISTING_HADOOP=${USE_EXISTING_HADOOP:-false}
 INIT_LOCAL_HADOOP=${INIT_LOCAL_HADOOP:-false}
+RUN_DATAWAVE_SMOKE_TEST=${RUN_DATAWAVE_SMOKE_TEST:-false}
 USING_MINIKUBE=false
 BASEDIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit; pwd -P )"
 DATAWAVE_STACK="${BASEDIR}"/datawave-stack
 HELM_CHART=oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts/datawave-system
 HELM_CHART_VERSION=1.0.0
 NAMESPACE=default
+CHART_MODE=${DATAWAVE_CHART_MODE:-local}
 
 function ready_helm_charts() {
-  while true; do
-    read -p "Enter chart mode (local,remote) [remote]: " chart_mode
-    chart_mode=${chart_mode:-remote}
-    # Check if input is one of the accepted values
-    if [[ -z "$chart_mode" || "$chart_mode" == "" || "$chart_mode" == "local" || "$chart_mode" == "remote" ]]; then
-        echo "Using Chart Mode: ${chart_mode:-remote}"
-        break
-    else
-        echo "Invalid input. Please use 'local', 'remote', or leave blank to default."
-    fi
-  done
+  if [[ "${CHART_MODE}" != "local" && "${CHART_MODE}" != "remote" ]]; then
+    echo "ERROR: DATAWAVE_CHART_MODE must be 'local' or 'remote'; received '${CHART_MODE}'."
+    exit 1
+  fi
 
-
-  if [ "$chart_mode" == "remote" ]; then
+  echo "Using Chart Mode: ${CHART_MODE}"
+  if [ "${CHART_MODE}" == "remote" ]; then
     HELM_CHART=oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts/datawave-system
     HELM_CHART_VERSION=1.0.2
   else
@@ -209,14 +204,21 @@ function configure_repository_credentials(){
 
 function create_secrets(){
   SECRET_NAME=certificates-secret
+  USER_CERT_SECRET_NAME=datawave-user-certificates
   MYSQL_SECRET_NAME=mysql-secret
 
-  kubectl  -n $NAMESPACE get secret $SECRET_NAME &> /dev/null
-  if [ $? -ne 0 ]; then
-    echo "Secret '$SECRET_NAME' does not exist. Creating secret."
-    kubectl -n $NAMESPACE create secret generic $SECRET_NAME --from-file=keystore.p12="${DATAWAVE_STACK}"/certificates/keystore.p12 --from-file=truststore.jks="${DATAWAVE_STACK}"/certificates/truststore.jks
+  if [ -n "${DATAWAVE_SERVER_KEYSTORE:-}${DATAWAVE_SERVER_TRUSTSTORE:-}${DATAWAVE_USER_CERT:-}${DATAWAVE_USER_KEY:-}" ]; then
+    DATAWAVE_NAMESPACE="${NAMESPACE}" "${BASEDIR}/development/apply-certificates.sh" --no-restart
+  elif ! kubectl -n "${NAMESPACE}" get secret "${SECRET_NAME}" &> /dev/null; then
+    echo "Secret '${SECRET_NAME}' does not exist. Creating server and user certificate secrets."
+    DATAWAVE_NAMESPACE="${NAMESPACE}" "${BASEDIR}/development/apply-certificates.sh" --no-restart
   else
-    echo "Secret '$SECRET_NAME' already exists."
+    echo "Secret '${SECRET_NAME}' already exists."
+    if ! kubectl -n "${NAMESPACE}" get secret "${USER_CERT_SECRET_NAME}" &> /dev/null; then
+      kubectl -n "${NAMESPACE}" create secret generic "${USER_CERT_SECRET_NAME}" \
+        --from-file=tls.crt="${BASEDIR}/python_deployment_tests/resources/test.crt.pem" \
+        --from-file=tls.key="${BASEDIR}/python_deployment_tests/resources/test.key.pem"
+    fi
   fi
 
   kubectl  -n $NAMESPACE get secret $MYSQL_SECRET_NAME &> /dev/null
@@ -321,7 +323,15 @@ function helm_install() {
   echo "Starting Helm Deployment"
 
   # shellcheck disable=SC2086
-  helm -n $NAMESPACE upgrade --install dwv ${HELM_CHART} -f ${values_file:-$DATAWAVE_STACK/values.yaml} ${EXTRA_HELM_ARGS} --wait --timeout 15m0s
+  SMOKE_VALUES_ARGS=""
+  if [ "${RUN_DATAWAVE_SMOKE_TEST}" = "true" ]; then
+    if [ "${CHART_MODE}" != "local" ]; then
+      echo "RUN_DATAWAVE_SMOKE_TEST=true requires local chart mode so the opt-in audit configuration is included."
+      exit 1
+    fi
+    SMOKE_VALUES_ARGS="-f ${DATAWAVE_STACK}/values-smoke-testing.yaml"
+  fi
+  helm -n $NAMESPACE upgrade --install dwv ${HELM_CHART} -f ${values_file:-$DATAWAVE_STACK/values.yaml} ${SMOKE_VALUES_ARGS} ${EXTRA_HELM_ARGS} --wait --timeout 15m0s
   if [ $? -eq 0 ]; then
     echo "Helm install successful."
   else
@@ -355,6 +365,8 @@ setup_mysql_operator
 
 helm_install
 
-
-
 echo "Driver Script completed successfully. See kubectl get po for information"
+
+if [ "${RUN_DATAWAVE_SMOKE_TEST}" = "true" ]; then
+  "${BASEDIR}/development/smoke-test.sh" --namespace "${NAMESPACE}"
+fi

@@ -62,6 +62,9 @@
                     "properties": {},
                     "type": "object"
                 },
+                "javaOpts": {
+                    "type": "string"
+                },
                 "path": {
                     "type": "string"
                 },

@@ -17,6 +17,10 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: ingest
+      {{- with .Values.deployment.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       hostname: ingestmanager
       initContainers:

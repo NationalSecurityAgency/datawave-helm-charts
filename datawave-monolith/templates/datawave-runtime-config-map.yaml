@@ -34,6 +34,11 @@ data:
     # /subsystem=security/security-domain=datawave/jsse=classic:add(keystore={type="${env.KEYSTORE_TYPE}",password="${env.KEYSTORE_PASSWORD}",url="file://${env.KEYSTORE}"},truststore={type="${env.TRUSTSTORE_TYPE}",password="${env.TRUSTSTORE_PASSWORD}",url="file://${env.TRUSTSTORE}"})
 
     /system-property=dw.remoteDatawaveUserService.host:add(value={{ .Values.authorizationService.dnsName }})
+    {{- if .Values.auditService.enabled }}
+    /system-property=dw.audit.use.remoteauditservice:write-attribute(name=value,value=true)
+    /system-property=dw.remoteDatawaveAuditService.host:write-attribute(name=value,value={{ .Values.auditService.dnsName }})
+    /system-property=dw.remoteDatawaveAuditService.port:write-attribute(name=value,value={{ .Values.auditService.port }})
+    {{- end }}
     /subsystem=messaging-activemq/server=default:write-attribute(name=security-enabled,value=false)
     {{ .Values.datawaveRuntimeConfig.additions}}
     
