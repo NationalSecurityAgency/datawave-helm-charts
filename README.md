@@ -20,6 +20,9 @@ testing](development/FAST_DATAWAVE_DEVELOPMENT.md).
 That workflow also includes a standalone ingest-query-audit smoke test and a
 single command for replacing server and user certificates across the stack.
 
+Every Maven build in the fast path activates DataWave's `kubernetes` profile.
+Full web EAR assembly also activates the required `deploy-ws` profile.
+
 Prerequisites:
 
 * docker

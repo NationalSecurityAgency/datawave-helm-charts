@@ -196,7 +196,8 @@ copy_config_key() {
     [[ "${expected}" == "${actual}" ]] || fail "Runtime verification failed for ${target}"
 }
 
-maven_common=(-Dmaven.test.skip=true -DskipTests -DskipITs -DskipMicroservices -Dspotbugs.skip=true -Dcheckstyle.skip=true)
+maven_profile=(-Pkubernetes)
+maven_common=("${maven_profile[@]}" -Dmaven.test.skip=true -DskipTests -DskipITs -DskipMicroservices -Dspotbugs.skip=true -Dcheckstyle.skip=true)
 
 require_java_11() {
     local java_version java_major
@@ -402,7 +403,7 @@ build_ingest_json() {
 
     log "Bootstrapping missing ingest-json reactor dependencies (one-time setup)"
     (cd "${DATAWAVE_SOURCE}" && "${MAVEN_COMMAND}" \
-        -pl warehouse/ingest-json -am install \
+        "${maven_profile[@]}" -pl warehouse/ingest-json -am install \
         -DskipTests -DskipITs -DskipMicroservices \
         -Dspotbugs.skip=true -Dcheckstyle.skip=true)
 }

@@ -39,6 +39,11 @@ helper fails early if Maven is using another JDK; set `JAVA_HOME` to JDK 11 in
 that case. By default, the chart repository and DataWave repository are
 expected to be siblings.
 
+Every Maven build performed by the fast-path helper activates DataWave's
+`kubernetes` profile. Full web assembly additionally activates `deploy-ws`.
+This ensures generated artifacts use `kubernetes.properties` and
+`kubernetes-passwords.properties`, matching the Helm deployment environment.
+
 Create a combined values file:
 
 ```bash
