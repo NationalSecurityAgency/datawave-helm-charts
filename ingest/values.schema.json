@@ -18,6 +18,9 @@
                 "bulkDataTypes": {
                     "type": "string"
                 },
+                "fieldMarkingOverrides": {
+                    "type": "object"
+                },
                 "hadoopConfDif": {
                     "type": "string"
                 },
@@ -297,6 +300,9 @@
                 },
                 "nodeSelector": {
                     "properties": {},
+                    "type": "object"
+                },
+                "podAnnotations": {
                     "type": "object"
                 },
                 "replicaCount": {

@@ -4,6 +4,25 @@
     "additionalProperties": true,
     "description": "Schema for DataWave Helm values",
     "properties": {
+        "audit": {
+            "properties": {
+                "accumulo": {
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "tableName": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "podAnnotations": {
+            "type": "object"
+        },
         "configurationMap": {
             "properties": {
                 "meta": {

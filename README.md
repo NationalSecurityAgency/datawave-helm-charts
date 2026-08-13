@@ -17,6 +17,12 @@ For an opt-in workflow that builds and reloads local DataWave ingest and web
 code without building container images, see [Fast DataWave integration
 testing](development/FAST_DATAWAVE_DEVELOPMENT.md).
 
+That workflow also includes a standalone ingest-query-audit smoke test and a
+single command for replacing server and user certificates across the stack.
+
+Every Maven build in the fast path activates DataWave's `kubernetes` profile.
+Full web EAR assembly also activates the required `deploy-ws` profile.
+
 Prerequisites:
 
 * docker
@@ -25,7 +31,19 @@ Prerequisites:
 * minikube (for local testing)
 
 
-If you already have the prerequisites installed you can simply run `./datawave-driver.sh`
+If you already have the prerequisites installed, run:
+
+```bash
+./datawave-driver.sh
+```
+
+The driver packages and deploys the charts in this checkout by default, without
+prompting for chart mode. To use the published remote chart instead of local
+chart sources, set `DATAWAVE_CHART_MODE=remote` explicitly:
+
+```bash
+DATAWAVE_CHART_MODE=remote ./datawave-driver.sh
+```
 
 
 
@@ -47,11 +65,58 @@ export ZOOKEEPER_HOME=/opt/zookeeper
 export HADOOP_HOME=/opt/hadoop
 ```
 
-In order to test changes to helm charts, you can run the following script:
+To test changes to the Helm charts, use the default local mode:
+
 ```bash
 ./datawave-driver.sh
 ```
-This will package all the helm charts from the local directories, and launch the cluster, either in minikube or using a preconfigured k8s cluster.
+
+This packages the charts from the local directories and launches the cluster
+in Minikube or a preconfigured Kubernetes cluster. To deploy the published OCI
+chart without packaging local chart sources, use remote mode:
+
+```bash
+DATAWAVE_CHART_MODE=remote ./datawave-driver.sh
+```
+
+## Replacing certificates
+
+The local stack keeps its two certificate roles separate:
+
+- The server secret, `certificates-secret`, contains `keystore.p12` and
+  `truststore.jks` for the DataWave services.
+- The user secret, `datawave-user-certificates`, contains a PEM client
+  certificate and private key for smoke tests and other client requests.
+
+Replace both across a running namespace with:
+
+```bash
+./development/apply-certificates.sh \
+  --namespace datawave-fast-dev \
+  --server-keystore /path/to/server-keystore.p12 \
+  --server-truststore /path/to/server-truststore.jks \
+  --keystore-password secret \
+  --truststore-password secret \
+  --user-cert /path/to/user.crt.pem \
+  --user-key /path/to/user.key.pem
+```
+
+The script updates both Kubernetes secrets, finds every Deployment,
+StatefulSet, and DaemonSet that mounts the server secret, restarts those
+workloads, and waits for their rollouts. Use `--no-restart` when a subsequent
+Helm operation will perform the rollout.
+
+Keep the keystore and truststore passwords in Helm aligned with the supplied
+stores. Copy and customize
+[`datawave-stack/values-certificates-example.yaml`](datawave-stack/values-certificates-example.yaml)
+to set those passwords consistently for the monolith and microservices.
+
+The driver can apply custom certificates during deployment through
+`DATAWAVE_SERVER_KEYSTORE`, `DATAWAVE_SERVER_TRUSTSTORE`,
+`DATAWAVE_KEYSTORE_PASSWORD`, `DATAWAVE_TRUSTSTORE_PASSWORD`,
+`DATAWAVE_USER_CERT`, and `DATAWAVE_USER_KEY`. See
+[Fast DataWave integration testing](development/FAST_DATAWAVE_DEVELOPMENT.md#replacing-server-and-user-certificates)
+for defaults and additional details.
 
 ## Updating Helm schemas
 ```bash

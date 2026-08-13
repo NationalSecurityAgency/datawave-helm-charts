@@ -36,6 +36,9 @@ hadoop:
   classpath:
     "/usr/local/hadoop/etc/hadoop:/usr/local/hadoop/lib/*:/usr/local/hadoop/.//*:/usr/local/hadoop-hdfs/./:/usr/local/hadoop-hdfs/lib/*:/usr/local/hadoop-hdfs/.//*:/usr/local/hadoop-mapreduce/.//*:/usr/local/hadoop-yarn/./:/usr/local/hadoop-yarn/lib/*:/usr/local/hadoop-yarn/.//*"
 config:
+  # Optional per-property overrides are useful for test data visibility while
+  # preserving every datatype's normal marking defaults.
+  fieldMarkingOverrides: {}
   lockFileDir: /var/run/datawave
   hadoopHome: /usr/local/hadoop
   mapredHome: /usr/local/hadoop-mapreduce

@@ -92,7 +92,7 @@ data:
     ##################################################################
     
     ## JVM options set for all processes. Extra options can be passed in by setting ACCUMULO_JAVA_OPTS to an array of options.
-    read -r -a accumulo_initial_opts < <(echo "$ACCUMULO_JAVA_OPTS")
+    read -r -a accumulo_initial_opts < <(echo "{{ .Values.config.javaOpts }} $ACCUMULO_JAVA_OPTS")
     JAVA_OPTS=(
       '-XX:OnOutOfMemoryError=kill -9 %p'
       '-XX:-OmitStackTraceInFastThrow'

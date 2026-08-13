@@ -56,6 +56,10 @@ spec:
     metadata:
       labels:
         application: "{{ .Values.meta.name }}"
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
     #######################################
     # Deployment Resources Specifications #
@@ -137,4 +141,3 @@ spec:
 {{- define "common-service-library.deployment" -}}
 {{- include "common-service-library.util.merge" (append . "common-service-library.deployment.tpl") -}}
 {{- end -}}
-

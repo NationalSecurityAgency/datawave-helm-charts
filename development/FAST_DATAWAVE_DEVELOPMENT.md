@@ -39,6 +39,11 @@ helper fails early if Maven is using another JDK; set `JAVA_HOME` to JDK 11 in
 that case. By default, the chart repository and DataWave repository are
 expected to be siblings.
 
+Every Maven build performed by the fast-path helper activates DataWave's
+`kubernetes` profile. Full web assembly additionally activates `deploy-ws`.
+This ensures generated artifacts use `kubernetes.properties` and
+`kubernetes-passwords.properties`, matching the Helm deployment environment.
+
 Create a combined values file:
 
 ```bash
@@ -49,10 +54,11 @@ yq ea '. as $item ireduce ({}; . * $item)' \
   > /tmp/datawave-fast-development.yaml
 ```
 
-Deploy with `datawave-driver.sh`, select `local` chart mode, and enter
-`/tmp/datawave-fast-development.yaml` when prompted for the values file. For an
-existing release, use the same combined values file in its normal local-chart
-upgrade process.
+Deploy with `datawave-driver.sh` and enter
+`/tmp/datawave-fast-development.yaml` when prompted for the values file. The
+driver uses local charts by default and no longer prompts for chart mode. For
+an existing release, use the same combined values file in its normal
+local-chart upgrade process.
 
 Confirm that both workloads have the overlay:
 
@@ -216,3 +222,95 @@ The first phase supports Java artifact and chart-managed configuration changes
 in monolith web and ingest. Changes to image packages, operating-system
 libraries, or configuration layout still require the existing image build and
 deployment workflow. Microservice reloads can use the same pattern later.
+
+## Ingest-query-audit smoke test
+
+The standalone smoke test creates a unique `myjson` event, places it in the
+live HDFS ingest directory, waits until an `EventQuery` returns the exact
+marker, submits an audit for that query through DataWave, and scans
+`QueryAuditTable` for the same marker:
+
+```bash
+./development/smoke-test.sh --namespace datawave-fast-dev
+```
+
+The required audit and compatible local Hadoop runtime changes are opt-in.
+Install a fresh local chart with both the normal values and
+`datawave-stack/values-smoke-testing.yaml`. For a new driver deployment, this
+is automated with the driver's default local chart mode:
+
+```bash
+RUN_DATAWAVE_SMOKE_TEST=true ./datawave-driver.sh
+```
+
+To deploy the published chart instead, explicitly opt into remote chart mode:
+
+```bash
+DATAWAVE_CHART_MODE=remote ./datawave-driver.sh
+```
+
+With `RUN_DATAWAVE_SMOKE_TEST` unset, the smoke-specific values are not applied
+and every existing chart default remains unchanged. The standalone script can
+be rerun without Helm and returns a nonzero status on an ingest, query, audit
+API, or audit-table failure. Use `--timeout`, `--user-cert`, and `--user-key`
+for common overrides; its help lists the complete `DATAWAVE_*` and `SMOKE_*`
+override surface.
+
+The smoke values run the local Hadoop components on the chart's 3.3.6 image.
+That is binary-compatible with the Hadoop 3.3.x clients mounted by the current
+DataWave ingest image and prevents the YARN application-master
+`NoSuchMethodError` produced by mixing those clients with Hadoop 3.4.1. This
+runtime override is intentionally confined to smoke testing.
+
+The same profile overrides the `myjson` default marking to `PUBLIC` for only
+the synthetic smoke event. Normal datatype markings and non-smoke chart values
+remain unchanged.
+
+It also enables protobuf's documented legacy-gencode compatibility switch in
+the local Accumulo JVM. DataWave's current UID protobuf classes predate the
+protobuf version in the Accumulo 2.1.4 image; without this smoke-only switch,
+index scans reject those classes before a query can return.
+
+Apply the smoke values when creating the local stack. An HDFS volume already
+written by Hadoop 3.4 cannot be downgraded in place; purge that disposable
+Minikube deployment before recreating it with the smoke profile. This does not
+affect a stack that was initially created with the smoke profile.
+
+## Replacing server and user certificates
+
+Certificate material has two explicit roles:
+
+- `certificates-secret` contains `keystore.p12`, `truststore.jks`, and their
+  passwords. Every TLS-enabled DataWave service mounts this server secret.
+- `datawave-user-certificates` contains the PEM certificate and private key
+  used by the smoke-test client. It is not mounted into server pods.
+
+Update both identities throughout an existing namespace with one command:
+
+```bash
+./development/apply-certificates.sh \
+  --namespace datawave-fast-dev \
+  --server-keystore /path/to/server-keystore.p12 \
+  --server-truststore /path/to/server-truststore.jks \
+  --keystore-password secret \
+  --truststore-password secret \
+  --user-cert /path/to/user.crt.pem \
+  --user-key /path/to/user.key.pem
+```
+
+The command applies both secrets, discovers all Deployments, StatefulSets, and
+DaemonSets that mount the server secret, restarts those workloads, and waits
+for their rollouts. Keep the passwords aligned with the Helm configuration;
+the optional `datawave-stack/values-certificates-example.yaml` centralizes the
+monolith and microservice password settings in one root-stack values file. Use
+`--no-restart` when Helm will perform the rollout. The driver calls the same
+script during setup, so paths can also be supplied noninteractively with
+`DATAWAVE_SERVER_KEYSTORE`, `DATAWAVE_SERVER_TRUSTSTORE`,
+`DATAWAVE_KEYSTORE_PASSWORD`, `DATAWAVE_TRUSTSTORE_PASSWORD`,
+`DATAWAVE_USER_CERT`, and `DATAWAVE_USER_KEY`.
+
+The default smoke client certificate represents DataWave's server/proxy
+identity and supplies the configured test user through the proxied-entity
+headers. For a direct end-user certificate, set the user certificate/key and
+clear `SMOKE_PROXY_SUBJECT` only when that certificate's subject and issuer are
+configured in `configuration/configMapFiles/authorization.yml`.

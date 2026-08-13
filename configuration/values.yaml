@@ -88,3 +88,10 @@ ports:
 configurationMap:
   meta:
     name: configuration-map
+
+# Accumulo-backed auditing is intentionally opt-in. The smoke-test values file
+# enables it without changing existing deployments.
+audit:
+  accumulo:
+    enabled: false
+    tableName: QueryAuditTable

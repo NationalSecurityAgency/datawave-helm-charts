@@ -1,0 +1,17 @@
+{
+  "genres": ["SmokeTest"],
+  "id": __SMOKE_ID__,
+  "language": "English",
+  "name": "__SMOKE_TOKEN__",
+  "officialSite": null,
+  "premiered": "2026-08-13",
+  "runtime": 5,
+  "status": "Running",
+  "summary": "A uniquely identified DataWave ingest-query-audit smoke-test event.",
+  "type": "Scripted",
+  "url": "https://example.invalid/__SMOKE_TOKEN__",
+  "weight": 1,
+  "visibility": "PUBLIC",
+  "externals": {"imdb": "__SMOKE_TOKEN__", "thetvdb": __SMOKE_ID__, "tvrage": __SMOKE_ID__},
+  "network": {"name": "datawave-smoke-test"}
+}

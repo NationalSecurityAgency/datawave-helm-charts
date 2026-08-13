@@ -1,0 +1,19 @@
+# Optional single values file for certificate locations/passwords shared by the
+# monolith and microservices. Copy this file outside the repository, replace
+# placeholders, and add it after the normal values file during Helm install.
+global:
+  certSecretName: certificates-secret
+  certificates:
+    keystore:
+      password: changeme
+    truststorePassword: changeme
+  secrets:
+    keystore:
+      alias: "1"
+      password: changeme
+      path: file:///data/certs/keystore.p12
+      type: PKCS12
+    truststore:
+      password: changeme
+      path: file:///data/certs/truststore.jks
+      type: JKS

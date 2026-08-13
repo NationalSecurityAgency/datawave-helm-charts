@@ -55,6 +55,10 @@ spec:
     metadata:
       labels:
         application: "{{ .Values.datawaveDeployment.meta.name }}"
+      {{- with .Values.datawaveDeployment.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
     #######################################
     # Deployment Resources Specifications #

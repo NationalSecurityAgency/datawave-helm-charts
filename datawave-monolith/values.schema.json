@@ -4,6 +4,20 @@
     "additionalProperties": true,
     "description": "Schema for DataWave Helm values",
     "properties": {
+        "auditService": {
+            "properties": {
+                "dnsName": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "port": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
         "authorizationService": {
             "properties": {
                 "dnsName": {
@@ -73,6 +87,9 @@
                             "type": "string"
                         }
                     },
+                    "type": "object"
+                },
+                "podAnnotations": {
                     "type": "object"
                 },
                 "readinessProbe": {
