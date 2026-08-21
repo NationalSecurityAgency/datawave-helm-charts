@@ -56,6 +56,7 @@ config:
   files: {}
   accumuloSite:
     instance.secret: "DEFAULT"
+    trace.token.property.password: "secret"
     tserver.memory.maps.native.enabled: true
     tserver.memory.maps.max: 128M
     tserver.cache.data.size: 15M

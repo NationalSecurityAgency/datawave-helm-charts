@@ -174,9 +174,9 @@ data:
     instance.zookeeper.host={{ .Values.global.accumulo.zookeepers }}
     
     ## Change secret before initialization. All Accumulo servers must have same secret
-    instance.secret=DEFAULT
+    instance.secret={{ index .Values.config.accumuloSite "instance.secret" | default "DEFAULT" }}
     trace.user=root
-    trace.token.property.password=secret
+    trace.token.property.password={{ index .Values.config.accumuloSite "trace.token.property.password" | default "secret" }}
     
     ## Set to false if 'accumulo-util build-native' fails
     tserver.memory.maps.native.enabled=true
