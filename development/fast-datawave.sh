@@ -10,6 +10,12 @@ SKIP_BUILD=false
 MODULE=""
 COMMAND=""
 RELEASE="${RELEASE:-dwv}"
+CONFIGURATION_RELEASE_SET=false
+if [[ -v CONFIGURATION_RELEASE ]]; then
+    CONFIGURATION_RELEASE_SET=true
+fi
+CONFIGURATION_RELEASE="${CONFIGURATION_RELEASE:-${RELEASE}}"
+CONFIGURATION_DEPLOYMENT="${CONFIGURATION_DEPLOYMENT:-configuration}"
 KUBECTL=(kubectl)
 MAVEN_COMMAND="${MAVEN_COMMAND:-mvn}"
 TEMP_DIR=""
@@ -36,6 +42,7 @@ Usage:
   fast-datawave.sh [options] all
   fast-datawave.sh [options] web-config
   fast-datawave.sh [options] ingest-config
+  fast-datawave.sh [options] microservice-config
   fast-datawave.sh [options] config
   fast-datawave.sh [options] status
 
@@ -44,8 +51,16 @@ Options:
   -n, --namespace NS Kubernetes namespace (default: default)
   --context NAME     Kubernetes context
   --release NAME     Helm release containing DataWave (default: dwv)
+  --config-release NAME
+                     Helm release containing the configuration service (default:
+                     the value of --release; may also be set with
+                     CONFIGURATION_RELEASE)
+  --config-deployment NAME
+                     Configuration-service Deployment (default: configuration;
+                     may also be set with CONFIGURATION_DEPLOYMENT)
   -f, --values FILE  Additional root-stack values to render for a config reload;
-                     may be repeated. The release's explicit values are used first.
+                     may be repeated. The release's explicit values are used
+                     first.
   --module MODULE    First build and install only this changed Maven module and
                      its prerequisites, then assemble the selected application
   --skip-build       Reuse the most recently built local EAR or ingest archive
@@ -56,6 +71,7 @@ Examples:
   ./development/fast-datawave.sh --module warehouse/ingest-json ingest
   ./development/fast-datawave.sh -n datawave-fast-dev web-config
   ./development/fast-datawave.sh -n datawave-fast-dev -f my-values.yaml ingest-config
+  ./development/fast-datawave.sh -n datawave-fast-dev microservice-config
   ./development/fast-datawave.sh --skip-build web
 EOF
 }
@@ -71,7 +87,7 @@ log() {
 
 while (($#)); do
     case "$1" in
-        web|ingest|all|web-config|ingest-config|config|status)
+        web|ingest|all|web-config|ingest-config|microservice-config|config|status)
             [[ -z "${COMMAND}" ]] || fail "Only one command may be specified"
             COMMAND="$1"
             shift
@@ -94,6 +110,18 @@ while (($#)); do
         --release)
             (($# >= 2)) || fail "--release requires a name"
             RELEASE="$2"
+            ${CONFIGURATION_RELEASE_SET} || CONFIGURATION_RELEASE="$2"
+            shift 2
+            ;;
+        --config-release)
+            (($# >= 2)) || fail "--config-release requires a name"
+            CONFIGURATION_RELEASE="$2"
+            CONFIGURATION_RELEASE_SET=true
+            shift 2
+            ;;
+        --config-deployment)
+            (($# >= 2)) || fail "--config-deployment requires a name"
+            CONFIGURATION_DEPLOYMENT="$2"
             shift 2
             ;;
         -f|--values)
@@ -180,6 +208,27 @@ prepare_config_values() {
             ;;
     esac
     CONFIG_VALUES_FILE="${child_values}"
+}
+
+prepare_microservice_config_values() {
+    local values_file root_values
+    [[ -n "${TEMP_DIR}" ]] || TEMP_DIR="$(mktemp -d)"
+    root_values="${TEMP_DIR}/microservice-root-values.yaml"
+    CONFIG_VALUES_FILE="${TEMP_DIR}/microservice-values.yaml"
+    helm get values "${CONFIGURATION_RELEASE}" -n "${NAMESPACE}" -o yaml \
+        > "${TEMP_DIR}/configuration-release-values.yaml"
+    for values_file in "${VALUES_FILES[@]}"; do
+        [[ -f "${values_file}" ]] || fail "Values file not found: ${values_file}"
+    done
+    if ((${#VALUES_FILES[@]})); then
+        yq ea '. as $item ireduce ({}; . * $item)' \
+            "${TEMP_DIR}/configuration-release-values.yaml" "${VALUES_FILES[@]}" \
+            > "${root_values}"
+    else
+        cp "${TEMP_DIR}/configuration-release-values.yaml" "${root_values}"
+    fi
+    yq eval '. as $root | (($root."datawave-monolith-umbrella"."dwv-configuration" // {}) * {"global": ($root.global // {})})' \
+        "${root_values}" > "${CONFIG_VALUES_FILE}"
 }
 
 copy_config_key() {
@@ -516,6 +565,48 @@ reload_ingest_config() {
     log "Ingest runtime configuration matches the rendered ConfigMaps"
 }
 
+is_microservice_config_consumer() {
+    local deployment="$1"
+    kube get deployment "${deployment}" -o json \
+        | yq eval '.. | select(tag == "!!map") | select(.name == "CONFIG_SERVER_URL") | .name' - \
+        | grep -qx CONFIG_SERVER_URL
+}
+
+reload_microservice_config() {
+    local values manifest config_map deployment
+    prepare_microservice_config_values
+    values="${CONFIG_VALUES_FILE}"
+    manifest="${TEMP_DIR}/microservice-config.yaml"
+
+    log "Rendering the local microservice configuration ConfigMap"
+    helm template "${CONFIGURATION_RELEASE}" "${CHART_ROOT}/configuration" -f "${values}" \
+        --show-only templates/configuration-map.yaml > "${manifest}"
+    config_map="$(yq eval 'select(.kind == "ConfigMap") | .metadata.name' "${manifest}")"
+    [[ -n "${config_map}" && "${config_map}" != "null" ]] || fail \
+        "The configuration chart did not render a ConfigMap. Disable global.externalConfigMap or update that external ConfigMap separately."
+    kube apply -f "${manifest}" >/dev/null
+
+    # A new configuration-service pod reads the ConfigMap immediately at mount
+    # time. Consumers are then restarted so Spring obtains the new properties.
+    log "Restarting configuration service ${CONFIGURATION_DEPLOYMENT}"
+    kube rollout restart "deployment/${CONFIGURATION_DEPLOYMENT}"
+    kube rollout status "deployment/${CONFIGURATION_DEPLOYMENT}" --timeout=5m
+
+    while IFS= read -r deployment; do
+        [[ -n "${deployment}" ]] || continue
+        is_microservice_config_consumer "${deployment}" || continue
+        log "Restarting microservice ${deployment}"
+        kube rollout restart "deployment/${deployment}"
+    done < <(kube get deployments -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+
+    while IFS= read -r deployment; do
+        [[ -n "${deployment}" ]] || continue
+        is_microservice_config_consumer "${deployment}" || continue
+        kube rollout status "deployment/${deployment}" --timeout=5m
+    done < <(kube get deployments -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+    log "Microservice configuration ${config_map} is applied and all configuration consumers are ready"
+}
+
 newest_ingest_archive() {
     find "${DATAWAVE_SOURCE}/warehouse/assemble/datawave/target" -maxdepth 1 -type f \
         -name 'datawave-dev-*-dist.tar.gz' -printf '%T@ %p\n' 2>/dev/null \
@@ -608,6 +699,9 @@ case "${COMMAND}" in
         ;;
     ingest-config)
         reload_ingest_config
+        ;;
+    microservice-config)
+        reload_microservice_config
         ;;
     config)
         reload_web_config

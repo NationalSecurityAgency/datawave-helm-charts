@@ -3,8 +3,9 @@
 This opt-in workflow loads locally built DataWave ingest and web artifacts into
 an existing local Kubernetes stack. It does not build, load, or publish a
 container image. It can also render and reload chart-managed web and ingest
-configuration through a separate writable layer. The normal charts and
-image-based deployment remain the default.
+configuration through a separate writable layer. It also updates the
+microservice configuration server and rolls its consumers in place. The normal
+charts and image-based deployment remain the default.
 
 The intended edit/build/reload loop is under five minutes after Maven
 dependencies and the local build cache are warm. A first full build can take
@@ -180,6 +181,33 @@ be tested without changing chart defaults:
   config
 ```
 
+For a microservice configuration change, edit a file in
+`configuration/configMapFiles/` and run:
+
+```bash
+./development/fast-datawave.sh \
+  --namespace datawave-fast-dev \
+  microservice-config
+```
+
+The helper renders the local `configuration` chart using the installed stack
+release's explicit `dwv-configuration` values, applies its ConfigMap in place,
+restarts the configuration-service Deployment, and then rolls each Deployment
+whose container uses `CONFIG_SERVER_URL`. This lets the Spring microservices
+obtain the new settings without tearing down the namespace, Helm releases, or
+the rest of the stack. It waits for each restarted Deployment to become ready.
+
+Pass `--config-release` when the configuration service belongs to a different
+Helm release, or `--config-deployment` when its Deployment is not named
+`configuration`. For a configuration-chart values override, use `--values`:
+
+```bash
+./development/fast-datawave.sh \
+  --namespace datawave-fast-dev \
+  --values /path/to/configuration-change.yaml \
+  microservice-config
+```
+
 The helper starts with the Helm release's explicitly supplied values, merges
 each `--values` file in command-line order, and renders the local child chart.
 It applies only the relevant ConfigMaps. Web restarts in the same pod. Ingest
@@ -187,10 +215,10 @@ processes stop, the exact ConfigMap data is copied into the writable overlay,
 the Hadoop job cache is refreshed, and ingest restarts. Every copied file is
 checksum-verified before success is reported.
 
-This path covers configuration produced by the web and ingest child charts. It
-does not reload Secrets, certificates, Hadoop/Accumulo ConfigMaps, pod
-environment variables, image entrypoint files, or changes to volume/layout
-definitions; those still use the normal Helm deployment workflow.
+This path covers configuration produced by the web, ingest, and configuration
+service charts. It does not reload Secrets, certificates, Hadoop/Accumulo
+ConfigMaps, pod environment variables, image entrypoint files, or changes to
+volume/layout definitions; those still use the normal Helm deployment workflow.
 
 These fast ConfigMap applications intentionally do not create a Helm revision.
 A later Helm upgrade reconciles them from its values. Keep repeatable changes
@@ -213,6 +241,6 @@ DataWave versions, but it cannot make an older operating-system/Hadoop/WildFly
 image compatible with source that requires a different runtime.
 
 The first phase supports Java artifact and chart-managed configuration changes
-in monolith web and ingest. Changes to image packages, operating-system
-libraries, or configuration layout still require the existing image build and
-deployment workflow. Microservice reloads can use the same pattern later.
+in monolith web, ingest, and the configuration-server-backed microservices.
+Changes to image packages, operating-system libraries, or configuration layout
+still require the existing image build and deployment workflow.
