@@ -1,11 +1,6 @@
 sonicweb:
-  annotation-service-impl: cache
   features:
     transcript-updates: true
-
-hazelcast:
-  client:
-    cluster-name: annotation-cache
 
 server:
   ssl:

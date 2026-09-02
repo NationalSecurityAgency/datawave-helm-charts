@@ -1,0 +1,24 @@
+spring:
+  cloud:
+    function:
+      definition: auditSource;logAuditSink;busConsumer
+    stream:
+      rabbit:
+        bindings:
+          logAuditSink-in-0:
+            consumer:
+              auto-bind-dlq: true
+      bindings:
+        auditSource-out-0:
+          destination: 'audit'
+          producer:
+            error-channel-enabled: true
+        logAuditSink-in-0:
+          destination: 'audit'
+          group: 'log'
+
+audit:
+  confirmAckEnabled: true
+  auditors:
+    log:
+      enabled: true

@@ -1,4 +1,5 @@
 audit:
+  confirmAckEnabled: false
   auditors:
     accumulo:
       enabled: false
@@ -12,26 +13,3 @@ audit:
 logging:
   level:
     datawave.microservice.audit: DEBUG
-spring:
-  cloud:
-    stream:
-      bindings:
-        accumuloAuditSink:
-          destination: audit
-          group: accumulo
-        auditSource:
-          destination: audit
-        logAuditSink:
-          destination: audit
-          group: log
-      rabbit:
-        bindings:
-          accumuloAuditSink:
-            consumer:
-              autoBindDlq: true
-          auditSource:
-            producer:
-              repbulishToDlq: true
-          logAuditSink:
-            consumer:
-              autoBindDlq: true

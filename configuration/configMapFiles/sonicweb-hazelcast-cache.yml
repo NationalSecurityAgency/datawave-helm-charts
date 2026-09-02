@@ -1,0 +1,18 @@
+sonicweb:
+  annotation-service-impl: cache
+  audit:
+    type: PASSIVE
+    marking: A&B&C
+
+  repository:
+    cache:
+      maxFetchAgeMs: 300000
+      maxCacheAgeMs: 1800000
+
+hazelcast:
+  client:
+    cluster-name: annotation-cache
+
+audit-client:
+  discovery:
+    enabled: false

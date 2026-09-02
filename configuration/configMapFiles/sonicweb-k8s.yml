@@ -2,3 +2,10 @@ hazelcast:
   client:
     k8s:
       service-dns-name: annotation-cache.{{ .Release.Namespace }}.svc.cluster.local
+
+sonicweb:
+  annotation-service-host: web-datawave:8443
+  datawave-query-host: web-datawave:8443
+
+audit-client:
+  uri: '${AUDIT_SERVER_URL:http://audit-service:8080/audit}'

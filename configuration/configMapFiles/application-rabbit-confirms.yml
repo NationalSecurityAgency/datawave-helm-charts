@@ -1,0 +1,4 @@
+spring:
+  rabbitmq:
+    publisher-confirm-type: correlated
+    publisher-returns: true

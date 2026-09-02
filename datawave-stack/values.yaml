@@ -27,10 +27,18 @@ datawave-monolith-umbrella:
     image:
       name: nationalsecurityagency/datawave/annotation-cache-service
       tag: 1.0.0-SNAPSHOT
+    args:
+      - "--spring.profiles.active=default,k8s,rest,region-local,rabbit-confirms"
   sonicweb:
     image:
       name: nationalsecurityagency/datawave/sonicweb-service
       tag: 1.4.0-SNAPSHOT
+    args:
+      - "--spring.profiles.active=default,k8s,remoteauth,region-local,hazelcast-cache"
+  dwv-audit:
+    args:
+      - "--spring.output.ansi.enabled=ALWAYS"
+      - "--spring.profiles.active=default,k8s,logs,rabbit-confirms"
 
 dwv-hadoop:
   persistence:
