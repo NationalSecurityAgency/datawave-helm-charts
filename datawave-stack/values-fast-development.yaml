@@ -1,0 +1,16 @@
+# Add this after the normal values file when installing or upgrading the local
+# stack. All standard chart defaults remain unchanged unless this file is used.
+dwv-ingest:
+  development:
+    artifactOverlay:
+      enabled: true
+    configReload:
+      enabled: true
+
+datawave-monolith-umbrella:
+  dwv-web:
+    development:
+      artifactOverlay:
+        enabled: true
+      configReload:
+        enabled: true

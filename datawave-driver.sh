@@ -307,7 +307,11 @@ function configure_etc_hosts(){
 function setup_mysql_operator() {
   helm repo add mysql-operator https://mysql.github.io/mysql-operator/
   helm repo update
-  helm install dwv mysql-operator/mysql-operator    --namespace $NAMESPACE --create-namespace
+  # Keep the operator in its own Helm release. Reusing the DataWave release
+  # name here causes the subsequent stack upgrade to remove the operator while
+  # the InnoDBCluster is still starting.
+  helm upgrade --install mysql-operator mysql-operator/mysql-operator \
+    --namespace "$NAMESPACE" --create-namespace --wait --timeout 5m
 }
 
 function helm_install() {

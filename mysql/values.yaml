@@ -30,6 +30,6 @@ clusters:
       - example
     # Optional init script content. If specified, this will be used directly.
     initScript: |
-      create database example;
+      CREATE DATABASE IF NOT EXISTS example;
       use example;
       GRANT ALL PRIVILEGES ON example TO 'datawave'@'%' WITH GRANT OPTION;
