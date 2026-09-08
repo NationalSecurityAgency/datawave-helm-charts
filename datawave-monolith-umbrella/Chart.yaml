@@ -36,6 +36,10 @@ dependencies:
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.0
     path: ../sonicweb
+  - name: annotation
+    repository: oci://ghcr.io/nationalsecurityagency/annotation/charts
+    version: 1.0.0-SNAPSHOT
+    path: ../annotation
   - name: dwv-dictionary
     repository: oci://ghcr.io/nationalsecurityagency/datawave-helm-charts/charts
     version: 1.0.2

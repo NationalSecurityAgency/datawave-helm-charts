@@ -1,0 +1,4 @@
+{{- include "common-service-library.service" (list . "annotation.service") -}}
+{{- define "annotation.service" -}}
+#overrides go here
+{{- end -}}

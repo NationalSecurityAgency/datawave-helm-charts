@@ -1,0 +1,30 @@
+{{- include "common-service-library.deployment" (list . "annotation.deployment") -}}
+{{- define "annotation.deployment" -}}
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: "{{ .Chart.Name }}-init-configuration"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command: [ "sh", "-c", "until nslookup {{ .Values.global.serviceDns.configuration.name }}; do echo 'Waiting for Configuration...'; sleep 2; done" ]
+        - name: "{{ .Chart.Name }}-init-annotation-cache"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command:
+            - "sh"
+            - "-c"
+            - >
+              until wget --spider -q http://{{ .Values.dependencies.annotationCache.service }}:{{ .Values.dependencies.annotationCache.port }}/{{ .Values.dependencies.annotationCache.service }}/{{ .Values.dependencies.annotationCache.path }}; do
+                echo "Waiting for {{ .Values.dependencies.annotationCache.name }} to be ready..."
+                sleep 2
+              done
+        - name: "{{ .Chart.Name }}-init-authorization"
+          image: "{{ .Values.global.initialization.image.name }}:{{ .Values.global.initialization.image.tag }}"
+          command:
+            - "sh"
+            - "-c"
+            - >
+              until wget --spider -q http://{{ .Values.dependencies.authorization.service }}:{{ .Values.dependencies.authorization.port }}/{{ .Values.dependencies.authorization.service }}/{{ .Values.dependencies.annotationCache.path }}; do
+                echo "Waiting for {{ .Values.dependencies.authorization.name }} to be ready..."
+                sleep 2
+              done
+{{- end -}}

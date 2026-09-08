@@ -32,9 +32,15 @@ datawave-monolith-umbrella:
   sonicweb:
     image:
       name: nationalsecurityagency/datawave/sonicweb-service
-      tag: 1.4.0-SNAPSHOT
+      tag: 1.4.4-SNAPSHOT
     args:
       - "--spring.profiles.active=default,k8s,remoteauth,region-local,hazelcast-cache"
+  annotation:
+    image:
+      name: nationalsecurityagency/datawave/annotation-service
+      tag: 1.0.0-SNAPSHOT
+    args:
+      - "--spring.profiles.active=default,k8s,remoteauth,log-disabled"
   dwv-audit:
     args:
       - "--spring.output.ansi.enabled=ALWAYS"
