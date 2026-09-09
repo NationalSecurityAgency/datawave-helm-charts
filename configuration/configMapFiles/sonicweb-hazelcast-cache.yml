@@ -1,5 +1,5 @@
 sonicweb:
-  annotation-service-impl: cache
+  annotation-service-impl: hazelcast
   audit:
     type: PASSIVE
     marking: A&B&C
