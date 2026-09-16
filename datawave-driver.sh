@@ -193,6 +193,24 @@ function preload_docker_image() {
   
 }
 
+function preload_local_docker_image() {
+  image=$1
+
+  echo "Checking for required locally-built image $image"
+  if ! docker image inspect "$image" &> /dev/null; then
+    echo "Required locally-built image $image does not exist. Build it before running this driver."
+    exit 1
+  fi
+
+  echo "Loading $image into minikube"
+  if minikube image load --overwrite "$image"; then
+    echo "$image loaded into minikube successfully."
+  else
+    echo "Failed to load required locally-built image $image into minikube. Exiting."
+    exit 1
+  fi
+}
+
 function configure_repository_credentials(){
   if [ ! -e "${BASEDIR}"/ghcr-image-pull-secret.yaml ]; then
     echo "Github Username: "
@@ -340,6 +358,9 @@ else
     preload_docker_image mysql:8.0.32
     preload_docker_image busybox:1.28
     preload_docker_image bitnamilegacy/zookeeper:3.6.4
+    preload_local_docker_image nationalsecurityagency/datawave/annotation-service:1.0.0-SNAPSHOT
+    preload_local_docker_image nationalsecurityagency/datawave/annotation-cache-service:1.0.0-SNAPSHOT
+    preload_local_docker_image nationalsecurityagency/datawave/sonicweb-service:1.4.4-SNAPSHOT
     configure_etc_hosts
     update_core_dns
 fi

@@ -16,16 +16,20 @@ spring:
       bindings:
         annotationSource-out-0:
           destination: 'annotation'
+          content-type: application/x-protobuf
           producer:
             errorChannelEnabled: true
         logAnnotationSink-in-0:
           destination: 'annotation'
+          content-type: application/x-protobuf
           group: 'log'
         accumuloAnnotationSink-in-0:
           destination: 'annotation'
+          content-type: application/x-protobuf
           group: 'accumulo'
         dumpAnnotationSink-in-0:
           destination: 'annotation'
+          content-type: application/x-protobuf
           group: 'dump'
           consumer:
             concurrency: 5
@@ -107,6 +111,8 @@ annotation:
       enabled: false
     accumulo:
       enabled: true
+      health:
+        enabled: true
       accumuloConfig:
         zookeepers: "{{ .Values.global.zookeeper.quorum }}"
         instanceName: '{{ .Values.global.accumulo.instanceName }}'
