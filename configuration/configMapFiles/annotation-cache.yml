@@ -47,6 +47,10 @@ spring:
           group: cache
           content-type: application/x-protobuf
 
+annotation-cache:
+  max-cache-age: 1h
+  max-fetch-age: 5m
+
 hazelcast:
   server:
     k8s:
