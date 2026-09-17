@@ -72,6 +72,7 @@ spec:
       
       securityContext:
         runAsUser: 1000
+        fsGroup: 1000
       restartPolicy: "{{ .Values.restartPolicy }}"
 
       ##############################################
@@ -105,6 +106,8 @@ spec:
             - name: "{{ .Values.global.volumes.microserviceConfig.name }}"
               mountPath: "{{ .Values.global.volumes.microserviceConfig.destination }}"
               readOnly: true
+            - name: logs
+              mountPath: /logs
 
       #############################################################
       # Initialization Containers Associated with this Deployment #
@@ -131,3 +134,7 @@ spec:
         - name: "{{ .Values.global.volumes.microserviceConfig.name }}"
           configMap:
             name: {{ if .Values.global.externalConfigMap.enabled }} {{ .Values.global.externalConfigMap.name }} {{ else }} {{ .Values.configurationMap.meta.name }} {{ end}}
+
+        - name: logs
+          emptyDir:
+            sizeLimit: 5Gi

@@ -79,6 +79,7 @@ spec:
       ##############################################
       securityContext:
         runAsUser: 1000
+        fsGroup: 1000
       containers:
         - name: "{{ .Values.meta.name }}"
           args:
@@ -117,6 +118,8 @@ spec:
             - name: "{{ .Values.global.volumes.certificates.name }}"
               mountPath: "{{ .Values.global.volumes.certificates.destination }}"
               readOnly: true
+            - name: logs
+              mountPath: /logs
 
       #############################################################
       # Initialization Containers Associated with this Deployment #
@@ -133,8 +136,10 @@ spec:
           secret:
             secretName: {{ .Values.global.certSecretName}}
             optional: false
+        - name: logs
+          emptyDir:
+            sizeLimit: 5Gi
 {{- end -}}
 {{- define "common-service-library.deployment" -}}
 {{- include "common-service-library.util.merge" (append . "common-service-library.deployment.tpl") -}}
 {{- end -}}
-
