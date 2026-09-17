@@ -28,8 +28,6 @@ clusters:
       secretKeyRef: rootPassword
       databases:
       - example
-    # Optional init script content. If specified, this will be used directly.
-    initScript: |
-      create database example;
-      use example;
-      GRANT ALL PRIVILEGES ON example TO 'datawave'@'%' WITH GRANT OPTION;
+    # Optional additional SQL. Database/user creation and grants are generated
+    # from databaseUsers above and are safe to rerun.
+    initScript: ""

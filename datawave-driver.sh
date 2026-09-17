@@ -104,7 +104,11 @@ function check_k8s_cluster() {
       start_minikube
     else
       echo "Minikube cluster not started. Using active Kubeconfig"
-fi
+      if [ "$(kubectl config current-context)" = "minikube" ]; then
+        USING_MINIKUBE=true
+        echo "Active kubeconfig is Minikube; Minikube image preloading will be enabled."
+      fi
+    fi
   fi
 }
 
@@ -301,6 +305,7 @@ function configure_etc_hosts(){
   echo "$(minikube ip) accumulo.datawave.org" | sudo tee -a /etc/hosts
   echo "$(minikube ip) web.datawave.org" | sudo tee -a /etc/hosts
   echo "$(minikube ip) dictionary.datawave.org" | sudo tee -a /etc/hosts
+  echo "$(minikube ip) annotation.datawave.org" | sudo tee -a /etc/hosts
   
   if ${USE_EXISTING_ZOOKEEPER}; then
     EXTRA_HELM_ARGS="${EXTRA_HELM_ARGS} --set charts.zookeeper.enabled=false"
@@ -325,7 +330,11 @@ function configure_etc_hosts(){
 function setup_mysql_operator() {
   helm repo add mysql-operator https://mysql.github.io/mysql-operator/
   helm repo update
-  helm install dwv mysql-operator/mysql-operator    --namespace $NAMESPACE --create-namespace
+  helm upgrade --install mysql-operator mysql-operator/mysql-operator \
+    --namespace $NAMESPACE \
+    --create-namespace \
+    --wait \
+    --timeout 5m0s
 }
 
 function helm_install() {
