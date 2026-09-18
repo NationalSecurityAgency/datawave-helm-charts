@@ -54,6 +54,10 @@ config:
   auths: "JBOSS_ADMIN,DW_ADMIN,AUTH_USER,BAR,FOO,PRIVATE,PUBLIC"
   path: /opt/accumulo/conf
   files: {}
+  javaOpts:
+    # Temporary compatibility setting for DataWave protobuf classes generated
+    # before protoc 22 and Accumulo's protobuf-java 3.25.6 runtime.
+    - -Dcom.google.protobuf.use_unsafe_pre22_gencode
   accumuloSite:
     instance.secret: "DEFAULT"
     tserver.memory.maps.native.enabled: true
