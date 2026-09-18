@@ -23,8 +23,8 @@ global:
   hdfs:
     namenode: hdfs-nn:9000
 logging:
-  shellRootLevel: debug
-  shellAccumuloLevel: trace
+  shellRootLevel: info
+  shellAccumuloLevel: info
   serviceAccumuloLevel: debug
   serviceRootLevel: debug
 nameOverride: ""
