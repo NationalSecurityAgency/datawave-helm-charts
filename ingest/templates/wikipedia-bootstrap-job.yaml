@@ -1,0 +1,223 @@
+{{- if .Values.bootstrap.wikipedia.enabled }}
+{{- $_ := required "bootstrap.wikipedia.inputConfigMap is required when Wikipedia bootstrap is enabled" .Values.bootstrap.wikipedia.inputConfigMap }}
+{{- if lt (int .Values.bootstrap.wikipedia.jobCacheWaitSeconds) 0 }}
+{{- fail "bootstrap.wikipedia.jobCacheWaitSeconds must be zero or greater" }}
+{{- end }}
+{{- if lt (int .Values.bootstrap.wikipedia.jobCachePollSeconds) 1 }}
+{{- fail "bootstrap.wikipedia.jobCachePollSeconds must be greater than zero" }}
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "datawave.fullname" . }}-wikipedia-bootstrap
+  labels:
+    {{- include "datawave.labels" . | nindent 4 }}
+    app.kubernetes.io/component: wikipedia-bootstrap
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-weight: "30"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: {{ .Values.bootstrap.wikipedia.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.bootstrap.wikipedia.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: wikipedia-bootstrap
+    spec:
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1002
+        runAsUser: 1002
+        runAsNonRoot: true
+      {{- with .Values.global.pullSecrets }}
+      imagePullSecrets:
+        {{- range . }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: prepare-ingest-config
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              cp -LR /opt/datawave-ingest/current/config/. /prepared-config/
+              find /prepared-config -type f -exec chmod u+w {} +
+              cp -LR /helm-general-config/. /prepared-config/
+              cp -L /helm-ingest-config/ingest-config.xml /prepared-config/ingest-config.xml
+              cp /opt/datawave-ingest/current/bin/ingest/live-ingest.sh /prepared-tools/live-ingest.sh
+
+              if [[ "$(grep -c '^LIBJARS=' /prepared-tools/live-ingest.sh)" -ne 1 ]]; then
+                echo "Expected exactly one LIBJARS assignment in live-ingest.sh"
+                exit 1
+              fi
+              sed -i '/^LIBJARS=/a LIBJARS=$(echo "${LIBJARS}" | tr "," "\\n" | grep -v "^/lib/hadoop" | paste -sd "," -)' /prepared-tools/live-ingest.sh
+
+              if [[ "$(grep -c '^echo .* -pass \$PASSWORD ' /prepared-tools/live-ingest.sh)" -ne 1 ]]; then
+                echo "Expected exactly one logged live-ingest command containing the password"
+                exit 1
+              fi
+              sed -i '/^echo .* -pass \$PASSWORD /s/-pass \$PASSWORD /-pass REDACTED /' /prepared-tools/live-ingest.sh
+              chmod u+x /prepared-tools/live-ingest.sh
+          volumeMounts:
+            - name: prepared-config
+              mountPath: /prepared-config
+            - name: prepared-tools
+              mountPath: /prepared-tools
+            - name: datawave-general-ingest-config
+              mountPath: /helm-general-config
+              readOnly: true
+            - name: ingest-config
+              mountPath: /helm-ingest-config
+              readOnly: true
+      containers:
+        - name: wikipedia-bootstrap
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.bootstrap.wikipedia.resources | nindent 12 }}
+          env:
+            - name: ADDITIONAL_INGEST_LIBS
+              value: {{ default .Values.libs .Values.bootstrap.wikipedia.additionalIngestLibs | quote }}
+            - name: HADOOP_CLASSPATH
+              value: {{ .Values.hadoop.classpath | quote }}
+            - name: HADOOP_CONF_DIR
+              value: /usr/local/hadoop/conf
+            - name: WIKIPEDIA_HDFS_DIRECTORY
+              value: {{ .Values.bootstrap.wikipedia.hdfsDirectory | quote }}
+            - name: WIKIPEDIA_NUM_SHARDS
+              value: {{ .Values.bootstrap.wikipedia.numShards | quote }}
+            - name: WIKIPEDIA_JOB_CACHE_WAIT_SECONDS
+              value: {{ .Values.bootstrap.wikipedia.jobCacheWaitSeconds | quote }}
+            - name: WIKIPEDIA_JOB_CACHE_POLL_SECONDS
+              value: {{ .Values.bootstrap.wikipedia.jobCachePollSeconds | quote }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              shopt -s nullglob
+              inputs=(/bootstrap-input/*.xml /bootstrap-input/*.xml.gz)
+              if (( ${#inputs[@]} == 0 )); then
+                echo "No .xml or .xml.gz Wikipedia inputs found in /bootstrap-input"
+                exit 1
+              fi
+
+              cd /opt/datawave-ingest/current/bin/ingest
+              . ./ingest-env.sh
+
+              job_cache_env=/opt/datawave-ingest/current/bin/ingest/job-cache-env.sh
+              job_cache_dir=
+              job_cache_deadline=$((SECONDS + WIKIPEDIA_JOB_CACHE_WAIT_SECONDS))
+              while [[ -z "${job_cache_dir}" ]]; do
+                for candidate in \
+                  /datawave/ingest/work/jobCacheB \
+                  /datawave/ingest/work/jobCacheA; do
+                  if hdfs dfs -test -d "${candidate}/config"; then
+                    job_cache_dir="${candidate}"
+                    break
+                  fi
+                done
+
+                if [[ -n "${job_cache_dir}" ]]; then
+                  break
+                fi
+
+                if (( SECONDS >= job_cache_deadline )); then
+                  break
+                fi
+
+                echo "Waiting for the DataWave ingest job cache"
+                sleep "${WIKIPEDIA_JOB_CACHE_POLL_SECONDS}"
+              done
+
+              if [[ -z "${job_cache_dir}" ]]; then
+                echo "No initialized DataWave ingest job cache found in HDFS after ${WIKIPEDIA_JOB_CACHE_WAIT_SECONDS} seconds"
+                exit 1
+              fi
+              sed -i "s|^JOB_CACHE_DIR=.*|JOB_CACHE_DIR=\"${job_cache_dir}\"|" "${job_cache_env}"
+              echo "Using ingest job cache ${job_cache_dir}"
+
+              hdfs dfs -mkdir -p "${WIKIPEDIA_HDFS_DIRECTORY}"
+              for input in "${inputs[@]}"; do
+                filename="$(basename "${input}")"
+                hdfs_input="${WIKIPEDIA_HDFS_DIRECTORY}/${filename}"
+
+                echo "Copying ${filename} to ${hdfs_input}"
+                hdfs dfs -copyFromLocal -f "${input}" "${hdfs_input}"
+
+                echo "Ingesting ${filename}"
+                /opt/datawave-ingest/current/bin/ingest/live-ingest-bootstrap.sh \
+                  "${hdfs_input}" \
+                  "${WIKIPEDIA_NUM_SHARDS}" \
+                  -inputFormat datawave.ingest.wikipedia.WikipediaEventInputFormat \
+                  -data.name.override=wikipedia
+              done
+          volumeMounts:
+            - name: wikipedia-input
+              mountPath: /bootstrap-input
+              readOnly: true
+            - name: accumulo-config
+              mountPath: /opt/accumulo/conf
+            - name: hadoop-config
+              mountPath: /usr/local/hadoop/conf
+            - name: genders
+              mountPath: /etc/genders
+              subPath: genders
+            - name: ingest-env
+              mountPath: /opt/datawave-ingest/current/bin/ingest/ingest-env.sh
+              subPath: ingest-env.sh
+            - name: prepared-config
+              mountPath: /opt/datawave-ingest/current/config
+            - name: prepared-tools
+              mountPath: /opt/datawave-ingest/current/bin/ingest/live-ingest-bootstrap.sh
+              subPath: live-ingest.sh
+            - name: ingest-password
+              mountPath: /opt/datawave-ingest/ingest-passwd.sh
+              subPath: ingest-passwd.sh
+              readOnly: true
+      volumes:
+        - name: wikipedia-input
+          configMap:
+            name: {{ .Values.bootstrap.wikipedia.inputConfigMap }}
+        - name: accumulo-config
+          configMap:
+            name: {{ .Values.global.volumes.accumulo.source.name }}
+        - name: hadoop-config
+          configMap:
+            name: {{ .Values.global.volumes.hadoop.source.name }}
+        - name: genders
+          configMap:
+            name: "{{ .Chart.Name }}-genders"
+        - name: prepared-config
+          emptyDir: {}
+        - name: prepared-tools
+          emptyDir: {}
+        - name: ingest-env
+          configMap:
+            name: "{{ .Chart.Name }}-ingest-env-configmap"
+            defaultMode: 0775
+        - name: ingest-config
+          configMap:
+            name: "{{ .Chart.Name }}-ingest-config-configmap"
+        - name: datawave-general-ingest-config
+          configMap:
+            name: datawave-general-ingest-config
+        - name: ingest-password
+          secret:
+            secretName: {{ include "datawave.fullname" . }}-cmds
+{{- end }}
