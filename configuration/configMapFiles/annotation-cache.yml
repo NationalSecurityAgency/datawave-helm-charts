@@ -50,6 +50,11 @@ spring:
 annotation-cache:
   max-cache-age: 1h
   max-fetch-age: 5m
+  reconciliation-enabled: true
+  reconciliation-interval: 5m
+  reconciliation-settle-delay: 30s
+  reconciliation-max-maps-per-run: 1000
+  reconciliation-poll-interval-ms: 5000
 
 hazelcast:
   server:
