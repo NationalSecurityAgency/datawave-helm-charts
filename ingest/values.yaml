@@ -38,7 +38,7 @@ config:
   instanceName: dev
   hadoopConfDif: /usr/local/hadoop/conf
   bulkDataTypes: shardStats
-  liveDataTypes: wikipedia,mycsv,myjson,openlib
+  liveDataTypes: wikipedia,mycsv,myjson,openlib,annotation
   sharedConfig:
     create: true
     claim: datawave-ingest-config-pvc
@@ -769,4 +769,4 @@ config:
         "mycsv.PREMIERED.data.field.type.class": datawave.data.type.DateType
         "mycsv.WEIGHT.data.field.type.class": datawave.data.type.NumberType
         "mycsv.RUNTIME.data.field.type.class": datawave.data.type.NumberType
-        "mycsv.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"    
+        "mycsv.facet.category.name.network": "NETWORK_NAME;GENRES,EMBEDDED_CAST_PERSON_GENDER,RATING_AVERAGE"
