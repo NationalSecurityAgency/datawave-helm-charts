@@ -36,6 +36,20 @@ bootstrap:
     backoffLimit: 1
     ttlSecondsAfterFinished: 86400
     resources: {}
+  annotation:
+    enabled: false
+    # Existing ConfigMap whose keys are annotation JSON input files.
+    inputConfigMap: ""
+    hdfsDirectory: /datawave/ingest/bootstrap/annotation
+    numShards: 1
+    # Needed by the submission client. The bootstrap script excludes Hadoop
+    # jars from the YARN distributed cache so the cluster uses its own version.
+    additionalIngestLibs: ""
+    jobCacheWaitSeconds: 300
+    jobCachePollSeconds: 10
+    backoffLimit: 1
+    ttlSecondsAfterFinished: 86400
+    resources: {}
 libs: "/lib/hadoop-mapreduce/hadoop-mapreduce-client-core.jar:/lib/hadoop-hdfs/hadoop-hdfs-client.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-common.jar:/lib/hadoop-mapreduce/hadoop-mapreduce-client-jobclient.jar:/lib/hadoop-yarn/hadoop-yarn-client.jar:/lib/hadoop-yarn/hadoop-yarn-common.jar:/lib/hadoop-yarn/hadoop-yarn-api.jar:/lib/hadoop-yarn/lib/websocket-api-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-client-9.4.48.v20220622.jar:/lib/hadoop-yarn/lib/websocket-common-9.4.48.v20220622.jar"
 hadoop:
   classpath:

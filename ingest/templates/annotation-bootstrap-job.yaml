@@ -1,0 +1,243 @@
+{{- if .Values.bootstrap.annotation.enabled }}
+{{- $_ := required "bootstrap.annotation.inputConfigMap is required when annotation bootstrap is enabled" .Values.bootstrap.annotation.inputConfigMap }}
+{{- if lt (int .Values.bootstrap.annotation.jobCacheWaitSeconds) 0 }}
+{{- fail "bootstrap.annotation.jobCacheWaitSeconds must be zero or greater" }}
+{{- end }}
+{{- if lt (int .Values.bootstrap.annotation.jobCachePollSeconds) 1 }}
+{{- fail "bootstrap.annotation.jobCachePollSeconds must be greater than zero" }}
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "datawave.fullname" . }}-annotation-bootstrap
+  labels:
+    {{- include "datawave.labels" . | nindent 4 }}
+    app.kubernetes.io/component: annotation-bootstrap
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-weight: "31"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: {{ .Values.bootstrap.annotation.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.bootstrap.annotation.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: annotation-bootstrap
+    spec:
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1002
+        runAsUser: 1002
+        runAsNonRoot: true
+      {{- with .Values.global.pullSecrets }}
+      imagePullSecrets:
+        {{- range . }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: prepare-ingest-config
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              cp -LR /opt/datawave-ingest/current/config/. /prepared-config/
+              find /prepared-config -type f -exec chmod u+w {} +
+              cp -LR /helm-general-config/. /prepared-config/
+              cp -L /helm-ingest-config/ingest-config.xml /prepared-config/ingest-config.xml
+              cp /opt/datawave-ingest/current/bin/ingest/live-ingest.sh /prepared-tools/live-ingest.sh
+
+              if [[ "$(grep -c '^LIBJARS=' /prepared-tools/live-ingest.sh)" -ne 1 ]]; then
+                echo "Expected exactly one LIBJARS assignment in live-ingest.sh"
+                exit 1
+              fi
+              sed -i '/^LIBJARS=/a LIBJARS=$(echo "${LIBJARS}" | tr "," "\\n" | grep -v "^/lib/hadoop" | paste -sd "," -)' /prepared-tools/live-ingest.sh
+
+              if [[ "$(grep -c '^echo .* -pass \$PASSWORD ' /prepared-tools/live-ingest.sh)" -ne 1 ]]; then
+                echo "Expected exactly one logged live-ingest command containing the password"
+                exit 1
+              fi
+              sed -i '/^echo .* -pass \$PASSWORD /s/-pass \$PASSWORD /-pass REDACTED /' /prepared-tools/live-ingest.sh
+              chmod u+x /prepared-tools/live-ingest.sh
+          volumeMounts:
+            - name: prepared-config
+              mountPath: /prepared-config
+            - name: prepared-tools
+              mountPath: /prepared-tools
+            - name: datawave-general-ingest-config
+              mountPath: /helm-general-config
+              readOnly: true
+            - name: ingest-config
+              mountPath: /helm-ingest-config
+              readOnly: true
+      containers:
+        - name: annotation-bootstrap
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.bootstrap.annotation.resources | nindent 12 }}
+          env:
+            - name: ADDITIONAL_INGEST_LIBS
+              value: {{ default .Values.libs .Values.bootstrap.annotation.additionalIngestLibs | quote }}
+            - name: HADOOP_CLASSPATH
+              value: {{ .Values.hadoop.classpath | quote }}
+            - name: HADOOP_CONF_DIR
+              value: /usr/local/hadoop/conf
+            - name: ANNOTATION_HDFS_DIRECTORY
+              value: {{ .Values.bootstrap.annotation.hdfsDirectory | quote }}
+            - name: ANNOTATION_NUM_SHARDS
+              value: {{ .Values.bootstrap.annotation.numShards | quote }}
+            - name: ANNOTATION_JOB_CACHE_WAIT_SECONDS
+              value: {{ .Values.bootstrap.annotation.jobCacheWaitSeconds | quote }}
+            - name: ANNOTATION_JOB_CACHE_POLL_SECONDS
+              value: {{ .Values.bootstrap.annotation.jobCachePollSeconds | quote }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              shopt -s nullglob
+              inputs=(/bootstrap-input/*.json)
+              if (( ${#inputs[@]} == 0 )); then
+                echo "No .json annotation inputs found in /bootstrap-input"
+                exit 1
+              fi
+
+              cd /opt/datawave-ingest/current/bin/ingest
+              . ./ingest-env.sh
+              export CLASSPATH="/opt/datawave-ingest/current/config:/opt/datawave-ingest/current/lib/*"
+
+              job_cache_env=/opt/datawave-ingest/current/bin/ingest/job-cache-env.sh
+              job_cache_dir=
+              job_cache_deadline=$((SECONDS + ANNOTATION_JOB_CACHE_WAIT_SECONDS))
+              while [[ -z "${job_cache_dir}" ]]; do
+                for candidate in \
+                  /datawave/ingest/work/jobCacheB \
+                  /datawave/ingest/work/jobCacheA; do
+                  if hdfs dfs -test -d "${candidate}/config"; then
+                    job_cache_dir="${candidate}"
+                    break
+                  fi
+                done
+
+                if [[ -n "${job_cache_dir}" ]]; then
+                  break
+                fi
+
+                if (( SECONDS >= job_cache_deadline )); then
+                  break
+                fi
+
+                echo "Waiting for the DataWave ingest job cache"
+                sleep "${ANNOTATION_JOB_CACHE_POLL_SECONDS}"
+              done
+
+              if [[ -z "${job_cache_dir}" ]]; then
+                echo "No initialized DataWave ingest job cache found in HDFS after ${ANNOTATION_JOB_CACHE_WAIT_SECONDS} seconds"
+                exit 1
+              fi
+              sed -i "s|^JOB_CACHE_DIR=.*|JOB_CACHE_DIR=\"${job_cache_dir}\"|" "${job_cache_env}"
+              echo "Using ingest job cache ${job_cache_dir}"
+
+              edge_key_cache="${job_cache_dir}/edge-key-version.txt"
+              if ! hdfs dfs -test -s "${edge_key_cache}"; then
+                echo "Generating missing edge key version cache ${edge_key_cache}"
+                /opt/accumulo/bin/accumulo datawave.ingest.util.GenerateEdgeKeyVersionCache \
+                  -Dfs.defaultFS="${INGEST_HDFS_NAME_NODE}" \
+                  -update "${job_cache_dir}" \
+                  "${USERNAME}" "${PASSWORD}" "${METADATA_TABLE_NAME}" \
+                  "${WAREHOUSE_INSTANCE_NAME}" "${WAREHOUSE_ZOOKEEPERS}"
+              fi
+              if ! hdfs dfs -test -s "${edge_key_cache}"; then
+                echo "Edge key version cache is missing or empty: ${edge_key_cache}"
+                exit 1
+              fi
+
+              hdfs dfs -mkdir -p "${ANNOTATION_HDFS_DIRECTORY}"
+              for input in "${inputs[@]}"; do
+                filename="$(basename "${input}")"
+                normalized_input="/tmp/${filename}"
+                hdfs_input="${ANNOTATION_HDFS_DIRECTORY}/${filename}"
+
+                perl -0777 -pe \
+                  'if (/\A\s*\{\s*"annotations"\s*:\s*(\[.*\])\s*\}\s*\z/s) { $_ = $1 }' \
+                  "${input}" > "${normalized_input}"
+
+                echo "Copying normalized ${filename} to ${hdfs_input}"
+                hdfs dfs -copyFromLocal -f "${normalized_input}" "${hdfs_input}"
+
+                echo "Ingesting ${filename}"
+                /opt/datawave-ingest/current/bin/ingest/live-ingest-bootstrap.sh \
+                  "${hdfs_input}" \
+                  "${ANNOTATION_NUM_SHARDS}" \
+                  -inputFormat datawave.ingest.annotation.mapreduce.input.SimpleAnnotationInputFormat \
+                  -data.name.override=annotation
+              done
+          volumeMounts:
+            - name: annotation-input
+              mountPath: /bootstrap-input
+              readOnly: true
+            - name: accumulo-config
+              mountPath: /opt/accumulo/conf
+            - name: hadoop-config
+              mountPath: /usr/local/hadoop/conf
+            - name: genders
+              mountPath: /etc/genders
+              subPath: genders
+            - name: ingest-env
+              mountPath: /opt/datawave-ingest/current/bin/ingest/ingest-env.sh
+              subPath: ingest-env.sh
+            - name: prepared-config
+              mountPath: /opt/datawave-ingest/current/config
+            - name: prepared-tools
+              mountPath: /opt/datawave-ingest/current/bin/ingest/live-ingest-bootstrap.sh
+              subPath: live-ingest.sh
+            - name: ingest-password
+              mountPath: /opt/datawave-ingest/ingest-passwd.sh
+              subPath: ingest-passwd.sh
+              readOnly: true
+      volumes:
+        - name: annotation-input
+          configMap:
+            name: {{ .Values.bootstrap.annotation.inputConfigMap }}
+        - name: accumulo-config
+          configMap:
+            name: {{ .Values.global.volumes.accumulo.source.name }}
+        - name: hadoop-config
+          configMap:
+            name: {{ .Values.global.volumes.hadoop.source.name }}
+        - name: genders
+          configMap:
+            name: "{{ .Chart.Name }}-genders"
+        - name: prepared-config
+          emptyDir: {}
+        - name: prepared-tools
+          emptyDir: {}
+        - name: ingest-env
+          configMap:
+            name: "{{ .Chart.Name }}-ingest-env-configmap"
+            defaultMode: 0775
+        - name: ingest-config
+          configMap:
+            name: "{{ .Chart.Name }}-ingest-config-configmap"
+        - name: datawave-general-ingest-config
+          configMap:
+            name: datawave-general-ingest-config
+        - name: ingest-password
+          secret:
+            secretName: {{ include "datawave.fullname" . }}-cmds
+{{- end }}
