@@ -20,6 +20,72 @@ Prerequisites:
 * kubectl
 * minikube (for local testing)
 
+### Linux inotify limits for Minikube
+
+A multi-node Minikube deployment can exhaust a Linux host's default
+`fs.inotify.max_user_instances` limit. When this happens, Minikube node
+containers may start but fail to finish booting, with `Too many open files`
+messages and repeated SSH connection resets.
+
+Persist a higher limit on the host with a sysctl drop-in:
+
+```bash
+sudo tee /etc/sysctl.d/99-minikube-inotify.conf >/dev/null <<'EOF'
+fs.inotify.max_user_instances = 1024
+EOF
+sudo sysctl --system
+sysctl fs.inotify.max_user_instances
+```
+
+After verifying the value, retry the profile:
+
+```bash
+minikube stop -p minikube
+minikube start -p minikube
+```
+
+### Recovering MySQL after restarting Minikube
+
+Stopping a multi-node Minikube profile causes a complete MySQL InnoDB Cluster
+outage. The MySQL Operator intentionally configures Group Replication for
+manual startup after a complete outage, so the MySQL server pods can all be
+Running while the `InnoDBCluster` remains `OFFLINE` and the Router enters
+`CrashLoopBackOff`.
+
+Use the recovery helper after `minikube start` when this occurs:
+
+```bash
+./recover-mysql-cluster.sh
+```
+
+The helper reads the administrative username and password from the
+`mysql-secret` Kubernetes Secret, supplies the password to MySQL Shell over
+standard input, and does not print it or include it in command arguments. It
+checks the MySQL pods, performs a dry run, asks for confirmation, restores the
+cluster with `dba.rebootClusterFromCompleteOutage()`, and recreates an
+unhealthy stateless Router pod if necessary.
+
+The defaults match the local DataWave deployment in the `datawave` namespace.
+They can be overridden when needed:
+
+```bash
+NAMESPACE=other-namespace \
+K8S_CLUSTER_NAME=other-cluster \
+MYSQL_SECRET_NAME=other-secret \
+ADMINAPI_CLUSTER_NAME=other_cluster \
+./recover-mysql-cluster.sh
+```
+
+For non-interactive local recovery after reviewing the detected state and the
+script, use:
+
+```bash
+./recover-mysql-cluster.sh --yes
+```
+
+Do not use this helper for a partially available cluster or to override a
+split-brain or divergent-transaction condition. MySQL Shell's dry-run
+validation must succeed before the helper attempts recovery.
 
 If you already have the prerequisites installed you can simply run `./datawave-driver.sh`
 
