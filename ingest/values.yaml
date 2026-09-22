@@ -28,8 +28,8 @@ bootstrap:
     inputConfigMap: ""
     hdfsDirectory: /datawave/ingest/bootstrap/wikipedia
     numShards: 1
-    # Needed by the submission client. The bootstrap script excludes Hadoop
-    # jars from the YARN distributed cache so the cluster uses its own version.
+    # Needed by the submission client. The packaged ingest script excludes
+    # Hadoop jars from the YARN distributed cache so the cluster uses its own version.
     additionalIngestLibs: ""
     jobCacheWaitSeconds: 300
     jobCachePollSeconds: 10
@@ -42,8 +42,8 @@ bootstrap:
     inputConfigMap: ""
     hdfsDirectory: /datawave/ingest/bootstrap/annotation
     numShards: 1
-    # Needed by the submission client. The bootstrap script excludes Hadoop
-    # jars from the YARN distributed cache so the cluster uses its own version.
+    # Needed by the submission client. The packaged ingest script excludes
+    # Hadoop jars from the YARN distributed cache so the cluster uses its own version.
     additionalIngestLibs: ""
     jobCacheWaitSeconds: 300
     jobCachePollSeconds: 10
@@ -85,6 +85,9 @@ config:
     
     echo "Create Query Metrics M table"
     /opt/accumulo/bin/accumulo shell -e "createtable datawave.queryMetrics_m"
+
+    echo "Generate Accumulo table configuration cache"
+    /opt/datawave-ingest/current/bin/ingest/generate-accumulo-config-cache.sh
     
     echo "Create Splits"
     /opt/datawave-ingest/current/bin/ingest/create-shards-since.sh $(date --date='$10 days ago' +%y%m%d)

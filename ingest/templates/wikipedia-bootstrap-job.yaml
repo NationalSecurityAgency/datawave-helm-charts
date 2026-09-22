@@ -60,25 +60,9 @@ spec:
               find /prepared-config -type f -exec chmod u+w {} +
               cp -LR /helm-general-config/. /prepared-config/
               cp -L /helm-ingest-config/ingest-config.xml /prepared-config/ingest-config.xml
-              cp /opt/datawave-ingest/current/bin/ingest/live-ingest.sh /prepared-tools/live-ingest.sh
-
-              if [[ "$(grep -c '^LIBJARS=' /prepared-tools/live-ingest.sh)" -ne 1 ]]; then
-                echo "Expected exactly one LIBJARS assignment in live-ingest.sh"
-                exit 1
-              fi
-              sed -i '/^LIBJARS=/a LIBJARS=$(echo "${LIBJARS}" | tr "," "\\n" | grep -v "^/lib/hadoop" | paste -sd "," -)' /prepared-tools/live-ingest.sh
-
-              if [[ "$(grep -c '^echo .* -pass \$PASSWORD ' /prepared-tools/live-ingest.sh)" -ne 1 ]]; then
-                echo "Expected exactly one logged live-ingest command containing the password"
-                exit 1
-              fi
-              sed -i '/^echo .* -pass \$PASSWORD /s/-pass \$PASSWORD /-pass REDACTED /' /prepared-tools/live-ingest.sh
-              chmod u+x /prepared-tools/live-ingest.sh
           volumeMounts:
             - name: prepared-config
               mountPath: /prepared-config
-            - name: prepared-tools
-              mountPath: /prepared-tools
             - name: datawave-general-ingest-config
               mountPath: /helm-general-config
               readOnly: true
@@ -127,7 +111,8 @@ spec:
                 for candidate in \
                   /datawave/ingest/work/jobCacheB \
                   /datawave/ingest/work/jobCacheA; do
-                  if hdfs dfs -test -d "${candidate}/config"; then
+                  if hdfs dfs -test -d "${candidate}/config" &&
+                     hdfs dfs -test -s "${candidate}/edge-key-version.txt"; then
                     job_cache_dir="${candidate}"
                     break
                   fi
@@ -161,7 +146,7 @@ spec:
                 hdfs dfs -copyFromLocal -f "${input}" "${hdfs_input}"
 
                 echo "Ingesting ${filename}"
-                /opt/datawave-ingest/current/bin/ingest/live-ingest-bootstrap.sh \
+                /opt/datawave-ingest/current/bin/ingest/live-ingest.sh \
                   "${hdfs_input}" \
                   "${WIKIPEDIA_NUM_SHARDS}" \
                   -inputFormat datawave.ingest.wikipedia.WikipediaEventInputFormat \
@@ -183,9 +168,6 @@ spec:
               subPath: ingest-env.sh
             - name: prepared-config
               mountPath: /opt/datawave-ingest/current/config
-            - name: prepared-tools
-              mountPath: /opt/datawave-ingest/current/bin/ingest/live-ingest-bootstrap.sh
-              subPath: live-ingest.sh
             - name: ingest-password
               mountPath: /opt/datawave-ingest/ingest-passwd.sh
               subPath: ingest-passwd.sh
@@ -204,8 +186,6 @@ spec:
           configMap:
             name: "{{ .Chart.Name }}-genders"
         - name: prepared-config
-          emptyDir: {}
-        - name: prepared-tools
           emptyDir: {}
         - name: ingest-env
           configMap:
