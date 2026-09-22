@@ -96,6 +96,8 @@ annotation:
   # By default, query content cloud - set cluster specific config overrides
   annotationTableName: 'datawave.annotation'
   annotationSourceTableName: 'datawave.annotationSource'
+  truthmarkTableName: 'datawave.truthmark'
+  truthmarkSourceTableName: 'datawave.truthmarkSource'
   connPoolName: 'WAREHOUSE'
   priority: 'NORMAL'
   enableInternalIdLookup: 'true'
