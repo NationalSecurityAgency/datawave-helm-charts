@@ -65,39 +65,6 @@ hazelcast:
     # to create a cluster happens before the server has registered in Consul. Therefore, the split
     # brain merge will take care of joining the multiple clusters.
     initialMergeDelaySeconds: 50
-#    xml-config: |
-#      <hazelcast xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-#      xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-5.0.xsd"
-#      xmlns="http://www.hazelcast.com/schema/config">
-#
-#      <map name="docAnnotations">
-#      <backup-count>2</backup-count>
-#      <time-to-live-seconds>86400</time-to-live-seconds>
-#
-#      <eviction eviction-policy="LFU"/>
-#      <max-size max-size-policy="USED_HEAP_SIZE">2048</max-size>
-#      </map>
-#
-#      <map name="annotations">
-#      <backup-count>2</backup-count>
-#      <time-to-live-seconds>86400</time-to-live-seconds>
-#
-#      <eviction eviction-policy="LFU"/>
-#      <max-size max-size-policy="USED_HEAP_SIZE">2048</max-size>
-#
-#      <map-store enabled="true" initial-mode="LAZY">
-#      <class-name>datawave.microservice.annotationCache.AnnotationMapStore</class-name>
-#      <write-delay-seconds>0</write-delay-seconds>
-#      </map-store>
-#      <entry-listeners>
-#      <entry-listener include-value="true">datawave.microservice.annotationCache.AnnotationSyncListener</entry-listener>
-#      </entry-listeners>
-#      </map>
-#
-#      <split-brain-protection name="splitBrainDefault" enabled="false">
-#      <minimum-cluster-size>2</minimum-cluster-size>
-#      </split-brain-protection>
-#      </hazelcast>
     xml-config: |
       <hazelcast xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.9.xsd"
@@ -114,20 +81,3 @@ hazelcast:
           <minimum-cluster-size>2</minimum-cluster-size>
         </split-brain-protection>
       </hazelcast>
-      
-
-#        <map name="annotations">
-#          <!-- Keep 2 backup copies of data (so we have 3 copies total) -->
-#          <backup-count>2</backup-count>
-#          <!-- No matter what, entries get evicted after this time. -->
-#          <time-to-live-seconds>86400</time-to-live-seconds>
-#          <!-- Evict the least frequently used entries first if we run out of space and allow 2GB for each cluster node to store data -->
-#          <eviction eviction-policy="LFU" max-size-policy="USED_HEAP_SIZE" size="2048"/>
-#          <map-store enabled="true" initial-mode="LAZY">
-#            <class-name>datawave.microservice.annotationCache.AnnotationMapStore</class-name>
-#            <write-delay-seconds>0</write-delay-seconds>
-#          </map-store>
-#          <entry-listeners>
-#            <entry-listener include-value="true">datawave.microservice.annotationCache.AnnotationSyncListener</entry-listener>
-#          </entry-listeners>
-#        </map>
