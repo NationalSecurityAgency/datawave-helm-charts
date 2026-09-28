@@ -53,7 +53,7 @@ spec:
       - name: ingest
         env:
         - name: ADDITIONAL_INGEST_LIBS
-          value: {{ .Values.libs }}
+          value: {{ .Values.libs | quote }}
         - name: HADOOP_CLASSPATH
           value: {{ .Values.hadoop.classpath }}
         - name: HADOOP_CONF_DIR

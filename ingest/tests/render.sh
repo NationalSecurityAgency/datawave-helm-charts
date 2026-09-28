@@ -80,6 +80,16 @@ if ! grep -Fq 'hdfs dfs -test -s "${candidate}/edge-key-version.txt"' "${render_
   exit 1
 fi
 
+if grep -Fq "/lib/hadoop-" "${render_dir}/all.yaml"; then
+  echo "Rendered ingest configuration still injects platform Hadoop jars through ADDITIONAL_INGEST_LIBS"
+  exit 1
+fi
+
+if ! grep -Fq "/usr/local/hadoop/../hadoop-mapreduce/hadoop-mapreduce-client-core.jar" "${render_dir}/all.yaml"; then
+  echo "Rendered ingest deployment is missing the local Hadoop launcher classpath"
+  exit 1
+fi
+
 if ! grep -Fq "/opt/datawave-ingest/current/bin/ingest/generate-accumulo-config-cache.sh" "${render_dir}/install.sh"; then
   echo "Ingest initialization does not generate the Accumulo table configuration cache"
   exit 1
