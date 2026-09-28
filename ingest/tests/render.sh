@@ -20,7 +20,7 @@ helm template dwv "${chart_dir}" \
   --set bootstrap.annotation.enabled=true \
   --set bootstrap.annotation.inputConfigMap=datawave-annotation-baseline \
   --set image.repository=nationalsecurityagency/datawave/ingest-kubernetes \
-  --set image.tag=8.1.0-SNAPSHOT \
+  --set image.tag=8.2.0-SNAPSHOT \
   --set image.pullPolicy=Never \
   > "${render_dir}/annotation-job.yaml"
 
@@ -34,7 +34,7 @@ if grep -Fq "ingest.data.types" "${render_dir}/annotation-job.yaml"; then
   exit 1
 fi
 
-expected_image='image: nationalsecurityagency/datawave/ingest-kubernetes:8.1.0-SNAPSHOT'
+expected_image='image: nationalsecurityagency/datawave/ingest-kubernetes:8.2.0-SNAPSHOT'
 if [[ "$(grep -Fc "${expected_image}" "${render_dir}/annotation-job.yaml")" -ne 2 ]]; then
   echo "Annotation Job containers do not consistently use the configured ingest image"
   exit 1
@@ -93,5 +93,31 @@ if [[ -z "${create_tables_line}" || -z "${generate_cache_line}" || -z "${load_ca
   echo "Accumulo table configuration cache generation is not ordered after table creation and before job-cache loading"
   exit 1
 fi
+
+for expected_path in \
+  'INGEST_BIN_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)' \
+  '. "$INGEST_BIN_DIR/../system/header.sh"' \
+  '. "$INGEST_BIN_DIR/tables-env.sh"' \
+  '"$INGEST_INSTALL_DIR"/config/*.xml' \
+  'findVersion "$INGEST_INSTALL_DIR/lib" datawave-metrics-core' \
+  'findVersion "$INGEST_INSTALL_DIR/lib" datawave-ingest-csv' \
+  '. "$INGEST_BIN_DIR/../util/file_locker.sh"'; do
+  if ! grep -Fq "${expected_path}" "${render_dir}/all.yaml"; then
+    echo "Rendered ingest-env.sh is missing script-relative path: ${expected_path}"
+    exit 1
+  fi
+done
+
+for stale_path in \
+  '. ../system/header.sh' \
+  '. ../ingest/tables-env.sh' \
+  'for config_file in ../../config/*.xml' \
+  'findVersion ../../lib' \
+  '. ../util/file_locker.sh'; do
+  if grep -Fq "${stale_path}" "${render_dir}/all.yaml"; then
+    echo "Rendered ingest-env.sh retains working-directory-dependent path: ${stale_path}"
+    exit 1
+  fi
+done
 
 echo "Ingest chart render assertions passed"
