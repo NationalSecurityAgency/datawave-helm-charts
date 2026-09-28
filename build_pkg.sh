@@ -1,10 +1,6 @@
-find . -name "*.tgz" -delete
-cd datawave-monolith-umbrella
-helm dependency update
-helm package .
-cd ../datawave-stack
-helm dependency update
-helm package .
-cd ..
+#!/usr/bin/env bash
 
-cp datawave-stack/*.tgz .
+set -euo pipefail
+
+basedir="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)"
+"${basedir}/package-local-chart.sh" "${basedir}/datawave-stack" "${basedir}"

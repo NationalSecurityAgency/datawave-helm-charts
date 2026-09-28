@@ -45,35 +45,9 @@ function ready_helm_charts() {
         echo ""
         exit 1
     fi
-    package_helm_dependencies "${DATAWAVE_STACK}"
-    helm package ${DATAWAVE_STACK}
-    HELM_CHART=datawave-system*.tgz
+    "${BASEDIR}/package-local-chart.sh" "${DATAWAVE_STACK}" "${BASEDIR}"
+    HELM_CHART="${BASEDIR}/datawave-system-*.tgz"
   fi
-}
-
-package_helm_dependencies() {
-    local base_dir="$1"
-    local chart_file="$base_dir"/Chart.yaml
-
-    local dependencies=$(yq eval '.dependencies[]' "$chart_file")
-    if [ -z "$dependencies" ]; then
-        return
-    fi
-
-    for dep in $(yq eval '.dependencies[].name' "$chart_file"); do
-        local dep_path=$(yq eval ".dependencies[] | select(.name == \"$dep\") | .path" "$chart_file")
-        if [ -n "$dep_path" ]; then
-            echo "Packaging dependency: $dep"
-            package_helm_dependencies "$base_dir/$dep_path"
-            
-            # Package the dependency and copy it to the charts directory
-            helm package "$base_dir/$dep_path"
-            mkdir -p "$base_dir/charts"
-            mv *.tgz "$base_dir/charts/"
-        else
-            echo "Dependency $dep in $chart_file has no local path specified."
-        fi
-    done
 }
 
 function update_core_dns() {
