@@ -12,30 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 {{- $fullname := .Release.Name -}}
-{{ range .Values.compactors.queues }}
+{{ range .Values.compactors.resourceGroups }}
 
 ---
 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "accumulo.fullname" $ }}-compactor-{{ .compactorQueueName }}
+  name: {{ include "accumulo.fullname" $ }}-compactor-{{ .resourceGroupName }}
   labels:
     {{- include "accumulo.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: compactor-{{ .compactorQueueName }}
+    app.kubernetes.io/component: compactor-{{ .resourceGroupName }}
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .replicaCount }}
-  serviceName: {{ template "accumulo.fullname" $ }}-compactor-{{ .compactorQueueName }}
+  serviceName: {{ template "accumulo.fullname" $ }}-compactor-{{ .resourceGroupName }}
   selector:
     matchLabels:
       {{- include "accumulo.selectorLabels" $ | nindent 6 }}
-      app.kubernetes.io/component: compactor-{{ .compactorQueueName }}
+      app.kubernetes.io/component: compactor-{{ .resourceGroupName }}
   template:
     metadata:
       labels:
         {{- include "accumulo.labels" $ | nindent 8 }}
-        app.kubernetes.io/component: compactor-{{ .compactorQueueName }}
+        app.kubernetes.io/component: compactor-{{ .resourceGroupName }}
     spec:
       hostNetwork: {{ coalesce $.Values.hostNetwork.c $.Values.hostNetwork.default false }}
       securityContext:
@@ -56,7 +56,7 @@ spec:
         command:
           - 'sh'
           - '-c'
-          - until [[ $(/opt/accumulo/bin/accumulo info | grep managers | sed -e 's@.*\[@@' -e 's@\]@@') != "" ]]; do echo waiting for accumulo; sleep 2; done
+          - until [[ $(/opt/accumulo/bin/accumulo inst info | grep managers | sed -e 's@.*\[@@' -e 's@\]@@') != "" ]]; do echo waiting for accumulo; sleep 2; done
         volumeMounts:
           {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 10 }}
       {{- end }}
@@ -68,7 +68,7 @@ spec:
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
-        args: ["accumulo compactor -a $(hostname -f) -q {{ .compactorQueueName }}" ]
+        args: ["accumulo proc compactor -a $(hostname -f) -o compactor.group={{ .resourceGroupName }}" ]
         ports:
           - containerPort: 9997
         volumeMounts:

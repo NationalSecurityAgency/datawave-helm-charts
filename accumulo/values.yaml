@@ -86,7 +86,7 @@ initContainer:
   tag: 3.4.1
 image:
   repository: ghcr.io/nationalsecurityagency/datawave-stack-accumulo
-  tag: 2.1.4
+  tag: 4.0.0-alpha
   
   pullPolicy: IfNotPresent
 manager:
@@ -110,11 +110,15 @@ tabletServers:
             - tserver
         topologyKey: "kubernetes.io/hostname"
 compactors:
-  queues:
-    - compactorQueueName: test
-      serviceName: testCompactionService
-      jsonConfig: "[{\"name\":\"queue1\", \"type\": \"external\", \"queue\":\"test\"}]"
-      plannerClass: org.apache.accumulo.core.spi.compaction.DefaultCompactionPlanner
+  resourceGroups:
+  - resourceGroupName: default
+    serviceName: defaultCompactionService
+    jsonConfig: "[{\"group\":\"default\"}]"
+    plannerClass: org.apache.accumulo.core.spi.compaction.RatioBasedCompactionPlanner
+  - resourceGroupName: test
+    serviceName: testCompactionService
+    jsonConfig: "[{\"group\":\"test\"}]"
+    plannerClass: org.apache.accumulo.core.spi.compaction.RatioBasedCompactionPlanner
 scanServers:
   resourceGroups:
   - resourceGroupName: group1
@@ -130,12 +134,6 @@ scanServers:
     tolerations: []
     affinity: {}
 gc:
-  replicaCount: 1
-  resources: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-coordinator:
   replicaCount: 1
   resources: {}
   nodeSelector: {}
