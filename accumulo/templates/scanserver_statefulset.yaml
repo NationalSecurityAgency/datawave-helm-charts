@@ -56,7 +56,7 @@ spec:
         command:
           - 'sh'
           - '-c'
-          - until [[ $(/opt/accumulo/bin/accumulo info | grep managers | sed -e 's@.*\[@@' -e 's@\]@@') != "" ]]; do echo waiting for accumulo; sleep 2; done
+          - until [[ $(/opt/accumulo/bin/accumulo inst info | grep managers | sed -e 's@.*\[@@' -e 's@\]@@') != "" ]]; do echo waiting for accumulo; sleep 2; done
         volumeMounts:
           {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 10 }}
       {{- end }}
@@ -69,9 +69,9 @@ spec:
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         command: ["/bin/bash", "-c"]
         {{ if eq .resourceGroupName "default" }}
-        args: ["accumulo sserver -a $(hostname -f) " ]
+        args: ["accumulo proc sserver -a $(hostname -f) " ]
         {{ else }}
-        args: ["accumulo sserver -a $(hostname -f) -g {{ .resourceGroupName }}" ]
+        args: ["accumulo proc sserver -a $(hostname -f) -o sserver.group={{ .resourceGroupName }}" ]
         {{ end }}
         ports:
           - containerPort: 19997
