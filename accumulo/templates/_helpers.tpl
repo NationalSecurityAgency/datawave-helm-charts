@@ -8,7 +8,7 @@ Expand the name of the chart.
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+This is truncated to 63 chars to conform with the DNS naming spec.
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "accumulo.fullname" -}}
@@ -104,3 +104,45 @@ Create the name of the service account to use
     name: {{ .source.name }}
   {{- end }}
 {{- end }}
+
+{{/*
+Renders a complete accumulo.properties file for a single server role.
+As well as the common config.accumuloSite map merged with that role's own accumuloSite overrides
+Usage: {{ include "accumulo.accumuloProperties" (dict "ctx" $ "overrides" $.Values.manager.accumuloSite) }}
+*/}}
+{{- define "accumulo.accumuloProperties" -}}
+{{- $ := .ctx }}
+## Sets location in HDFS where Accumulo will store data
+instance.volumes=hdfs://{{ $.Values.global.hdfs.namenode }}/accumulo
+
+## Sets location of Zookeepers
+instance.zookeeper.host={{ $.Values.global.accumulo.zookeepers }}
+
+## Add additional global values here
+{{- range $k, $v := merge (dict) .overrides $.Values.config.accumuloSite }}
+{{ $k }}={{ $v }}
+{{- end }}
+
+#enable external compactions
+{{- range $.Values.compactors.resourceGroups }}
+compaction.service.{{ .serviceName }}.planner={{ .plannerClass }}
+compaction.service.{{ .serviceName }}.planner.opts.executors={{ .jsonConfig }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Projected volume combining the common accumulo ConfigMap with a role-specific
+accumulo ConfigMap, both mounted at the same ACCUMULO_CONF_DIR.
+Usage: {{ include "accumulo.accumuloConfVolume" (list $ "accumulo-config-tserver") }}
+*/}}
+{{- define "accumulo.accumuloConfVolume" -}}
+{{- $dot := index . 0 }}
+{{- $roleConfigMapName := index . 1 }}
+- name: {{ $dot.Values.global.volumes.accumulo.name }}
+  projected:
+    sources:
+    - configMap:
+        name: {{ $dot.Values.global.volumes.accumulo.source.name }}
+    - configMap:
+        name: {{ $roleConfigMapName }}
+{{- end -}}

@@ -40,7 +40,7 @@ spec:
         securityContext:
           runAsUser: 1000
         image: busybox:1.28
-        command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done; sleep 20"]
+        command: ['sh', '-c', 'until nslookup {{ include "accumulo.fullname" . }}-manager; do echo waiting for accumulo; sleep 2; done; sleep 20']
       {{- else }}
       initContainers:
       - name: init-accumulo-manager
@@ -56,7 +56,7 @@ spec:
       {{- end }}
       volumes:
         {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 8 }}
-        {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 8 }}
+        {{- include "accumulo.accumuloConfVolume" (list $ (printf "%s-monitor" $.Values.global.volumes.accumulo.source.name)) | nindent 8 }}
       containers:
       - name: accumulo-monitor
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

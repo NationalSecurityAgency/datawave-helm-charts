@@ -20,7 +20,7 @@ spec:
       securityContext:
         runAsUser: 1001
       image: busybox:1.28
-      command: ['sh', '-c', "until nslookup accumulo-manager; do echo waiting for accumulo; sleep 2; done; sleep 20"]
+      command: ['sh', '-c', 'until nslookup {{ include "accumulo.fullname" . }}-manager; do echo waiting for accumulo; sleep 2; done; sleep 20']
   containers:
   - name: cmds
     image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -43,7 +43,7 @@ spec:
       {{- toYaml .Values.cmds.resources | nindent 6 }}
   volumes:
   {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 2 }}
-  {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 2 }}
+  {{- include "accumulo.accumuloConfVolume" (list $ (printf "%s-cmds" $.Values.global.volumes.accumulo.source.name)) | nindent 2 }}
   - name: cmds
     secret:
       secretName: {{ include "accumulo.fullname" . }}-cmds

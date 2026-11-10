@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{ range .Values.tabletServers.resourceGroups }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "accumulo.fullname" . }}-tservers
+  name: {{ include "accumulo.fullname" $ }}-tservers-{{ .resourceGroupName }}
   labels:
-    {{- include "accumulo.labels" . | nindent 4 }}
-    app.kubernetes.io/component: tserver
+    {{- include "accumulo.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: tserver-{{ .resourceGroupName }}
 spec:
   selector:
-    {{- include "accumulo.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: tserver
+    {{- include "accumulo.selectorLabels" $ | nindent 4 }}
+    app.kubernetes.io/component: tserver-{{ .resourceGroupName }}
   type: ClusterIP
   clusterIP: None
   ports:
@@ -30,20 +31,4 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+{{ end }}

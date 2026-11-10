@@ -6,6 +6,10 @@
     "properties": {
         "cmds": {
             "properties": {
+                "accumuloSite": {
+                    "properties": {},
+                    "type": "object"
+                },
                 "affinity": {
                     "properties": {},
                     "type": "object"
@@ -24,35 +28,54 @@
             },
             "type": "object"
         },
+        "compactors": {
+            "properties": {
+                "resourceGroups": {
+                    "items": {
+                        "properties": {
+                            "accumuloSite": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "affinity": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "jsonConfig": {
+                                "type": "string"
+                            },
+                            "nodeSelector": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "plannerClass": {
+                                "type": "string"
+                            },
+                            "resourceGroupName": {
+                                "type": "string"
+                            },
+                            "resources": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "serviceName": {
+                                "type": "string"
+                            },
+                            "tolerations": {
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
         "config": {
             "properties": {
                 "accumuloSite": {
-                    "properties": {
-                        "instance.secret": {
-                            "type": "string"
-                        },
-                        "tserver.cache.data.size": {
-                            "type": "string"
-                        },
-                        "tserver.cache.index.size": {
-                            "type": "string"
-                        },
-                        "tserver.memory.maps.max": {
-                            "type": "string"
-                        },
-                        "tserver.memory.maps.native.enabled": {
-                            "type": "boolean"
-                        },
-                        "tserver.sort.buffer.size": {
-                            "type": "string"
-                        },
-                        "tserver.total.mutation.queue.max": {
-                            "type": "string"
-                        },
-                        "tserver.walog.max.size": {
-                            "type": "string"
-                        }
-                    },
+                    "properties": {},
                     "type": "object"
                 },
                 "auths": {
@@ -135,6 +158,10 @@
         },
         "gc": {
             "properties": {
+                "accumuloSite": {
+                    "properties": {},
+                    "type": "object"
+                },
                 "affinity": {
                     "properties": {},
                     "type": "object"
@@ -162,21 +189,84 @@
                     "properties": {
                         "instanceName": {
                             "type": "string"
+                        },
+                        "zookeepers": {
+                            "type": "string"
                         }
                     },
                     "type": "object"
                 },
-                "accumuloConfigMap": {
-                    "type": "string"
-                },
-                "hadoopConfigMap": {
-                    "type": "string"
+                "hdfs": {
+                    "properties": {
+                        "namenode": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
                 },
                 "pullSecrets": {
                     "items": {
                         "type": "string"
                     },
                     "type": "array"
+                },
+                "volumes": {
+                    "properties": {
+                        "accumulo": {
+                            "properties": {
+                                "destination": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "readOnly": {
+                                    "type": "boolean"
+                                },
+                                "source": {
+                                    "properties": {
+                                        "create": {
+                                            "type": "boolean"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "type": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "hadoop": {
+                            "properties": {
+                                "destination": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "readOnly": {
+                                    "type": "boolean"
+                                },
+                                "source": {
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "type": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 }
             },
             "type": "object"
@@ -220,6 +310,10 @@
                     "type": "array"
                 }
             },
+            "type": "object"
+        },
+        "hostNetwork": {
+            "properties": {},
             "type": "object"
         },
         "image": {
@@ -270,6 +364,10 @@
         },
         "manager": {
             "properties": {
+                "accumuloSite": {
+                    "properties": {},
+                    "type": "object"
+                },
                 "affinity": {
                     "properties": {},
                     "type": "object"
@@ -290,6 +388,10 @@
         },
         "monitor": {
             "properties": {
+                "accumuloSite": {
+                    "properties": {},
+                    "type": "object"
+                },
                 "affinity": {
                     "properties": {},
                     "type": "object"
@@ -333,6 +435,10 @@
                 "resourceGroups": {
                     "items": {
                         "properties": {
+                            "accumuloSite": {
+                                "properties": {},
+                                "type": "object"
+                            },
                             "affinity": {
                                 "properties": {},
                                 "type": "object"
@@ -364,64 +470,79 @@
         },
         "tabletServers": {
             "properties": {
-                "affinity": {
-                    "properties": {
-                        "podAntiAffinity": {
-                            "properties": {
-                                "requiredDuringSchedulingIgnoredDuringExecution": {
-                                    "items": {
+                "resourceGroups": {
+                    "items": {
+                        "properties": {
+                            "accumuloSite": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "affinity": {
+                                "properties": {
+                                    "podAntiAffinity": {
                                         "properties": {
-                                            "labelSelector": {
-                                                "properties": {
-                                                    "matchExpressions": {
-                                                        "items": {
+                                            "requiredDuringSchedulingIgnoredDuringExecution": {
+                                                "items": {
+                                                    "properties": {
+                                                        "labelSelector": {
                                                             "properties": {
-                                                                "key": {
-                                                                    "type": "string"
-                                                                },
-                                                                "operator": {
-                                                                    "type": "string"
-                                                                },
-                                                                "values": {
+                                                                "matchExpressions": {
                                                                     "items": {
-                                                                        "type": "string"
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "operator": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "values": {
+                                                                                "items": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "type": "array"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
                                                                     },
                                                                     "type": "array"
                                                                 }
                                                             },
                                                             "type": "object"
                                                         },
-                                                        "type": "array"
-                                                    }
+                                                        "topologyKey": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
                                                 },
-                                                "type": "object"
-                                            },
-                                            "topologyKey": {
-                                                "type": "string"
+                                                "type": "array"
                                             }
                                         },
                                         "type": "object"
-                                    },
-                                    "type": "array"
-                                }
+                                    }
+                                },
+                                "type": "object"
                             },
-                            "type": "object"
-                        }
+                            "nodeSelector": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "replicaCount": {
+                                "type": "integer"
+                            },
+                            "resourceGroupName": {
+                                "type": "string"
+                            },
+                            "resources": {
+                                "properties": {},
+                                "type": "object"
+                            },
+                            "tolerations": {
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
                     },
-                    "type": "object"
-                },
-                "nodeSelector": {
-                    "properties": {},
-                    "type": "object"
-                },
-                "replicaCount": {
-                    "type": "integer"
-                },
-                "resources": {
-                    "properties": {},
-                    "type": "object"
-                },
-                "tolerations": {
                     "type": "array"
                 }
             },

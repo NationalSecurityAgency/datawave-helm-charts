@@ -47,7 +47,7 @@ spec:
         #command: 
         #- "/bin/sh"
         #args: ["-c", "while [ `hdfs dfs -ls hdfs://{{ .Values.global.hdfs.namenode }}/datawave/accumulo-vfs-classpath | wc -l` -lt 5 ]; do echo \"Waiting for jars to load\"; sleep 10; done"]
-      hostname: accumulo-manager
+      hostname: {{ include "accumulo.fullname" . }}-manager
       containers:
       - name: accumulo-manager
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -84,7 +84,7 @@ spec:
             name: {{ .Values.entrypointConfigMap.name }}
             defaultMode: 0777
         {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 8 }}
-        {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 8 }}
+        {{- include "accumulo.accumuloConfVolume" (list $ (printf "%s-manager" $.Values.global.volumes.accumulo.source.name)) | nindent 8 }}
         - name: cmds
           secret:
             secretName: {{ include "accumulo.fullname" . }}-cmds

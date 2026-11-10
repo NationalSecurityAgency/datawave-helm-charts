@@ -180,38 +180,6 @@ data:
     ## merged result. You can set the variable any way you like.
     #declare -p 'ACCUMULO_JAVA_PREFIX' &>/dev/null || ACCUMULO_JAVA_PREFIX=''
 
-  accumulo.properties: |
-    ## Sets location in HDFS where Accumulo will store data
-    instance.volumes=hdfs://{{ .Values.global.hdfs.namenode }}/accumulo
-    
-    ## Sets location of Zookeepers
-    instance.zookeeper.host={{ .Values.global.accumulo.zookeepers }}
-    
-    ## Change secret before initialization. All Accumulo servers must have same secret
-    instance.secret=DEFAULT
-    trace.user=root
-    trace.token.property.password=secret
-    
-    ## Set to false if 'accumulo-util build-native' fails
-    tserver.memory.maps.native.enabled=true
-    tserver.memory.maps.max=128M
-    tserver.cache.data.size=15M
-    tserver.cache.index.size=40M
-    tserver.total.mutation.queue.max=16M
-    tserver.sort.buffer.size=50M
-    tserver.walog.max.size=128M
-
-    #enable external compactions
-    {{ range .Values.compactors.resourceGroups }}
-    compaction.service.{{ .serviceName }}.planner={{ .plannerClass }}
-    compaction.service.{{ .serviceName }}.planner.opts.executors={{ .jsonConfig }}
-    {{- end }}
-    
-    #    TODO: Need to set up ContextClassLoaderFactory
-    #    table.class.loader.context=datawave
-    
-    general.micrometer.enabled=true
-
   client.conf: |
      instance.zookeeper.host=zookeeper:2181
      # instance.rpc.ssl.enabled=false

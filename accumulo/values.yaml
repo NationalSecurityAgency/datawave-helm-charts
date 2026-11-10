@@ -56,13 +56,7 @@ config:
   files: {}
   accumuloSite:
     instance.secret: "DEFAULT"
-    tserver.memory.maps.native.enabled: true
-    tserver.memory.maps.max: 128M
-    tserver.cache.data.size: 15M
-    tserver.cache.index.size: 40M
-    tserver.total.mutation.queue.max: 16M
-    tserver.sort.buffer.size: 50M
-    tserver.walog.max.size: 128M
+    general.micrometer.enabled: true
   userManagement:
     rootPassword: "ThisP@ssw0rd1sBANANAS"
     # If accumulo.config.userManagement.revoke.enabled is:
@@ -80,7 +74,12 @@ config:
             trace:
               - READ
               - WRITE
-  postInstallCommands: []
+  # Pins the accumulo.metadata table to the tservers in the "metadata"
+  # resource group (tabletServers.resourceGroups) via Accumulo's
+  # TableLoadBalancer (manager.tablet.balancer, the default balancer).
+  postInstallCommands:
+    - config -t accumulo.metadata -s table.custom.assignment.group=metadata
+    - config -t accumulo.root -s table.custom.assignment.group=metadata
 initContainer:
   image: ghcr.io/nationalsecurityagency/datawave-stack-hadoop
   tag: 3.4.1
@@ -91,65 +90,132 @@ image:
   pullPolicy: IfNotPresent
 manager:
   resources: {}
-  nodeSelector: {}
+  # The manager must land on a node dedicated to it. Label that node
+  # accumulo.sh/node-pool=manager.
+  nodeSelector:
+    accumulo.sh/node-pool: manager
   tolerations: []
   affinity: {}
+  accumuloSite: {}
 tabletServers:
-  replicaCount: 3
-  resources: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: 
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: "app.kubernetes.io/component"
-            operator: In
-            values:
-            - tserver
-        topologyKey: "kubernetes.io/hostname"
+  resourceGroups:
+  - resourceGroupName: default
+    replicaCount: 3
+    resources: {}
+    # Each tablet server resource group must land on nodes dedicated to that
+    # group. Label those nodes accumulo.sh/node-pool=<resourceGroupName>.
+    nodeSelector:
+      accumulo.sh/node-pool: default
+    tolerations: []
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: "app.kubernetes.io/component"
+              operator: In
+              values:
+              - tserver-default
+          topologyKey: "kubernetes.io/hostname"
+    accumuloSite:
+      tserver.memory.maps.native.enabled: true
+      tserver.memory.maps.max: 128M
+      tserver.cache.data.size: 15M
+      tserver.cache.index.size: 40M
+      tserver.total.mutation.queue.max: 16M
+      tserver.sort.buffer.size: 50M
+      tserver.walog.max.size: 128M
+  # Dedicated group for hosting the accumulo.metadata table, kept off the
+  # nodes serving user tablets. Pinning the table itself to this group is
+  # done via config.postInstallCommands (table.custom.assignment.group).
+  - resourceGroupName: metadata
+    replicaCount: 2
+    resources: {}
+    nodeSelector:
+      accumulo.sh/node-pool: metadata
+    tolerations: []
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: "app.kubernetes.io/component"
+              operator: In
+              values:
+              - tserver-metadata
+          topologyKey: "kubernetes.io/hostname"
+    accumuloSite:
+      tserver.memory.maps.native.enabled: true
+      tserver.memory.maps.max: 128M
+      tserver.cache.data.size: 15M
+      tserver.cache.index.size: 40M
+      tserver.total.mutation.queue.max: 16M
+      tserver.sort.buffer.size: 50M
+      tserver.walog.max.size: 128M
 compactors:
+  # Compactors can run on any node provisioned for Accumulo workloads. Label
+  # those nodes accumulo.sh/node-pool=accumulo.
   resourceGroups:
   - resourceGroupName: default
     serviceName: defaultCompactionService
     jsonConfig: "[{\"group\":\"default\"}]"
     plannerClass: org.apache.accumulo.core.spi.compaction.RatioBasedCompactionPlanner
+    resources: {}
+    nodeSelector:
+      accumulo.sh/node-pool: accumulo
+    tolerations: []
+    affinity: {}
+    accumuloSite: {}
   - resourceGroupName: test
     serviceName: testCompactionService
     jsonConfig: "[{\"group\":\"test\"}]"
     plannerClass: org.apache.accumulo.core.spi.compaction.RatioBasedCompactionPlanner
+    resources: {}
+    nodeSelector:
+      accumulo.sh/node-pool: accumulo
+    tolerations: []
+    affinity: {}
+    accumuloSite: {}
 scanServers:
+  # Scan servers can run on any node provisioned for Accumulo workloads.
+  # Label those nodes accumulo.sh/node-pool=accumulo.
   resourceGroups:
   - resourceGroupName: group1
     replicaCount: 1
     resources: {}
-    nodeSelector: {}
+    nodeSelector:
+      accumulo.sh/node-pool: accumulo
     tolerations: []
     affinity: {}
+    accumuloSite: {}
   - resourceGroupName: default
     replicaCount: 1
     resources: {}
-    nodeSelector: {}
+    nodeSelector:
+      accumulo.sh/node-pool: accumulo
     tolerations: []
     affinity: {}
+    accumuloSite: {}
 gc:
   replicaCount: 1
   resources: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  accumuloSite: {}
 cmds:
   resources: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  accumuloSite: {}
 monitor:
   replicaCount: 1
   resources: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  accumuloSite: {}
   ingress:
     enabled: true
     annotations: []

@@ -45,8 +45,13 @@ spec:
       - name: init-accumulo-tservers
         securityContext:
           runAsUser: 1000
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nslookup {{ include "accumulo.fullname" $ }}-tservers; do echo waiting for accumulo; sleep 2; done']
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        command:
+          - 'sh'
+          - '-c'
+          - 'until [ "$(/opt/accumulo/bin/accumulo inst service-status | sed -n "s/^Tablet Servers: count: \([0-9]*\).*/\1/p")" -gt 0 ] 2>/dev/null; do echo waiting for accumulo; sleep 2; done'
+        volumeMounts:
+          {{- include "accumulo.volumeMount" $.Values.global.volumes.accumulo | nindent 10 }}
       {{- else }}
       initContainers:
       - name: init-accumulo-manager
@@ -62,7 +67,7 @@ spec:
       {{- end }}
       volumes:
         {{- include "accumulo.volume" $.Values.global.volumes.hadoop | nindent 8 }}
-        {{- include "accumulo.volume" $.Values.global.volumes.accumulo | nindent 8 }}
+        {{- include "accumulo.accumuloConfVolume" (list $ (printf "%s-compactor-%s" $.Values.global.volumes.accumulo.source.name .resourceGroupName)) | nindent 8 }}
       containers:
       - name: accumulo-compactor
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
